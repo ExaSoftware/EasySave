@@ -3,6 +3,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <ApplicationIcon />
+    <Win32Resource />
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,6 +13,22 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+    
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>3</WarningLevel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Strings.fr-FR.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Strings.en-US.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
