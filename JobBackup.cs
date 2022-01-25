@@ -3,6 +3,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using static EasySave.JobBackUpModel;
+using static EasySave.Tools;
 
 namespace EasySave
 {
@@ -94,20 +95,17 @@ namespace EasySave
                 string destFile = Path.Combine(_destinationDirectory, fileName);
 
                 //Add hashcode comparaison
-
                 byte[] inComingFileHash = new MD5CryptoServiceProvider().ComputeHash(File.ReadAllBytes(file));
-                if(!File.Exists(destFile))
+
+                if (File.Exists(destFile))
                 {
                     byte[] destinationFileHash = new MD5CryptoServiceProvider().ComputeHash(File.ReadAllBytes(destFile));
+                 
+                    if (CompareLists(destinationFileHash, inComingFileHash))
+                    {
+                        SaveFileWithOverWrite(file, destFile);
+                    }
                 }
-                
-                // Ajouter la méthode pour comparer 1 à 1 les listes
-
-                if (true)
-                {
-                    SaveFileWithOverWrite(file, destFile);
-                }
-
             }
         }
 
