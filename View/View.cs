@@ -6,5 +6,6 @@ namespace EasySave
 {
     public class View
     {
+
     }
 }
