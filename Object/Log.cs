@@ -10,7 +10,7 @@ namespace EasySave
 {
     ///<summary>Public Log class which models a log file</summary>
 
-    public class Log
+    public abstract class Log
     {
         /// <summary> Job save label </summary>
         protected static string _label;
@@ -47,7 +47,7 @@ namespace EasySave
         /// <summary>
         /// Method which doing nothing but is useful for polymorphism
         /// </summary>
-        public void SaveLog()
+        public virtual void SaveLog()
         {
             
         }

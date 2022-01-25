@@ -45,7 +45,7 @@ namespace EasySave
         /// Method which call SaveHistoryLog() from LogModel for created a history log file in C:\EasySave\Logs repository
         /// </summary>
         /// <returns>True if the history log file have been created False in the opposite case</returns>
-        new public void SaveLog()
+        public override void SaveLog()
         {
             _myLogModel.SaveHistoryLog(this);
         }
