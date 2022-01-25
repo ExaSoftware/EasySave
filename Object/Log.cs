@@ -8,7 +8,6 @@ using System.Text.Json.Serialization;
 
 namespace EasySave
 {
-
     ///<summary>Public Log class which models a log file</summary>
 
     public class Log

@@ -40,7 +40,7 @@ namespace EasySave
                     myListHistoryLog.Add(myHistoryLog);
                     string jsonString = JsonConvert.SerializeObject(myListHistoryLog, Formatting.Indented);
                     Console.WriteLine(jsonString);
-                    File.WriteAllText(String.Format(@"{0}\Historylog-{1}.json", _DEFAULTLOGFILEPATH, DateTime.Now.ToString("d-MM-yyyy")) + ".json" , jsonString);
+                    File.WriteAllText(String.Format(@"{0}\Historylog-{1}.json", _DEFAULTLOGFILEPATH, DateTime.Now.ToString("d-MM-yyyy")), jsonString);
                 }
             }
                 /*
