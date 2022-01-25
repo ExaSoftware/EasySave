@@ -12,7 +12,7 @@ namespace EasySave
         }
 
         public static void SaveFileWithoutOverWrite(string file, string destFile)
-        {s
+        {
             System.IO.File.Copy(file, destFile, false);
         }
     }
