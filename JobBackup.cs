@@ -1,14 +1,24 @@
 ﻿using System;
+using System.IO;
 using System.Diagnostics;
+using System.Security.Cryptography;
+using static EasySave.JobBackUpModel;
 
 namespace EasySave
 {
     public class JobBackup
     {
+        // Attributes
         private String _label;
         private String _sourceDirectory;
         private String _destinationDirectory;
         private Boolean _isDifferential;
+
+        // Properties
+        public string SourceDirectory { get => _sourceDirectory; set => _sourceDirectory = value; }
+        public string DestinationDirectory { get => _destinationDirectory; set => _destinationDirectory = value; }
+        public bool IsDifferential { get => _isDifferential; set => _isDifferential = value; }
+        public string Label { get => _label; set => _label = value; }
 
         // Default constructor to use in serialize
         public JobBackup() { }
@@ -27,7 +37,7 @@ namespace EasySave
         {
             if (_isDifferential)
             {
-
+                DoDifferentialSave();
             }
 
             else
@@ -44,19 +54,20 @@ namespace EasySave
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            if (System.IO.Directory.Exists(_sourceDirectory))
+            if (Directory.Exists(_sourceDirectory))
             {
-                string[] files = System.IO.Directory.GetFiles(_sourceDirectory);
+                string[] files = Directory.GetFiles(_sourceDirectory);
                 int counter = 0;
 
                 // Copy the files and overwrite destination files if they already exist.
-                foreach (string s in files)
+                foreach (string file in files)
                 {
                     // Use static Path methods to extract only the file name from the path.
-                    string fileName = System.IO.Path.GetFileName(s);
-                    string destFile = System.IO.Path.Combine(_destinationDirectory, fileName);
+                    string fileName = Path.GetFileName(file);
+                    string destFile = Path.Combine(_destinationDirectory, fileName);
+                    
                     //The overwrite parameter is the "true" below
-                    System.IO.File.Copy(s, destFile, true);
+                    File.Copy(file, destFile, true);
                     Console.WriteLine("{0} file mooved to: {1}", fileName, _destinationDirectory);
                     counter++;
                 }
@@ -75,16 +86,31 @@ namespace EasySave
 
         private void DoDifferentialSave()
         {
+            String[] files = Directory.GetFiles(_sourceDirectory);
 
+            foreach ( String file in files)
+            {
+                string fileName = Path.GetFileName(file);
+                string destFile = Path.Combine(_destinationDirectory, fileName);
+
+                //Add hashcode comparaison
+
+                byte[] inComingFileHash = new MD5CryptoServiceProvider().ComputeHash(File.ReadAllBytes(file));
+                if(!File.Exists(destFile))
+                {
+                    byte[] destinationFileHash = new MD5CryptoServiceProvider().ComputeHash(File.ReadAllBytes(destFile));
+                }
+                
+                // Ajouter la méthode pour comparer 1 à 1 les listes
+
+                if (true)
+                {
+                    SaveFileWithOverWrite(file, destFile);
+                }
+
+            }
         }
 
 
-        private String[] FindFilesForDifferentialSave()
-        {
-            String[] files = ["fichier"];
-
-
-            return files;
-        }
     }
 }
