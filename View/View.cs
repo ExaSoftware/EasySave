@@ -13,7 +13,7 @@ namespace EasySave
         }
 
         //Introduction
-        public static void IntroductionDisplay(){
+        public static void DisplayIntroduction(){
             Console.WriteLine("  Insert one of the numbers");
             Console.WriteLine("");
             Console.WriteLine("  1  -  Start");
@@ -24,7 +24,7 @@ namespace EasySave
 
 
         //Display of which save to choose
-        public static void ChooseSaveDisplay()
+        public static void DisplayChooseSave()
         {
             Console.WriteLine("  Which save do you whish to use ?");
             Console.WriteLine("");
@@ -34,7 +34,7 @@ namespace EasySave
         }
 
         //Display of which save to choose
-        public static void ChooseLanguage()
+        public static void DisplayChooseLanguage()
         {
             Console.WriteLine("Choose the language");
             Console.WriteLine("");
