@@ -14,6 +14,7 @@ namespace EasySave
     {
         static void Main(string[] args)
         {
+            Init.CreateDataDirectoryIfNotExists();
             Configuration configuration = Init.LoadConfiguration();
             LanguageManager.ChangeLanguage("fr-FR", configuration);
             ResourceManager resourceManager = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());

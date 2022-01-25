@@ -31,5 +31,13 @@ namespace EasySave.ViewModel
                 return JsonSerializer.Deserialize<Configuration>(jsonString);
             }
         }
+
+        public static void CreateDataDirectoryIfNotExists()
+        {
+            if (!Directory.Exists(@"C:\EasySave"))
+            {
+                Directory.CreateDirectory(@"C:\EasySave");
+            }
+        }
     }
 }
