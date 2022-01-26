@@ -39,5 +39,14 @@ namespace EasySave.ViewModel
                 Directory.CreateDirectory(@"C:\EasySave");
             }
         }
+
+        public static void CreateJobBackupList()
+        {
+            List<JobBackup> parts = new List<JobBackup>();
+            for (int i = 0; i < 5; i++)
+            {
+                parts.Add(new JobBackup { Label = "", SourceDirectory = "", DestinationDirectory = "", IsDifferential = true });
+            }
+        }
     }
 }
