@@ -202,7 +202,7 @@
     <value>  Job Backup Deleted!</value>
   </data>
   <data name="menuStartJobDestination" xml:space="preserve">
-    <value>  Write the name of the destination directory</value>
+    <value>  Write the path of the destination directory</value>
   </data>
   <data name="menuStartJobDone" xml:space="preserve">
     <value>  Done!</value>
@@ -211,7 +211,7 @@
     <value>  Write the name of the job backup</value>
   </data>
   <data name="menuStartJobSource" xml:space="preserve">
-    <value>  Write the name of the source directory</value>
+    <value>  Write the path of the source directory</value>
   </data>
   <data name="menuStartRestarting" xml:space="preserve">
     <value>  Not a choice, restarting</value>
