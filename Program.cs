@@ -6,7 +6,8 @@ namespace EasySave
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+           MainViewModel menu= new MainViewModel();
+           menu.Start();
         }
     }
 }
