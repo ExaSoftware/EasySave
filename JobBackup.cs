@@ -7,6 +7,17 @@ using static EasySave.Tools;
 
 namespace EasySave
 {
+    /// <summary>
+    ///  JobBackup is a Picasso class. It allows you to save files from a directory to an other with differents methods.
+    ///  
+    ///  (String) Label: the name of the save
+    ///  (String: Path format) SourceDirectory: the source directory
+    ///  (String: Path format) DestinationDirectory: the destination directory
+    ///  (Boolean) IsDifferential: Define if the save is differential or no
+    ///  
+    ///  JobBackup has to be instantiate with the default contructor or the complete one.
+    ///  
+    /// </summary>
     public class JobBackup
     {
         // Attributes
@@ -32,7 +43,14 @@ namespace EasySave
             this._destinationDirectory = destinationDirectory;
             this._isDifferential = isDifferential;
         }
-
+        
+        public void Reset()
+        {
+            _label = "";
+            _sourceDirectory = "";
+            _destinationDirectory = "";
+            _isDifferential = false;
+        }
 
         public void Execute()
         {
@@ -55,6 +73,7 @@ namespace EasySave
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
+
             if (Directory.Exists(_sourceDirectory))
             {
                 string[] files = Directory.GetFiles(_sourceDirectory);
@@ -72,7 +91,6 @@ namespace EasySave
                     Console.WriteLine("{0} file mooved to: {1}", fileName, _destinationDirectory);
                     counter++;
                 }
-
                 Console.WriteLine("{0} files mooved to: {1}", counter, _destinationDirectory);
             }
             else
@@ -85,20 +103,24 @@ namespace EasySave
         }
 
 
+
         private void DoDifferentialSave()
         {
+            // Get files from the source directory
             String[] files = Directory.GetFiles(_sourceDirectory);
 
             foreach ( String file in files)
             {
+                // Creation of the destFile
                 string fileName = Path.GetFileName(file);
                 string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                //Add hashcode comparaison
+                //Get the hashCode of source file
                 byte[] inComingFileHash = new MD5CryptoServiceProvider().ComputeHash(File.ReadAllBytes(file));
 
                 if (File.Exists(destFile))
                 {
+                    //Get the hashCode of the destFle
                     byte[] destinationFileHash = new MD5CryptoServiceProvider().ComputeHash(File.ReadAllBytes(destFile));
                  
                     if (CompareLists(destinationFileHash, inComingFileHash))
