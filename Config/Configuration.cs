@@ -11,13 +11,11 @@ namespace EasySave.Object
     {
         //Attributes for the configuration of the software
         private String _language;
-        private String _logsPath;
 
         private static Configuration _instance;
         public const String DEFAULT_CONFIG_FILE_PATH = @"C:\EasySave\Configuration.json";
 
         public string Language { get => _language; set => _language = value; }
-        public string LogsPath { get => _logsPath; set => _logsPath = value; }
 
         /// <summary>
         /// Serialize and save Configuration object in json file
