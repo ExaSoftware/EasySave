@@ -1,10 +1,8 @@
-﻿using Newtonsoft.Json;
-using NPOI.SS.Formula.Functions;
+﻿using EasySave.Object;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace EasySave
 {
@@ -72,14 +70,14 @@ namespace EasySave
             }
         }
 
-        /*
-       public void SaveProgressLog()
+       
+       public void SaveProgressLog(List<ProgressLog> progressLogList)
        {
+            String path = String.Format(@"{0}\Progresslog.json", _DEFAULT_LOG_FILE_PATH);
+            if (!Directory.Exists(_DEFAULT_LOG_FILE_PATH)) Directory.CreateDirectory(_DEFAULT_LOG_FILE_PATH);
+            string json = JsonConvert.SerializeObject(progressLogList, Formatting.Indented);
+            File.WriteAllText(path, json);
 
-       }*/
-
-        /*Récup liste des jobs backup sauvegarder =>read
-         sauvegarde des jobs backup => saveJob
-         */
+       }
     }
 }
