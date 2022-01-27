@@ -20,7 +20,7 @@ namespace EasySave
         private List<HistoryLog> myListHistoryLog = new List<HistoryLog>();
 
         /// <summary>Method which check if the directory exist and create the file if it doesn't exist, 
-        /// then deserialized the file if it exist for append the new save job or create a new log file
+        /// then deserialized the file if it exists for appends the new save job or create a new log file
         /// </summary>
         ///<param name=myHistoryLog>An object HistoryLog</param>
         public void SaveHistoryLog(HistoryLog myHistoryLog)
@@ -62,10 +62,8 @@ namespace EasySave
                 return null;
             }
         }
-      
-        /// <summary>
-        /// Method which save a list of jobBackup into a json file
-        /// </summary>
+
+        /// <summary>Method which save a list of jobBackup into a json file</summary>
         /// <param name="jobBackupList"></param>
         public void SaveJobBackup(List<JobBackup> jobBackupList)
         {
@@ -74,15 +72,14 @@ namespace EasySave
             File.WriteAllText(String.Format(@"{0}\SavedJobBackup.json", _DEFAULT_JOB_BACKUP_FILE_PATH), jsonStringJobBackup);
         }
 
-       
-       public void SaveProgressLog(List<ProgressLog> progressLogList)
+        /// <summary>Method which save a list of progressLog into a json file</summary>
+        /// <param name="progressLogList"></param>
+        public void SaveProgressLog(List<ProgressLog> progressLogList)
        {
             String path = String.Format(@"{0}\Progresslog.json", _DEFAULT_LOG_FILE_PATH);
             if (!Directory.Exists(_DEFAULT_LOG_FILE_PATH)) Directory.CreateDirectory(_DEFAULT_LOG_FILE_PATH);
             string json = JsonConvert.SerializeObject(progressLogList, Formatting.Indented);
             File.WriteAllText(path, json);
-
        }
-
     }
 }
