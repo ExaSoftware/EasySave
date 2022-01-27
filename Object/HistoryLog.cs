@@ -15,7 +15,7 @@ namespace EasySave
         private string _transferTime;
 
         /// <summary>History log builder</summary>
-        public HistoryLog(string savedName, string sourceFile, string targetFile,int fileSize, string transferTime) : base(_label,_sourceFile, _targetFile)
+        public HistoryLog(string savedName, string sourceFile, string targetFile, int fileSize, string transferTime) : base(_label, _sourceFile, _targetFile)
         {
             _fileSize = fileSize;
             _transferTime = transferTime;
@@ -29,6 +29,7 @@ namespace EasySave
         public int FileSize
         {
             get => this._fileSize;
+            set => _fileSize = value;
         }
 
         /// <summary>
@@ -39,7 +40,8 @@ namespace EasySave
         public string TransferTime
         {
             get => this._transferTime;
-        }
+            set => _transferTime = value;
+        } 
 
         /// <summary>
         /// Method which call SaveHistoryLog() from LogModel for created a history log file in C:\EasySave\Logs repository

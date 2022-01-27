@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +14,9 @@ namespace EasySave
     public class LogModel
     {
         /// <summary>The default directory path for saving logs</summary>
-        private const string _DEFAULTLOGFILEPATH = @"C:\EasySave\Logs";
+        private const string _DEFAULT_LOG_FILE_PATH = @"C:\EasySave\Logs";
+
+        private const string _DEFAULT_JOB_BACKUP_FILE_PATH = @"C:\EasySave\Job-Backup";
 
         /// <summary>A list of History log objects which contains all saving action files</summary>
         private List<HistoryLog> myListHistoryLog = new List<HistoryLog>();
@@ -22,31 +25,61 @@ namespace EasySave
         /// then deserialized the file if it exist for append the new save job or create a new log file</summary>
         public void SaveHistoryLog(HistoryLog myHistoryLog)
         {
-                if (!Directory.Exists(_DEFAULTLOGFILEPATH)) Directory.CreateDirectory(_DEFAULTLOGFILEPATH);
+                string path = String.Format(@"{0}\Historylog-{1}.json", _DEFAULT_LOG_FILE_PATH, DateTime.Now.ToString("d-MM-yyyy"));
+                if (!Directory.Exists(_DEFAULT_LOG_FILE_PATH)) Directory.CreateDirectory(_DEFAULT_LOG_FILE_PATH);    
 
-                if (File.Exists(String.Format(@"{0}\Historylog-{1}.json", _DEFAULTLOGFILEPATH, DateTime.Now.ToString("d-MM-yyyy")))) {
-                    
-                    string myJsonFile = File.ReadAllText(String.Format(@"{0}\Historylog-{1}.json", _DEFAULTLOGFILEPATH, DateTime.Now.ToString("d-MM-yyyy")));
-                    var  myJsonList  = JsonConvert.DeserializeObject<List<HistoryLog>>(myJsonFile);
-                    var options = new JsonSerializerOptions { WriteIndented = true };
+                if (File.Exists(path))
+                {
+                    string myJsonFile = File.ReadAllText(path);
+                    var myJsonList = JsonConvert.DeserializeObject<List<HistoryLog>>(myJsonFile);
                     myJsonList.Add(myHistoryLog);
                     string jsonString = JsonConvert.SerializeObject(myJsonList, Formatting.Indented);
-                    File.WriteAllText(String.Format(@"{0}\Historylog-{1}.json", _DEFAULTLOGFILEPATH, DateTime.Now.ToString("d-MM-yyyy")), jsonString);
+                    File.WriteAllText(path, jsonString);
                 }
 
                 else
-                {
-                    var options = new JsonSerializerOptions { WriteIndented = true };
+                { 
                     myListHistoryLog.Add(myHistoryLog);
                     string jsonString = JsonConvert.SerializeObject(myListHistoryLog, Formatting.Indented);
-                    Console.WriteLine(jsonString);
-                    File.WriteAllText(String.Format(@"{0}\Historylog-{1}.json", _DEFAULTLOGFILEPATH, DateTime.Now.ToString("d-MM-yyyy")), jsonString);
+                    File.WriteAllText(path, jsonString);
                 }
             }
-                /*
-               public bool SaveProgressLog()
-               {
 
-               }*/
+        public void SaveJobBackup(List<JobBackup> jobBackupList)
+        {
+            string path = String.Format(@"{0}\Save{1}.json", _DEFAULT_JOB_BACKUP_FILE_PATH, "1");
+            if (!Directory.Exists(_DEFAULT_JOB_BACKUP_FILE_PATH)) Directory.CreateDirectory(_DEFAULT_JOB_BACKUP_FILE_PATH);
+            if (File.Exists(path))
+            {
+                for (int i = 1; i < 6; i++)
+                {
+                    string myPath = String.Format(@"{0}\Save{1}.json", _DEFAULT_JOB_BACKUP_FILE_PATH, i.ToString());
+                    string myJsonFile = File.ReadAllText(myPath);
+                    var myJsonList = JsonConvert.DeserializeObject<List<JobBackup>>(myJsonFile);
+                    string jsonString = JsonConvert.SerializeObject(myJsonList, Formatting.Indented);
+                    File.WriteAllText(myPath, jsonString);
+                }
+            }
+
+            else
+            {
+                for (int i = 1; i < 6; i++)
+                {
+                    string myPath = String.Format(@"{0}\Save{1}.json", _DEFAULT_JOB_BACKUP_FILE_PATH, i.ToString());
+                    string jsonString = JsonConvert.SerializeObject(jobBackupList[i], Formatting.Indented);
+                    File.WriteAllText(myPath, jsonString);
+                } 
+            }
+        }
+
+        /*
+       public void SaveProgressLog()
+       {
+
+       }*/
+
+        /*Récup liste des jobs backup sauvegarder =>read
+         sauvegarde des jobs backup => saveJob
+         */
     }
 }
