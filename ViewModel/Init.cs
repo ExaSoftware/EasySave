@@ -1,6 +1,7 @@
 ﻿using EasySave.Object;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.Json;
@@ -27,7 +28,10 @@ namespace EasySave
             else
             {
                 String jsonString = File.ReadAllText(Configuration.DEFAULT_CONFIG_FILE_PATH);
-                return JsonSerializer.Deserialize<Configuration>(jsonString);
+                Configuration configuration = JsonSerializer.Deserialize<Configuration>(jsonString);
+                //Set the language according to the language in configuration file
+                CultureInfo.CurrentUICulture = new CultureInfo(configuration.Language, false);
+                return configuration;
             }
         }
 
