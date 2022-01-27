@@ -25,6 +25,7 @@ namespace EasySave
         private String _sourceDirectory;
         private String _destinationDirectory;
         private Boolean _isDifferential;
+        private int _progressLog;
 
         // Properties
         public string SourceDirectory { get => _sourceDirectory; set => _sourceDirectory = value; }
@@ -65,14 +66,12 @@ namespace EasySave
             }
         }
 
-
         // Save all files from _sourceDirectory to _destDirectory
         private string SaveAllFiles()
         {
             // Setup stopwatch
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-
 
             if (Directory.Exists(_sourceDirectory))
             {
@@ -85,9 +84,9 @@ namespace EasySave
                     // Use static Path methods to extract only the file name from the path.
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
-                    
+
                     //The overwrite parameter is the "true" below
-                    File.Copy(file, destFile, true);
+                    SaveFileWithOverWrite(file, destFile);
                     Console.WriteLine("{0} file mooved to: {1}", fileName, _destinationDirectory);
                     counter++;
                 }
@@ -100,6 +99,7 @@ namespace EasySave
 
             stopwatch.Stop();
             return stopwatch.Elapsed.TotalMilliseconds.ToString();
+
         }
 
 
@@ -108,6 +108,8 @@ namespace EasySave
         {
             // Get files from the source directory
             String[] files = Directory.GetFiles(_sourceDirectory);
+            int counter = 0;
+            Stopwatch stopwatch = new Stopwatch();
 
             foreach ( String file in files)
             {
@@ -125,7 +127,13 @@ namespace EasySave
                  
                     if (CompareLists(destinationFileHash, inComingFileHash))
                     {
+                        FileInfo fileInfo = new FileInfo(file);
+                        stopwatch.Reset();
+                        stopwatch.Start();
                         SaveFileWithOverWrite(file, destFile);
+                        stopwatch.Stop();
+                        counter++;
+                        HistoryLog historyLog = new HistoryLog(this._label,file, destFile, fileInfo.Length, stopwatch.Elapsed.TotalMilliseconds);
                     }
                 }
             }
