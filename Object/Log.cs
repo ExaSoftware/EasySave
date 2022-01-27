@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using EasySave.Object;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -47,11 +48,16 @@ namespace EasySave
             
         }
 
+        public virtual void SaveLog(List<ProgressLog> progressLogs)
+        {
+
+        }
+
         /// <summary>
         /// Getter which returns the history log name
         /// </summary>
         /// <returns>The history log name</returns>
-         [JsonProperty(Order = 1)]
+        [JsonProperty(Order = 1)]
         public string Name 
         {
             get => _label;
