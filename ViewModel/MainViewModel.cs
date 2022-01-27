@@ -49,7 +49,7 @@ namespace EasySave
                                             input = CheckInput() -1;
 
                                         }
-                                        view.Display("  Write the name of the source directory");
+                                        view.Display("  Write the name of the new save");
                                         listOfJobBackup[input].Label = Console.ReadLine();
                                         view.Display("  Write the name of the source directory");
                                         listOfJobBackup[input].SourceDirectory = Console.ReadLine();
