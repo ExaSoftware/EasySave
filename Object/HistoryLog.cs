@@ -10,15 +10,19 @@ namespace EasySave
     public class HistoryLog : Log
     {
         /// <summary>The file size of the file which have been saved</summary>
-        private double _fileSize;
+        private ulong _fileSize;
         /// <summary>Transfer time of the file which have been saved</summary>
         private double _transferTime;
 
+        /// <summary> Timestamp when the job have been saved </summary>
+        protected string _time;
+
         /// <summary>History log builder</summary>
-        public HistoryLog(string savedName, string sourceFile, string targetFile, double fileSize, double transferTime) : base(_label,_sourceFile, _targetFile)
+        public HistoryLog(string label, string sourceFile, string targetFile, ulong fileSize, double transferTime) : base(label, sourceFile, targetFile)
         {
             _fileSize = fileSize;
             _transferTime = transferTime;
+            _time = DateTime.Now.ToString("d/MM/yyyy HH:mm:ss");
         }
 
         /// <summary>
@@ -26,7 +30,7 @@ namespace EasySave
         /// </summary>
         /// <returns>The file size of the file which have been saved</returns>
         [JsonProperty(Order = 4)]
-        public double FileSize
+        public ulong FileSize
         {
             get => this._fileSize;
             set => _fileSize = value;
@@ -37,11 +41,22 @@ namespace EasySave
         /// </summary>
         /// <returns>The file transfered time of the file which have been saved</returns>
         [JsonProperty(Order = 5)]
-        public long TransferTime
+        public double TransferTime
         {
             get => this._transferTime;
             set => _transferTime = value;
-        } 
+        }
+
+        /// <summary>
+        /// Getter which returns the timestamp at the creation of the history log
+        /// </summary>
+        /// <returns>When the history log have been created at the format (dddd, dd MMMM yyyy HH:mm:ss)</returns>*
+        [JsonProperty(Order = 6)]
+        public string Time
+        {
+            get => _time;
+            set => _time = value;
+        }
 
         /// <summary>
         /// Method which call SaveHistoryLog() from LogModel for created a history log file in C:\EasySave\Logs repository

@@ -13,14 +13,13 @@ namespace EasySave
     public abstract class Log
     {
         /// <summary> Job save label </summary>
-        public static string _label;
-        /// <summary> Timestamp when the job have been saved </summary>
-        protected static string _time;
+        public string _label;
         /// <summary> Source file path of the file which have been saved </summary>
-        protected static string _sourceFile;
+        protected string _sourceFile;
         /// <summary> Target file path of the file which have been saved </summary>
-        protected static string _targetFile;
-        protected static LogModel _myLogModel;
+        protected string _targetFile;
+
+        protected LogModel _myLogModel;
 
         ///<summary>Log class builder</summary>
         public Log()
@@ -29,15 +28,14 @@ namespace EasySave
         }
 
         ///<summary>Log class builder</summary>
-        ///aram name=savedName>The name of the save Job</param>
+        ///param name=savedName>The name of the save Job</param>
         ///<param name=sourceFile>The source file path</param>
         ///<param name=targetFile>The target file path</param>
-        public Log(string savedName,string sourceFile, string targetFile)
+        public Log(string label,string sourceFile, string targetFile)
         {
-            _label = savedName;
+            _label = label;
             _sourceFile = sourceFile;
             _targetFile = targetFile;
-            _time = DateTime.Now.ToString("d/MM/yyyy HH:mm:ss");
             _myLogModel = new LogModel();
         }
 
@@ -79,17 +77,6 @@ namespace EasySave
         {
             get => _targetFile;
             set => _targetFile = value;
-        }
-
-        /// <summary>
-        /// Getter which returns the timestamp at the creation of the history log
-        /// </summary>
-        /// <returns>When the history log have been created at the format (dddd, dd MMMM yyyy HH:mm:ss)</returns>*
-        [JsonProperty(Order = 6)]
-        public string Time
-        {
-            get => _time;
-            set => _time = value;
         }
     }
 }
