@@ -7,13 +7,13 @@ namespace EasySave
     public class View
     {
         //Reusable Function
-        public static void Display(string text)
+        public void Display(string text)
         {
             Console.WriteLine(text);
         }
 
         //Introduction
-        public static void DisplayIntroduction(){
+        public void DisplayIntroduction(){
             Console.WriteLine("  Insert one of the numbers");
             Console.WriteLine("");
             Console.WriteLine("  1  -  Start");
@@ -23,7 +23,7 @@ namespace EasySave
         }
 
         //Display of which save to choose
-        public static void DisplayChooseAction()
+        public void DisplayChooseAction()
         {
             Console.WriteLine("  Choose the action");
             Console.WriteLine("");
@@ -31,21 +31,24 @@ namespace EasySave
             Console.WriteLine("  2  -  Delete a job backup");
             Console.WriteLine("  3  -  Execute one job backup");
             Console.WriteLine("  4  -  Execute all job backup");
+            Console.WriteLine("  5  -  Return to start");
             Console.WriteLine("");
         }
 
         //Display of which save to choose
-        public static void DisplayChooseSave()
+        public void DisplayChooseSave()
         {
             Console.WriteLine("  Which save do you whish to use ?");
             Console.WriteLine("");
             Console.WriteLine("  1  -  Total save");
             Console.WriteLine("  2  -  Differential save");
+            Console.WriteLine("  3  -  Return to start");
+
             Console.WriteLine("");
         }
 
         //Display of which save to choose
-        public static void DisplayChooseLanguage()
+        public void DisplayChooseLanguage()
         {
             Console.WriteLine("  Choose the language");
             Console.WriteLine("");
