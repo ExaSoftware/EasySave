@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EasySave.Object;
+using EasySave.Util;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,6 +10,7 @@ namespace EasySave
     {
         //Pick up the console input value 
         private List<JobBackup> listOfJobBackup = Init.CreateJobBackupList();
+        
         View view = new View();
 
         public void Start()
@@ -133,11 +136,13 @@ namespace EasySave
                             //English
                             case 1:
                                 Console.Clear();
+                                LanguageManager.ChangeLanguage("en-US", Configuration.GetInstance());
                                 view.Display("  Done!");
                                 break;
                             //French
                             case 2:
                                 Console.Clear();
+                                LanguageManager.ChangeLanguage("fr-FR", Configuration.GetInstance());
                                 view.Display("  Done!");
                                 break;
                             //Warning
