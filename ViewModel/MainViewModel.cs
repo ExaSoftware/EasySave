@@ -204,13 +204,13 @@ namespace EasySave
                 letter = Console.ReadLine();
                 try
                 {
-                    int saisie = int.Parse(letter) ;
-                    test = true;
+                    int saisie = int.Parse(letter);
+                    test = saisie > listOfJobBackup.Count ? false : true;
                 }
                 catch (FormatException)
                 {
                     Console.WriteLine("  Please put a number");
-                }   
+                }
                 
             }
             return Convert.ToInt32(letter);
