@@ -10,10 +10,10 @@ namespace EasySave
 {
     ///<summary>Public Log class which models a log file</summary>
 
-    public class Log
+    public abstract class Log
     {
         /// <summary> Job save label </summary>
-        protected static string _label;
+        public static string _label;
         /// <summary> Timestamp when the job have been saved </summary>
         protected static string _time;
         /// <summary> Source file path of the file which have been saved </summary>
@@ -21,7 +21,6 @@ namespace EasySave
         /// <summary> Target file path of the file which have been saved </summary>
         protected static string _targetFile;
         protected static LogModel _myLogModel;
-        protected static View _myView;
 
         ///<summary>Log class builder</summary>
         public Log()
@@ -29,25 +28,23 @@ namespace EasySave
 
         }
 
-        ///<summary></summary>Log class builder</summary>
-        ///<param name=savedName>The name of the save Job</param>
+        ///<summary>Log class builder</summary>
+        ///aram name=savedName>The name of the save Job</param>
         ///<param name=sourceFile>The source file path</param>
         ///<param name=targetFile>The target file path</param>
         public Log(string savedName,string sourceFile, string targetFile)
         {
-
             _label = savedName;
             _sourceFile = sourceFile;
             _targetFile = targetFile;
             _time = DateTime.Now.ToString("d/MM/yyyy HH:mm:ss");
-            _myView = new View();
             _myLogModel = new LogModel();
         }
 
         /// <summary>
         /// Method which doing nothing but is useful for polymorphism
         /// </summary>
-        public void SaveLog()
+        public virtual void SaveLog()
         {
             
         }
@@ -57,9 +54,10 @@ namespace EasySave
         /// </summary>
         /// <returns>The history log name</returns>
          [JsonProperty(Order = 1)]
-        public string Name
+        public string Name 
         {
             get => _label;
+            set => _label = value;
         }
 
         /// <summary>
@@ -70,6 +68,7 @@ namespace EasySave
         public string SourceFile
         {
             get => _sourceFile;
+            set => _sourceFile = value;
         }
         /// <summary>
         /// Getter which returns the target file path of the file which have been saved
@@ -79,6 +78,7 @@ namespace EasySave
         public string TargetFile
         {
             get => _targetFile;
+            set => _targetFile = value;
         }
 
         /// <summary>
@@ -89,6 +89,7 @@ namespace EasySave
         public string Time
         {
             get => _time;
+            set => _time = value;
         }
     }
 }

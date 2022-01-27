@@ -29,6 +29,7 @@ namespace EasySave
         public double FileSize
         {
             get => this._fileSize;
+            set => _fileSize = value;
         }
 
         /// <summary>
@@ -39,13 +40,14 @@ namespace EasySave
         public double TransferTime
         {
             get => this._transferTime;
-        }
+            set => _transferTime = value;
+        } 
 
         /// <summary>
         /// Method which call SaveHistoryLog() from LogModel for created a history log file in C:\EasySave\Logs repository
         /// </summary>
         /// <returns>True if the history log file have been created False in the opposite case</returns>
-        new public void SaveLog()
+        public override void SaveLog()
         {
             _myLogModel.SaveHistoryLog(this);
         }
