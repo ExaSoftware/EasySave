@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 
-namespace EasySave.ViewModel
+namespace EasySave
 {
     public static class Init
     {
@@ -40,13 +40,14 @@ namespace EasySave.ViewModel
             }
         }
 
-        public static void CreateJobBackupList()
+        public static List<JobBackup> CreateJobBackupList()
         {
             List<JobBackup> parts = new List<JobBackup>();
             for (int i = 0; i < 5; i++)
             {
-                parts.Add(new JobBackup { Label = "", SourceDirectory = "", DestinationDirectory = "", IsDifferential = true });
+                parts.Add(new JobBackup {});
             }
+            return parts;
         }
     }
 }
