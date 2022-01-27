@@ -2,6 +2,7 @@
 using EasySave.Util;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace EasySave
@@ -52,10 +53,10 @@ namespace EasySave
                                             input = CheckInput() -1;
 
                                         }
-                                        view.Display("  Write the name of the source directory");
+                                        view.Display("  Write the name of the new save");
                                         listOfJobBackup[input].Label = Console.ReadLine();
                                         view.Display("  Write the name of the source directory");
-                                        listOfJobBackup[input].SourceDirectory = Console.ReadLine();
+                                        listOfJobBackup[input].SourceDirectory = CheckSourceDirectory();
                                         view.Display("  Write the name of the destination directory");
                                         listOfJobBackup[input].DestinationDirectory = Console.ReadLine();
                                         listOfJobBackup[input].IsDifferential = false;
@@ -69,28 +70,27 @@ namespace EasySave
                                         Console.Clear();
                                         //Insert in the list the job
                                         view.Display("  Veuillez choisir un emplacement");
+                                        DisplayJobBackup();
                                         input = CheckInput() -1;
                                         while (input > 5)
                                         {
                                             view.Display("  Not a choice, restarting");
                                             input = CheckInput() -1;
-
                                         }
-                                        view.Display("Write the name of the new save");
+                                        view.Display("  Write the name of the new save");
                                         listOfJobBackup[input].Label = Console.ReadLine();
                                         view.Display("  Write the name of the source directory");
-                                        listOfJobBackup[input].SourceDirectory = Console.ReadLine();
+                                        listOfJobBackup[input].SourceDirectory = CheckSourceDirectory();
                                         view.Display("  Write the name of the destination directory");
                                         listOfJobBackup[input].DestinationDirectory = Console.ReadLine();
                                         listOfJobBackup[input].IsDifferential = true;
                                         Console.Clear();
-                                        view.Display("  Created!");
+                                        view.Display("  "+ listOfJobBackup[input].Label + " Created!");
                                         view.Display("");
                                         break;
                                     //Return to the start
                                     case 3:
                                         break;
-                                      
                                 }
                                 break;
                             //To delete a job backup
@@ -104,9 +104,10 @@ namespace EasySave
                                 view.Display("  Veuillez choisir un job");
                                 DisplayJobBackup();
                                 input = CheckInput() - 1;
-                                listOfJobBackup[input].Execute();
                                 Console.Clear();
-                                view.Display("  Done!");
+                                view.Display("  Executing " + listOfJobBackup[input] + "\n");
+                                listOfJobBackup[input].Execute();
+                                view.Display(" Successfully done! \n");
                                 break;
 
                             //Execute all jobs backup
@@ -219,6 +220,26 @@ namespace EasySave
                 
             }
             return Convert.ToInt32(letter);
+        }
+        private String CheckSourceDirectory()
+        {
+            Boolean test = false;
+            String letter = "";
+            while (test != true)
+            {
+                letter = Console.ReadLine();
+
+                if (Directory.Exists(letter))
+                {
+                    test = true;
+                    return letter;
+                }
+                else
+                {
+                    Console.WriteLine("  Directory not found, try again");
+                }
+            }
+            return letter;
         }
     }
 }
