@@ -21,7 +21,6 @@ namespace EasySave
                 Configuration configuration = Configuration.GetInstance();
                 configuration.CreateConfigurationFile();
                 configuration.Language = Thread.CurrentThread.CurrentUICulture.Name;
-                configuration.LogsPath = @"C:\EasySave\Logs";
                 configuration.Save();
                 return configuration;
             }

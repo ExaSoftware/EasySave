@@ -15,12 +15,14 @@ namespace EasySave
         private List<JobBackup> _listOfJobBackup;
         private ResourceManager _rm;
         private View _view;
+        private Configuration _configuration;
 
         public MainViewModel()
         {
             _listOfJobBackup = Init.CreateJobBackupList();
             _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
             _view = new View();
+            _configuration = Init.LoadConfiguration();
         }
 
         public void Start()
@@ -146,13 +148,13 @@ namespace EasySave
                             //English
                             case 1:
                                 Console.Clear();
-                                LanguageManager.ChangeLanguage("en-US", Configuration.GetInstance());
+                                LanguageManager.ChangeLanguage("en-US", _configuration);
                                 _view.Display(_rm.GetString("done"));
                                 break;
                             //French
                             case 2:
                                 Console.Clear();
-                                LanguageManager.ChangeLanguage("fr-FR", Configuration.GetInstance());
+                                LanguageManager.ChangeLanguage("fr-FR", _configuration);
                                 _view.Display(_rm.GetString("done"));
                                 break;
                             //Warning
