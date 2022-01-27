@@ -36,7 +36,7 @@ namespace EasySave
         /// </summary>
         /// <returns>The file transfered time of the file which have been saved</returns>
         [JsonProperty(Order = 5)]
-        public long TransferTime
+        public double TransferTime
         {
             get => this._transferTime;
         }
