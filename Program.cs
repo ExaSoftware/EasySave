@@ -21,6 +21,8 @@ namespace EasySave
             Console.WriteLine(resourceManager.GetString("welcome"));
             LanguageManager.ChangeLanguage("en-US", configuration);
             Console.WriteLine(resourceManager.GetString("welcome"));
+            MainViewModel menu= new MainViewModel();
+            menu.Start();
         }
     }
 }

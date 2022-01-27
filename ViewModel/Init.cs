@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 
-namespace EasySave.ViewModel
+namespace EasySave
 {
     public static class Init
     {
@@ -38,6 +38,16 @@ namespace EasySave.ViewModel
             {
                 Directory.CreateDirectory(@"C:\EasySave");
             }
+        }
+
+        public static List<JobBackup> CreateJobBackupList()
+        {
+            List<JobBackup> parts = new List<JobBackup>();
+            for (int i = 0; i < 5; i++)
+            {
+                parts.Add(new JobBackup {});
+            }
+            return parts;
         }
     }
 }
