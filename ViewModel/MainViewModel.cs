@@ -49,7 +49,7 @@ namespace EasySave
                                             input = CheckInput() -1;
 
                                         }
-                                        view.Display("  Write the name of the source directory");
+                                        view.Display("  Write the name of the new save");
                                         listOfJobBackup[input].Label = Console.ReadLine();
                                         view.Display("  Write the name of the source directory");
                                         listOfJobBackup[input].SourceDirectory = Console.ReadLine();
@@ -66,14 +66,14 @@ namespace EasySave
                                         Console.Clear();
                                         //Insert in the list the job
                                         view.Display("  Veuillez choisir un emplacement");
+                                        DisplayJobBackup();
                                         input = CheckInput() -1;
                                         while (input > 5)
                                         {
                                             view.Display("  Not a choice, restarting");
                                             input = CheckInput() -1;
-
                                         }
-                                        view.Display("Write the name of the new save");
+                                        view.Display("  Write the name of the new save");
                                         listOfJobBackup[input].Label = Console.ReadLine();
                                         view.Display("  Write the name of the source directory");
                                         listOfJobBackup[input].SourceDirectory = Console.ReadLine();
@@ -81,13 +81,12 @@ namespace EasySave
                                         listOfJobBackup[input].DestinationDirectory = Console.ReadLine();
                                         listOfJobBackup[input].IsDifferential = true;
                                         Console.Clear();
-                                        view.Display("  Created!");
+                                        view.Display("  "+ listOfJobBackup[input].Label + " Created!");
                                         view.Display("");
                                         break;
                                     //Return to the start
                                     case 3:
                                         break;
-                                      
                                 }
                                 break;
                             //To delete a job backup
@@ -101,9 +100,10 @@ namespace EasySave
                                 view.Display("  Veuillez choisir un job");
                                 DisplayJobBackup();
                                 input = CheckInput() - 1;
-                                listOfJobBackup[input].Execute();
                                 Console.Clear();
-                                view.Display("  Done!");
+                                view.Display("  Executing " + listOfJobBackup[input] + "\n");
+                                listOfJobBackup[input].Execute();
+                                view.Display(" Successfully done! \n");
                                 break;
 
                             //Execute all jobs backup

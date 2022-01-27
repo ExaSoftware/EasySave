@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Diagnostics;
-using System.Security.Cryptography;
 using static EasySave.JobBackUpModel;
-using static EasySave.Tools;
+using EasySave.Object;
 
 namespace EasySave
 {
@@ -16,7 +15,6 @@ namespace EasySave
     ///  (Boolean) IsDifferential: Define if the save is differential or no
     ///  
     ///  JobBackup has to be instantiate with the default contructor or the complete one.
-    ///  
     /// </summary>
     public class JobBackup
     {
@@ -25,7 +23,8 @@ namespace EasySave
         private String _sourceDirectory;
         private String _destinationDirectory;
         private Boolean _isDifferential;
-        private int _progressLog;
+        private ProgressLog _progressLog;
+        private int _id;
 
         // Properties
         public string SourceDirectory { get => _sourceDirectory; set => _sourceDirectory = value; }
@@ -58,6 +57,7 @@ namespace EasySave
             if (_isDifferential)
             {
                 DoDifferentialSave();
+                Console.WriteLine("Executing a differential save");
             }
 
             else
@@ -99,9 +99,7 @@ namespace EasySave
 
             stopwatch.Stop();
             return stopwatch.Elapsed.TotalMilliseconds.ToString();
-
         }
-
 
 
         private void DoDifferentialSave()
@@ -118,14 +116,17 @@ namespace EasySave
                 string destFile = Path.Combine(_destinationDirectory, fileName);
 
                 //Get the hashCode of source file
-                byte[] inComingFileHash = new MD5CryptoServiceProvider().ComputeHash(File.ReadAllBytes(file));
+                int inComingFileHash = File.ReadAllBytes(file).GetHashCode();
 
+                //If the file exist, compare both hashCode
                 if (File.Exists(destFile))
                 {
                     //Get the hashCode of the destFle
-                    byte[] destinationFileHash = new MD5CryptoServiceProvider().ComputeHash(File.ReadAllBytes(destFile));
-                 
-                    if (CompareLists(destinationFileHash, inComingFileHash))
+                    int destinationFileHash = File.ReadAllBytes(destFile).GetHashCode();
+
+                    // !CompareLists(destinationFileHash, inComingFileHash)
+
+                    if (inComingFileHash != destinationFileHash)
                     {
                         FileInfo fileInfo = new FileInfo(file);
                         stopwatch.Reset();
@@ -133,8 +134,20 @@ namespace EasySave
                         SaveFileWithOverWrite(file, destFile);
                         stopwatch.Stop();
                         counter++;
-                        HistoryLog historyLog = new HistoryLog(this._label,file, destFile, fileInfo.Length, stopwatch.Elapsed.TotalMilliseconds);
+                        HistoryLog historyLog = new HistoryLog(this._label,file, destFile, (ulong)fileInfo.Length, stopwatch.Elapsed.TotalMilliseconds);
                     }
+                }
+                //Else, copy the file
+                else
+                {
+                    FileInfo fileInfo = new FileInfo(file);
+                    stopwatch.Reset();
+                    stopwatch.Start();
+                    SaveFileWithOverWrite(file, destFile);
+                    stopwatch.Stop();
+                    counter++;
+                    HistoryLog historyLog = new HistoryLog(this._label, file, destFile, (ulong)fileInfo.Length, stopwatch.Elapsed.TotalMilliseconds);
+                    Console.WriteLine("{0} file mooved to: {1}", fileName, _destinationDirectory);
                 }
             }
         }
