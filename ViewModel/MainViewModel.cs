@@ -1,6 +1,10 @@
-﻿using System;
+﻿using EasySave.Object;
+using EasySave.Util;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using System.Resources;
 using System.Text;
 
 namespace EasySave
@@ -8,15 +12,23 @@ namespace EasySave
     public class MainViewModel
     {
         //Pick up the console input value 
-        private List<JobBackup> listOfJobBackup = Init.CreateJobBackupList();
-        View view = new View();
+        private List<JobBackup> _listOfJobBackup;
+        private ResourceManager _rm;
+        private View _view;
+
+        public MainViewModel()
+        {
+            _listOfJobBackup = Init.CreateJobBackupList();
+            _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
+            _view = new View();
+        }
 
         public void Start()
         {
             Boolean app = true;
             while (app is true)
             {
-                view.DisplayIntroduction();
+                _view.DisplayIntroduction();
                 //Menu Display
                 int input = CheckInput();
                 //Cases of menu
@@ -24,14 +36,14 @@ namespace EasySave
                 {
                     //Start
                     case 1:
-                        view.DisplayChooseAction();
+                        _view.DisplayChooseAction();
                         input = CheckInput();
                         switch (input)
                         {
                             //Create a new job backup
                             case 1:
                                 //Check if the number of saves is inferior or equal to 5
-                                view.DisplayChooseSave();
+                                _view.DisplayChooseSave();
                                 input = CheckInput();
                                 //Choose if you want a total or sequential save
                                 switch (input)
@@ -40,50 +52,50 @@ namespace EasySave
                                     case 1:
                                         Console.Clear();
                                         //Insert in the list the job
-                                        view.Display("");
-                                        view.Display("  Choose a space from 1 to 5");
+                                        _view.Display("");
+                                        _view.Display(_rm.GetString("menuChooseSpace"));
                                         DisplayJobBackup();
                                         input = CheckInput() - 1;
                                         while (input > 5)
                                         {
-                                            view.Display("  Not a choice, restarting");
+                                            _view.Display(_rm.GetString("menuChoiceError"));
                                             input = CheckInput() -1;
 
                                         }
-                                        view.Display("  Write the name of the new save");
-                                        listOfJobBackup[input].Label = Console.ReadLine();
-                                        view.Display("  Write the name of the source directory");
-                                        listOfJobBackup[input].SourceDirectory = CheckSourceDirectory();
-                                        view.Display("  Write the name of the destination directory");
-                                        listOfJobBackup[input].DestinationDirectory = Console.ReadLine();
-                                        listOfJobBackup[input].IsDifferential = false;
+                                        _view.Display(_rm.GetString("menuJobLabel"));
+                                        _listOfJobBackup[input].Label = Console.ReadLine();
+                                        _view.Display(_rm.GetString("menuJobSource"));
+                                        _listOfJobBackup[input].SourceDirectory = CheckSourceDirectory();
+                                        _view.Display(_rm.GetString("menuJobDestination"));
+                                        _listOfJobBackup[input].DestinationDirectory = Console.ReadLine();
+                                        _listOfJobBackup[input].IsDifferential = false;
                                         Console.Clear();
-                                        view.Display("  Created!");
-                                        view.Display("");
+                                        _view.Display("  " + _listOfJobBackup[input].Label + _rm.GetString("successCreated"));
+                                        _view.Display("");
                                         break;
 
                                     //For Differential Save
                                     case 2:
                                         Console.Clear();
                                         //Insert in the list the job
-                                        view.Display("  Veuillez choisir un emplacement");
+                                        _view.Display(_rm.GetString("menuChooseSpace"));
                                         DisplayJobBackup();
                                         input = CheckInput() -1;
                                         while (input > 5)
                                         {
-                                            view.Display("  Not a choice, restarting");
+                                            _view.Display(_rm.GetString("menuChoiceError"));
                                             input = CheckInput() -1;
                                         }
-                                        view.Display("  Write the name of the new save");
-                                        listOfJobBackup[input].Label = Console.ReadLine();
-                                        view.Display("  Write the name of the source directory");
-                                        listOfJobBackup[input].SourceDirectory = CheckSourceDirectory();
-                                        view.Display("  Write the name of the destination directory");
-                                        listOfJobBackup[input].DestinationDirectory = Console.ReadLine();
-                                        listOfJobBackup[input].IsDifferential = true;
+                                        _view.Display (_rm.GetString("menuJobLabel"));
+                                        _listOfJobBackup[input].Label = Console.ReadLine();
+                                        _view.Display(_rm.GetString("menuJobSource"));
+                                        _listOfJobBackup[input].SourceDirectory = CheckSourceDirectory();
+                                        _view.Display(_rm.GetString("menuJobDestination"));
+                                        _listOfJobBackup[input].DestinationDirectory = Console.ReadLine();
+                                        _listOfJobBackup[input].IsDifferential = true;
                                         Console.Clear();
-                                        view.Display("  "+ listOfJobBackup[input].Label + " Created!");
-                                        view.Display("");
+                                        _view.Display("  "+ _listOfJobBackup[input].Label + _rm.GetString("successCreated"));
+                                        _view.Display("");
                                         break;
                                     //Return to the start
                                     case 3:
@@ -94,56 +106,58 @@ namespace EasySave
                             case 2:
                                 DeleteSave();
                                 Console.Clear();
-                                view.Display("  Deleted!");
+                                _view.Display(_rm.GetString("deleted"));
                                 break;
                             //Execute one job backup
                             case 3:
-                                view.Display("  Veuillez choisir un job");
+                                _view.Display(_rm.GetString("menuChooseJob"));
                                 DisplayJobBackup();
                                 input = CheckInput() - 1;
                                 Console.Clear();
-                                view.Display("  Executing " + listOfJobBackup[input] + "\n");
-                                listOfJobBackup[input].Execute();
-                                view.Display(" Successfully done! \n");
+                                _view.Display(_rm.GetString("executing") + _listOfJobBackup[input].Label + "\n");
+                                _listOfJobBackup[input].Execute();
+                                _view.Display(String.Format("{0}{1}", _rm.GetString("successfullyDone"), Environment.NewLine));
                                 break;
 
                             //Execute all jobs backup
                             case 4:
-                                foreach (JobBackup item in listOfJobBackup)
+                                foreach (JobBackup item in _listOfJobBackup)
                                 {
                                     item.Execute();
                                 }
                                 Console.Clear();
-                                view.Display("  Done!");
+                                _view.Display(_rm.GetString("menuJobLabel"));
                                 break;
                             case 5:
                                 break;
                             //Warn
                             default:
-                                view.Display("  Put a number between 1 and 5");
+                                _view.Display(_rm.GetString("menuWarn15"));
                                 input = CheckInput();
                                 break;
                         }
                         break;
                     //Option
                     case 2:
-                        view.DisplayChooseLanguage();
+                        _view.DisplayChooseLanguage();
                         input = CheckInput();
                         switch (input)
                         {
                             //English
                             case 1:
                                 Console.Clear();
-                                view.Display("  Done!");
+                                LanguageManager.ChangeLanguage("en-US", Configuration.GetInstance());
+                                _view.Display(_rm.GetString("done"));
                                 break;
                             //French
                             case 2:
                                 Console.Clear();
-                                view.Display("  Done!");
+                                LanguageManager.ChangeLanguage("fr-FR", Configuration.GetInstance());
+                                _view.Display(_rm.GetString("done"));
                                 break;
                             //Warning
                             default:
-                                view.Display("  Put a number between 1 and 2");
+                                _view.Display(_rm.GetString("menuWarn12"));
                                 input = CheckInput();
                                 break;
                         }
@@ -153,7 +167,7 @@ namespace EasySave
                         break;
                     //Warning
                     default:
-                        view.Display("  Put a number between 1 and 3");
+                        _view.Display(_rm.GetString("menuWarn14"));
                         input = CheckInput();
                         break;
                 }
@@ -162,9 +176,9 @@ namespace EasySave
             //to delete a job backup
             private void DeleteSave()
             {
-                view.Display("  Which save do you whish to delete ?");
+                _view.Display(_rm.GetString("menuAskJobDelete"));
                 DisplayJobBackup();
-                view.Display("  Other  - Return to start");
+                _view.Display(_rm.GetString("menuOtherReturnStart"));
                 int input = CheckInput() - 1;
                 switch (input)
                 {
@@ -173,24 +187,24 @@ namespace EasySave
                         break;
                 }
                 //Choose the job backup in the list
-                listOfJobBackup[input].Reset();
+                _listOfJobBackup[input].Reset();
             }
             private void DisplayJobBackup()
             {
                 int max = 1;
-                foreach (JobBackup i in listOfJobBackup)
+                foreach (JobBackup i in _listOfJobBackup)
                 {
                     String type = "";
                     if (i.IsDifferential is true && i.Label != "")
                     {
-                        type = "Differential";
-                        view.Display("  " + max + "  - Label: " + i.Label + " SourceDirectory: " + i.SourceDirectory + " DestinationDirectory:" + i.DestinationDirectory + " Type:" + type);
+                        type = _rm.GetString("jobTypeDifferential");
+                        _view.Display(String.Format("  {0}  -  {1} '{2}' {3} '{4}' {5} '{6}' {7} '{8}'", max, _rm.GetString("jobLabel"), i.Label, _rm.GetString("jobSourceDirectory"), i.SourceDirectory, _rm.GetString("jobDestinationDirectory"), i.DestinationDirectory, _rm.GetString("jobType"), type));
                         max++;
                     }
                     else if (i.IsDifferential is false && i.Label != "")
                     {
-                        type = "Total";
-                        view.Display("  " + max + "  - Label: " + i.Label + " SourceDirectory: " + i.SourceDirectory + " DestinationDirectory:" + i.DestinationDirectory + " Type:" + type);
+                        type = _rm.GetString("jobTypeComplete");
+                        _view.Display(String.Format("  {0}  -  {1} '{2}' {3} '{4}' {5} '{6}' {7} '{8}'", max, _rm.GetString("jobLabel"), i.Label, _rm.GetString("jobSourceDirectory"), i.SourceDirectory, _rm.GetString("jobDestinationDirectory"), i.DestinationDirectory, _rm.GetString("jobType"), type));
                         max++;
                     }
                 }
@@ -210,7 +224,7 @@ namespace EasySave
                 }
                 catch (FormatException)
                 {
-                    Console.WriteLine("  Please put a number");
+                    Console.WriteLine(_rm.GetString("errorFormatNumber"));
                 }   
                 
             }
@@ -231,7 +245,7 @@ namespace EasySave
                 }
                 else
                 {
-                    Console.WriteLine("  Directory not found, try again");
+                    Console.WriteLine(_rm.GetString("errorDirectoryNotFound"));
                 }
             }
             return letter;
