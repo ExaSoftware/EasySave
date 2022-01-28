@@ -61,8 +61,8 @@ namespace EasySave
             }
             else
             {
-                File.Create(path);
-                return new List<JobBackup>();
+                File.Create(path).Close();
+                return null;
             }
         }
 
@@ -74,6 +74,7 @@ namespace EasySave
         {
             if (!Directory.Exists(_DEFAULT_JOB_BACKUP_FILE_PATH)) Directory.CreateDirectory(_DEFAULT_JOB_BACKUP_FILE_PATH);
             string jsonStringJobBackup = JsonConvert.SerializeObject(jobBackupList, Formatting.Indented);
+
             File.WriteAllText(String.Format(@"{0}\SavedJobBackup.json", _DEFAULT_JOB_BACKUP_FILE_PATH), jsonStringJobBackup);
         }
 
