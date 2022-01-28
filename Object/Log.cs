@@ -1,20 +1,14 @@
-﻿using EasySave.Object;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using Newtonsoft.Json;
 using System.Text.Json;
-using System.Text.Json.Serialization;
+
 
 namespace EasySave
 {
     ///<summary>Public Log class which models a log file</summary>
-
     public abstract class Log
     {
         /// <summary> Job save label </summary>
-        public string _label;
+        protected string _label;
         /// <summary> Source file path of the file which have been saved </summary>
         protected string _sourceFile;
         /// <summary> Target file path of the file which have been saved </summary>

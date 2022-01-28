@@ -49,16 +49,23 @@ namespace EasySave
         {
             LogModel reader = new LogModel();
             List<JobBackup> parts = new List<JobBackup>();
-            parts = reader.ReadJobBackup();
 
-            if (parts.Count == 0)
+            if (reader.ReadJobBackup() == null)
             {
                 for (int i = 0; i < 5; i++)
                 {
                     parts.Add(new JobBackup(i));
                 }
+                reader.SaveJobBackup(parts);
+                return parts;
             }
-            return parts;
+            else
+            {
+                parts = reader.ReadJobBackup();
+                reader.SaveJobBackup(parts);
+                return parts;
+            }
+
         }
     }
 }

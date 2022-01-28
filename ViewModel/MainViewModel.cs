@@ -243,13 +243,13 @@ namespace EasySave
             foreach (JobBackup i in _listOfJobBackup)
             {
                 String type = "";
-                if (i.IsDifferential is true && i.Label != "")
+                if (i.IsDifferential is true)
                 {
                     type = _rm.GetString("jobTypeDifferential");
                     _view.Display(String.Format("  {0}  -  {1} '{2}' {3} '{4}' {5} '{6}' {7} '{8}'", max, _rm.GetString("jobLabel"), i.Label, _rm.GetString("jobSourceDirectory"), i.SourceDirectory, _rm.GetString("jobDestinationDirectory"), i.DestinationDirectory, _rm.GetString("jobType"), type));
                     max++;
                 }
-                else if (i.IsDifferential is false && i.Label != "")
+                else if (i.IsDifferential is false)
                 {
                     type = _rm.GetString("jobTypeComplete");
                     _view.Display(String.Format("  {0}  -  {1} '{2}' {3} '{4}' {5} '{6}' {7} '{8}'", max, _rm.GetString("jobLabel"), i.Label, _rm.GetString("jobSourceDirectory"), i.SourceDirectory, _rm.GetString("jobDestinationDirectory"), i.DestinationDirectory, _rm.GetString("jobType"), type));
