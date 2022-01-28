@@ -32,6 +32,10 @@ namespace EasySave
 
         public JobBackup(int id)
         {
+            _label = "";
+            _sourceDirectory = "";
+            _destinationDirectory = "";
+            _isDifferential = false;
             this._id = id;
         }
 

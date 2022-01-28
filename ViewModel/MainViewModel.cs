@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Resources;
-using System.Text;
+
 
 namespace EasySave
 {
@@ -20,6 +20,7 @@ namespace EasySave
 
         public MainViewModel()
         {
+            Init.CreateDataDirectoryIfNotExists();
             //Creation of a list of 5 JobBackup
             _listOfJobBackup = Init.CreateJobBackupList();
             _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
@@ -114,6 +115,7 @@ namespace EasySave
                             //To delete a job backup
                             case 2:
                                 DeleteSave();
+                                Console.WriteLine(_listOfJobBackup);
                                 //Save the JobBackup list in JSON file
                                 JSonReaderWriter.SaveJobBackup(_listOfJobBackup);
                                 Console.Clear();
@@ -197,10 +199,17 @@ namespace EasySave
             {
                 Start();
             }
-            _listOfJobBackup[input] = _listOfJobBackup[input].Reset();
+            else
+            {
+                _listOfJobBackup[input] = _listOfJobBackup[input].Reset();
+            }
         }
+
         private void DisplayJobBackup()
         {
+            LogModel reader = new LogModel();
+            //Save the JobBackup list in JSON file
+            _listOfJobBackup = reader.ReadJobBackup();
             int max = 1;
             foreach (JobBackup i in _listOfJobBackup)
             {
