@@ -87,7 +87,7 @@ namespace EasySave
                     ProgressLog progressLog = new ProgressLog();
                     _myProgressLogList.Add(progressLog);
                 }
-
+            }
        }
 
     }
