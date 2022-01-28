@@ -17,13 +17,13 @@ namespace EasySave
         private const string _DEFAULT_JOB_BACKUP_FILE_PATH = @"C:\EasySave\Job-Backup";
 
         /// <summary>A list of History log objects which contains all saving action files</summary>
-        private List<HistoryLog> myListHistoryLog = new List<HistoryLog>();
+        private List<HistoryLog> _myListHistoryLog = new List<HistoryLog>();
 
         /// <summary>A list of Progress log objects which contains all saving action files</summary>
         private List<ProgressLog> _myProgressLogList = new List<ProgressLog>();
 
         /// <summary>Method which check if the directory exist and create the file if it doesn't exist, 
-        /// then deserialized the file if it exist for append the new save job or create a new log file
+        /// then deserialized the file if it exists for appends the new save job or create a new log file
         /// </summary>
         ///<param name=myHistoryLog>An object HistoryLog</param>
         public void SaveHistoryLog(HistoryLog myHistoryLog)
@@ -42,8 +42,8 @@ namespace EasySave
 
             else
             {
-                myListHistoryLog.Add(myHistoryLog);                                                         //if the file doesn't exist, append the new HistoryLog in the empty list of HistoryLog
-                string jsonString = JsonConvert.SerializeObject(myListHistoryLog, Formatting.Indented);     //Serialize the list of HistoryLog into a json file
+                _myListHistoryLog.Add(myHistoryLog);                                                         //if the file doesn't exist, append the new HistoryLog in the empty list of HistoryLog
+                string jsonString = JsonConvert.SerializeObject(_myListHistoryLog, Formatting.Indented);     //Serialize the list of HistoryLog into a json file
                 File.WriteAllText(path, jsonString);                                                        //Write the file with the object HistoryLog
             }
         }
@@ -66,9 +66,7 @@ namespace EasySave
             }
         }
 
-        /// <summary>
-        /// Method which save a list of jobBackup into a json file
-        /// </summary>
+        /// <summary>Method which save a list of jobBackup into a json file</summary>
         /// <param name="jobBackupList"></param>
         public void SaveJobBackup(List<JobBackup> jobBackupList)
         {
@@ -77,7 +75,6 @@ namespace EasySave
 
             File.WriteAllText(String.Format(@"{0}\SavedJobBackup.json", _DEFAULT_JOB_BACKUP_FILE_PATH), jsonStringJobBackup);
         }
-
 
         /// <summary>Method which save a list of progressLog into a json file</summary>
         /// <param name="progressLogList"></param>
