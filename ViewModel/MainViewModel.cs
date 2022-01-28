@@ -9,6 +9,9 @@ using System.Text;
 
 namespace EasySave
 {
+    /// <summary>
+    ///  MainViewModel is responsible to link the display of the view to the work of the server
+    /// </summary>
     public class MainViewModel
     {
         //Attributes
@@ -17,7 +20,7 @@ namespace EasySave
         private View _view;
         private Configuration _configuration;
 
-
+        ///  <summary>Constructor of MainViewModel.</summary>
         public MainViewModel()
         {
             Init.CreateDataDirectoryIfNotExists();
@@ -32,6 +35,7 @@ namespace EasySave
         {
             LogModel JSonReaderWriter = new LogModel();
             Boolean app = true;
+            Boolean isError = false;
             while (app is true)
             {
                 _view.DisplayIntroduction();
@@ -122,13 +126,26 @@ namespace EasySave
                                 break;
                             //Execute one job backup
                             case 3:
+                                Console.Clear();
                                 _view.Display(_rm.GetString("menuChooseJob"));
                                 DisplayJobBackup();
                                 input = CheckInput() - 1;
-                                Console.Clear();
-                                _view.Display(_rm.GetString("executing") + " " + _listOfJobBackup[input].Label + "\n");
-                                _listOfJobBackup[input].Execute();
-                                _view.Display(String.Format("{0}{1}", _rm.GetString("successfullyDone"), Environment.NewLine));
+                                if (_listOfJobBackup[input].Execute()==true)
+                                {
+                                    if (_listOfJobBackup[input].Label == "")
+                                    {
+                                        _view.Display(_rm.GetString("noBackupJob"));
+                                        break;
+                                    }
+                                    _view.Display(_rm.GetString("saveError") + " " + _listOfJobBackup[input].Label + "\n");
+                                    isError = true;
+                                    break;
+                                }
+                                if (isError)
+                                {
+                                    _view.Display(_rm.GetString("executing") + " " + _listOfJobBackup[input].Label + "\n");
+                                    _view.Display(String.Format("{0}{1}", _rm.GetString("successfullyDone"), Environment.NewLine));
+                                }
                                 break;
 
                             //Execute all jobs backup
@@ -137,16 +154,21 @@ namespace EasySave
                                 foreach (JobBackup item in _listOfJobBackup)
                                 {
                                     if (item.Execute() == true)
-
-                                        if (item.Label != "");
+                                    {
+                                        if (item.Label == "")
                                         {
-                                        _view.Display(String.Format(" {1} '{2}' {3} '{4}' {5} '{6}'",_rm.GetString("jobLabel"), item.Label, _rm.GetString("jobSourceDirectory"), item.SourceDirectory, _rm.GetString("jobDestinationDirectory"), item.DestinationDirectory, _rm.GetString("jobType")));
-                                        _view.Display("This save doesn't work properly");
-                                        break;
+                                            _view.Display(_rm.GetString("noBackupJob"));
+                                            break;
                                         }
-                                    item.Execute();
+                                        _view.Display(_rm.GetString("saveError") + " " + _listOfJobBackup[input].Label + "\n");
+                                        isError = true;
+                                        break;
+                                    }
                                 }
-                                _view.Display(_rm.GetString("done"));
+                                if (isError)
+                                {
+                                    _view.Display(_rm.GetString("done"));
+                                }
                                 break;
                             case 5:
                                 break;
@@ -193,7 +215,8 @@ namespace EasySave
                 }
             }
         }
-        //to delete a job backup
+        ///  <summary>To delete a job backup.</summary>
+        ///  <remarks>The Id still unchanged.</remarks>
         private void DeleteSave()
         {
             _view.Display(_rm.GetString("menuAskJobDelete"));
