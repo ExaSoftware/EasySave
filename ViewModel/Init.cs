@@ -58,6 +58,7 @@ namespace EasySave
                     parts.Add(new JobBackup(i));
                 }
             }
+            reader.SaveJobBackup(parts);
             return parts;
         }
     }
