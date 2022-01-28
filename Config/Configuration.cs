@@ -32,6 +32,10 @@ namespace EasySave.Object
             File.Create(DEFAULT_CONFIG_FILE_PATH).Close();
         }
 
+        /// <summary>
+        /// Singleton which get Configuration object
+        /// </summary>
+        /// <returns></returns>
         public static Configuration GetInstance()
         {
             if (_instance == null)
