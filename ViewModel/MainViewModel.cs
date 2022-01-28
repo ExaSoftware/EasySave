@@ -33,7 +33,7 @@ namespace EasySave
 
         public void Start()
         {
-            LogModel JSonReaderWriter = new LogModel();
+            JsonReadWriteModel JSonReaderWriter = new JsonReadWriteModel();
             Boolean app = true;
             while (app is true)
             {
@@ -239,7 +239,7 @@ namespace EasySave
         ///  <summary>Display every save with their parameters</summary>
         private void DisplayJobBackup()
         {
-            LogModel reader = new LogModel();
+            JsonReadWriteModel reader = new JsonReadWriteModel();
             //Save the JobBackup list in JSON file
             _listOfJobBackup = reader.ReadJobBackup();
             int max = 1;

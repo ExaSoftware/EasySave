@@ -14,7 +14,7 @@ namespace EasySave
         /// <summary> Target file path of the file which have been saved </summary>
         protected string _targetFile;
 
-        protected LogModel _myLogModel;
+        protected JsonReadWriteModel _myLogModel;
 
         ///<summary>Log class builder</summary>
         public Log()
@@ -31,7 +31,7 @@ namespace EasySave
             _label = label;
             _sourceFile = sourceFile;
             _targetFile = targetFile;
-            _myLogModel = new LogModel();
+            _myLogModel = new JsonReadWriteModel();
         }
 
         /// <summary>
