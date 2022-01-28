@@ -61,8 +61,8 @@ namespace EasySave
                                     //For Total Save
                                     case 1:
                                         Console.Clear();
-                                        //Insert in the list the job
                                         _view.Display("");
+                                        //Insert in the list the job
                                         _view.Display(_rm.GetString("menuChooseSpace"));
                                         DisplayJobBackup();
                                         input = CheckInput() - 1;
@@ -91,6 +91,7 @@ namespace EasySave
                                     //For Differential Save
                                     case 2:
                                         Console.Clear();
+                                        _view.Display("");
                                         //Insert in the list the job
                                         _view.Display(_rm.GetString("menuChooseSpace"));
                                         DisplayJobBackup();
@@ -123,7 +124,6 @@ namespace EasySave
                             //To delete a job backup
                             case 2:
                                 DeleteSave();
-                                Console.WriteLine(_listOfJobBackup);
                                 //Save the JobBackup list in JSON file
                                 JSonReaderWriter.SaveJobBackup(_listOfJobBackup);
                                 Console.Clear();
@@ -132,6 +132,7 @@ namespace EasySave
                             //Execute one job backup
                             case 3:
                                 Console.Clear();
+                                _view.Display("");
                                 _view.Display(_rm.GetString("menuChooseJob"));
                                 DisplayJobBackup();
                                 input = CheckInput() - 1;
@@ -217,6 +218,7 @@ namespace EasySave
         ///  <summary>To delete a job backup.</summary>
         private void DeleteSave()
         {
+            Console.Clear();
             _view.Display(_rm.GetString("menuAskJobDelete"));
             DisplayJobBackup();
             _view.Display(_rm.GetString("menuOtherReturnStart"));
@@ -225,6 +227,7 @@ namespace EasySave
             int input = CheckInput() - 1;
             if (input > 4)
             {
+                Console.Clear();
                 Start();
             }
             else
@@ -271,7 +274,7 @@ namespace EasySave
                 try
                 {
                     int saisie = int.Parse(letter);
-                    test = saisie > _listOfJobBackup.Count ? false : true;
+                    test = true;
                 }
                 catch (FormatException)
                 {
