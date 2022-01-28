@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Resources;
 using System.Text;
 
 namespace EasySave
 {
     public class View
     {
+        private ResourceManager _rm;
+        public View()
+        {
+            _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
+        }
         //Reusable Function
         public void Display(string text)
         {
@@ -14,35 +21,35 @@ namespace EasySave
 
         //Introduction
         public void DisplayIntroduction(){
-            Console.WriteLine("  Insert one of the numbers");
+            Console.WriteLine(_rm.GetString("menuIntroductionInsert"));
             Console.WriteLine("");
-            Console.WriteLine("  1  -  Start");
-            Console.WriteLine("  2  -  Options");
-            Console.WriteLine("  3  -  Exit");
+            Console.WriteLine(String.Format("  1  -  {0}", _rm.GetString("menuIntroductionStart")));
+            Console.WriteLine(String.Format("  2  -  {0}", _rm.GetString("menuIntroductionOptions")));
+            Console.WriteLine(String.Format("  3  -  {0}", _rm.GetString("menuExit")));
             Console.WriteLine("");
         }
 
         //Display of which save to choose
         public void DisplayChooseAction()
         {
-            Console.WriteLine("  Choose the action");
+            Console.WriteLine(_rm.GetString("menuAction"));
             Console.WriteLine("");
-            Console.WriteLine("  1  -  Create a new job backup ");
-            Console.WriteLine("  2  -  Delete a job backup");
-            Console.WriteLine("  3  -  Execute one job backup");
-            Console.WriteLine("  4  -  Execute all job backup");
-            Console.WriteLine("  5  -  Return to start");
+            Console.WriteLine(String.Format("  1  -  {0}", _rm.GetString("menuActionCreateJob")));
+            Console.WriteLine(String.Format("  2  -  {0}", _rm.GetString("menuActionDeleteJob")));
+            Console.WriteLine(String.Format("  3  -  {0}", _rm.GetString("menuActionExecuteOneJob")));
+            Console.WriteLine(String.Format("  4  -  {0}", _rm.GetString("menuActionExecuteAllJobs")));
+            Console.WriteLine(String.Format("  5  -  {0}", _rm.GetString("menuReturnStart")));
             Console.WriteLine("");
         }
 
         //Display of which save to choose
         public void DisplayChooseSave()
         {
-            Console.WriteLine("  Which save do you whish to use ?");
+            Console.WriteLine(_rm.GetString("menuSaveType"));
             Console.WriteLine("");
-            Console.WriteLine("  1  -  Total save");
-            Console.WriteLine("  2  -  Differential save");
-            Console.WriteLine("  3  -  Return to start");
+            Console.WriteLine(String.Format("  1  -  {0}", _rm.GetString("menuSaveTotal")));
+            Console.WriteLine(String.Format("  2  -  {0}", _rm.GetString("menuSaveDifferential")));
+            Console.WriteLine(String.Format("  3  -  {0}", _rm.GetString("menuReturnStart")));
 
             Console.WriteLine("");
         }
@@ -50,10 +57,10 @@ namespace EasySave
         //Display of which save to choose
         public void DisplayChooseLanguage()
         {
-            Console.WriteLine("  Choose the language");
+            Console.WriteLine(_rm.GetString("menuLanguageChoose"));
             Console.WriteLine("");
-            Console.WriteLine("  1  -  English");
-            Console.WriteLine("  2  -  French");
+            Console.WriteLine(String.Format("  1  -  {0}", _rm.GetString("menuLanguageEn")));
+            Console.WriteLine(String.Format("  2  -  {0}", _rm.GetString("menuLanguageFr")));
             Console.WriteLine("");
         }
     }

@@ -58,7 +58,6 @@ namespace EasySave
             }
             else
             {
-                Console.WriteLine("The path doesn't exist");
                 return null;
             }
         }

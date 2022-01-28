@@ -1,8 +1,8 @@
 ﻿using EasySave.Object;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Text.Json;
 using System.Threading;
 
@@ -21,14 +21,16 @@ namespace EasySave
                 Configuration configuration = Configuration.GetInstance();
                 configuration.CreateConfigurationFile();
                 configuration.Language = Thread.CurrentThread.CurrentUICulture.Name;
-                configuration.LogsPath = @"C:\EasySave\Logs";
                 configuration.Save();
                 return configuration;
             }
             else
             {
                 String jsonString = File.ReadAllText(Configuration.DEFAULT_CONFIG_FILE_PATH);
-                return JsonSerializer.Deserialize<Configuration>(jsonString);
+                Configuration configuration = JsonSerializer.Deserialize<Configuration>(jsonString);
+                //Set the language according to the language in configuration file
+                CultureInfo.CurrentUICulture = new CultureInfo(configuration.Language, false);
+                return configuration;
             }
         }
 
@@ -42,10 +44,15 @@ namespace EasySave
 
         public static List<JobBackup> CreateJobBackupList()
         {
-            List<JobBackup> parts = new List<JobBackup>();
-            for (int i = 0; i < 5; i++)
+            LogModel reader = new LogModel();
+            List<JobBackup> parts = reader.ReadJobBackup();
+
+            if (parts.Equals(null))
             {
-                parts.Add(new JobBackup(i) );
+                for (int i = 0; i < 5; i++)
+                {
+                    parts.Add(new JobBackup(i));
+                }
             }
             return parts;
         }
