@@ -83,11 +83,11 @@ namespace EasySave
 
                 if (_isDifferential)
                 {
-                    DoDifferentialSave();
+                    error = DoDifferentialSave();
                 }
                 else
                 {
-                    SaveAllFiles();
+                    error = SaveAllFiles();
                 }
             }
             return error;
@@ -115,31 +115,48 @@ namespace EasySave
             // Copy the files and overwrite destination files if they already exist.
             foreach (string file in files)
             {
-                // Use static Path methods to extract only the file name from the path.
-                string fileName = Path.GetFileName(file);
-                string destFile = Path.Combine(_destinationDirectory, fileName);
-                FileInfo fileInfo = new FileInfo(file);
+                try
+                {
+                    // Use static Path methods to extract only the file name from the path.
+                    string fileName = Path.GetFileName(file);
+                    string destFile = Path.Combine(_destinationDirectory, fileName);
+                    FileInfo fileInfo = new FileInfo(file);
 
-                historyStopwatch.Reset();
-                historyStopwatch.Start();
+                    historyStopwatch.Reset();
+                    historyStopwatch.Start();
 
-                SaveFileWithOverWrite(file, destFile);
+                    SaveFileWithOverWrite(file, destFile);
 
-                historyStopwatch.Stop();
-                fileTransfered++;
+                    historyStopwatch.Stop();
+                    fileTransfered++;
 
-                //Write logs
-                progressLog.SourceFile = file;
-                progressLog.TargetFile = destFile;
-                progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
-                progressLog.Progression = 100 * fileTransfered / fileToTranfer;
-                progressLog.SaveLog(_id);
+                    //Write logs
+                    progressLog.SourceFile = file;
+                    progressLog.TargetFile = destFile;
+                    progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
+                    progressLog.Progression = 100 * fileTransfered / fileToTranfer;
+                    progressLog.SaveLog(_id);
 
-                historyLog.SourceFile = file;
-                historyLog.TargetFile = destFile;
-                historyLog.FileSize = (ulong)fileInfo.Length;
-                historyLog.TransferTime = historyStopwatch.Elapsed.TotalMilliseconds;
-                historyLog.SaveLog();
+                    historyLog.SourceFile = file;
+                    historyLog.TargetFile = destFile;
+                    historyLog.FileSize = (ulong)fileInfo.Length;
+                    historyLog.TransferTime = historyStopwatch.Elapsed.TotalMilliseconds;
+                    historyLog.SaveLog();
+                }
+                catch (FileNotFoundException)
+                {
+                    string fileName = Path.GetFileName(file);
+                    string destFile = Path.Combine(_destinationDirectory, fileName);
+
+                    historyLog.SourceFile = file;
+                    historyLog.TargetFile = destFile;
+                    historyLog.FileSize = 0;
+                    historyLog.TransferTime = -1;
+                    historyLog.SaveLog();
+
+                    error = true;
+                    break;
+                }
             }
 
             //Reset progressLog
@@ -214,18 +231,8 @@ namespace EasySave
                     historyLog.TransferTime = -1;
                     historyLog.SaveLog();
 
-                    progressLog.SourceFile = "";
-                    progressLog.TargetFile = "";
-                    progressLog.State = "END";
-                    progressLog.TotalFilesRemaining = 0;
-                    progressLog.TotalFilesToCopy = 0;
-                    progressLog.TotalFilesSize = 0;
-                    progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
-                    progressLog.Progression = 0;
-                    progressLog.SaveLog(_id);
-
+                    error = true;
                     break;
-
                 }
             }
 
