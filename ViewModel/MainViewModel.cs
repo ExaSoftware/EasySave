@@ -132,12 +132,20 @@ namespace EasySave
 
                             //Execute all jobs backup
                             case 4:
+                                Console.Clear();
                                 foreach (JobBackup item in _listOfJobBackup)
                                 {
+                                    if (item.Execute() == true)
+
+                                        if (item.Label != "");
+                                        {
+                                        _view.Display(String.Format(" {1} '{2}' {3} '{4}' {5} '{6}'",_rm.GetString("jobLabel"), item.Label, _rm.GetString("jobSourceDirectory"), item.SourceDirectory, _rm.GetString("jobDestinationDirectory"), item.DestinationDirectory, _rm.GetString("jobType")));
+                                        _view.Display("This save doesn't work properly");
+                                        break;
+                                        }
                                     item.Execute();
                                 }
-                                Console.Clear();
-                                _view.Display(_rm.GetString("menuJobLabel"));
+                                _view.Display(_rm.GetString("done"));
                                 break;
                             case 5:
                                 break;
