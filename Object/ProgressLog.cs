@@ -7,10 +7,15 @@ namespace EasySave.Object
 {
     public class ProgressLog : Log
     {
+        /// <summary>State of the saving job</summary>
         private string _state;
+        /// <summary>The amout of files which have been copy</summary>
         private int _totalFilesToCopy;
+        /// <summary>The total amount size of the job which is being saved</summary>
         private long _totalFilesSize;
+        /// <summary>The number of files which is remaining to copy </summary>
         private int _totalFilesRemaining;
+        /// <summary>The current progression of the job saving</summary>
         private int _progression = 0;
 
         ///  <summary>Create a ProgressLog object.</summary>
@@ -27,6 +32,16 @@ namespace EasySave.Object
             this._progression = 0;
         }
 
+        /// <summary>
+        /// Progress log builder
+        /// </summary>
+        /// <param name="savedName"></param>
+        /// <param name="sourceFile"></param>
+        /// <param name="targetFile"></param>
+        /// <param name="state"></param>
+        /// <param name="totalFilesToCopy"></param>
+        /// <param name="totalFilesSize"></param>
+        /// <param name="totalFilesRemaining"></param>
         public ProgressLog(string savedName, string sourceFile, string targetFile, string state, int totalFilesToCopy, long totalFilesSize, int totalFilesRemaining) : base(savedName, sourceFile, targetFile)
         {
             _state = state;
@@ -34,6 +49,7 @@ namespace EasySave.Object
             _totalFilesSize = totalFilesSize;
             _totalFilesRemaining = totalFilesRemaining;
         }
+
 
         [JsonProperty(Order = 4)]
         public string State { get => _state; set => _state = value; }
