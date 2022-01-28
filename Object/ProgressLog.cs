@@ -50,6 +50,7 @@ namespace EasySave.Object
             _totalFilesRemaining = totalFilesRemaining;
         }
 
+
         [JsonProperty(Order = 4)]
         public string State { get => _state; set => _state = value; }
         [JsonProperty(Order = 5)]
