@@ -246,6 +246,9 @@
   <data name="menuWarn15" xml:space="preserve">
     <value>  Put a number between 1 and 5</value>
   </data>
+  <data name="saveError" xml:space="preserve">
+    <value>An error occured with this save:</value>
+  </data>
   <data name="sourcePathNotExists" xml:space="preserve">
     <value>Source path does not exist!</value>
   </data>
