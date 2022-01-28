@@ -45,9 +45,10 @@ namespace EasySave
         public static List<JobBackup> CreateJobBackupList()
         {
             LogModel reader = new LogModel();
-            List<JobBackup> parts = reader.ReadJobBackup();
+            List<JobBackup> parts = new List<JobBackup>();
+            parts = reader.ReadJobBackup();
 
-            if (parts.Equals(null))
+            if (parts.Count == 0)
             {
                 for (int i = 0; i < 5; i++)
                 {

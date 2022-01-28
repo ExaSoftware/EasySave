@@ -13,6 +13,20 @@ namespace EasySave.Object
         private int _totalFilesRemaining;
         private int _progression = 0;
 
+        ///  <summary>Create a ProgressLog object.</summary>
+        ///  <remarks>This method set attributes with default parameters.</remarks>
+        public ProgressLog()
+        {
+            this._label = "";
+            this._sourceFile = "";
+            this._targetFile = "";
+            this._state = "END";
+            this._totalFilesToCopy = 0;
+            this._totalFilesSize = 0;
+            this._totalFilesRemaining = 0;
+            this._progression = 0;
+        }
+
         public ProgressLog(string savedName, string sourceFile, string targetFile, string state, int totalFilesToCopy, long totalFilesSize, int totalFilesRemaining) : base(savedName, sourceFile, targetFile)
         {
             _state = state;
@@ -35,9 +49,9 @@ namespace EasySave.Object
         /// <summary>
         /// Method which call SaveProgressLog() from LogModel for created a progress log file in C:\EasySave\Logs repository
         /// </summary>
-        public override void SaveLog(List<ProgressLog> progressLogList)
+        public override void SaveLog(int index)
         {
-            _myLogModel.SaveProgressLog(progressLogList);
+            _myLogModel.SaveProgressLog(this, index);
         }
     }
 }
