@@ -31,5 +31,13 @@ namespace EasySave.Object
         public int TotalFilesRemaining { get => _totalFilesRemaining; set => _totalFilesRemaining = value; }
         [JsonProperty(Order = 8)]
         public int Progression { get => _progression; set => _progression = value; }
+
+        /// <summary>
+        /// Method which call SaveProgressLog() from LogModel for created a progress log file in C:\EasySave\Logs repository
+        /// </summary>
+        public override void SaveLog(List<ProgressLog> progressLogList)
+        {
+            _myLogModel.SaveProgressLog(progressLogList);
+        }
     }
 }

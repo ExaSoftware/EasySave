@@ -30,6 +30,11 @@ namespace EasySave
         ///  <summary> Default constructor to use in serialization.</summary>
         public JobBackup() { }
 
+        public JobBackup(int id)
+        {
+            this._id = id;
+        }
+
         ///  <summary>Constructors of JobBackup.</summary>
         ///  <param name="Label"> the name of the save.</param>
         ///  <param name="SourceDirectory"> the source directory.</param>
@@ -57,6 +62,12 @@ namespace EasySave
         ///  <remarks>Use it whether differential or not.</remarks>
         public void Execute()
         {
+
+            if( !Directory.Exists(_destinationDirectory))
+            {
+                Directory.CreateDirectory(DestinationDirectory);
+            }
+
             if (_isDifferential)
             {
                 DoDifferentialSave();
@@ -74,6 +85,7 @@ namespace EasySave
         private void SaveAllFiles()
         {
             string[] files = Directory.GetFiles(_sourceDirectory);
+
             int fileTransfered = 0;                 //Incease each file transfered
             int fileToTranfer = files.Length;       //Ammount of file to transfer
             long sizeTotal = totalFileSize(files);
@@ -170,7 +182,7 @@ namespace EasySave
                 historyLog.TransferTime = historyStopwatch.Elapsed.TotalMilliseconds;
                 historyLog.SaveLog();
                 }
-                catch( System.IO.FileNotFoundException )
+                catch( FileNotFoundException )
                 {
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
@@ -230,7 +242,7 @@ namespace EasySave
         {
             List<String> filesToSave = new List<string>();
             String[] filesInSourceDirectory = Directory.GetFiles(_sourceDirectory);
-
+            
             foreach (String file in filesInSourceDirectory)
             {
                 // Creation of the destFile

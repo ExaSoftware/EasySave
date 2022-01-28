@@ -45,7 +45,7 @@ namespace EasySave
             List<JobBackup> parts = new List<JobBackup>();
             for (int i = 0; i < 5; i++)
             {
-                parts.Add(new JobBackup {});
+                parts.Add(new JobBackup(i) );
             }
             return parts;
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace EasySave
@@ -52,7 +53,7 @@ namespace EasySave
                                         view.Display("  Write the name of the new save");
                                         listOfJobBackup[input].Label = Console.ReadLine();
                                         view.Display("  Write the name of the source directory");
-                                        listOfJobBackup[input].SourceDirectory = Console.ReadLine();
+                                        listOfJobBackup[input].SourceDirectory = CheckSourceDirectory();
                                         view.Display("  Write the name of the destination directory");
                                         listOfJobBackup[input].DestinationDirectory = Console.ReadLine();
                                         listOfJobBackup[input].IsDifferential = false;
@@ -76,7 +77,7 @@ namespace EasySave
                                         view.Display("  Write the name of the new save");
                                         listOfJobBackup[input].Label = Console.ReadLine();
                                         view.Display("  Write the name of the source directory");
-                                        listOfJobBackup[input].SourceDirectory = Console.ReadLine();
+                                        listOfJobBackup[input].SourceDirectory = CheckSourceDirectory();
                                         view.Display("  Write the name of the destination directory");
                                         listOfJobBackup[input].DestinationDirectory = Console.ReadLine();
                                         listOfJobBackup[input].IsDifferential = true;
@@ -214,6 +215,26 @@ namespace EasySave
                 
             }
             return Convert.ToInt32(letter);
+        }
+        private String CheckSourceDirectory()
+        {
+            Boolean test = false;
+            String letter = "";
+            while (test != true)
+            {
+                letter = Console.ReadLine();
+
+                if (Directory.Exists(letter))
+                {
+                    test = true;
+                    return letter;
+                }
+                else
+                {
+                    Console.WriteLine("  Directory not found, try again");
+                }
+            }
+            return letter;
         }
     }
 }
