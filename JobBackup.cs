@@ -32,6 +32,10 @@ namespace EasySave
 
         public JobBackup(int id)
         {
+            _label = "";
+            _sourceDirectory = "";
+            _destinationDirectory = "";
+            _isDifferential = false;
             this._id = id;
         }
 
@@ -49,7 +53,7 @@ namespace EasySave
         }
 
         ///  <summary>Change parameters to the default one.</summary>
-        ///  <returns>The jobBackup edited</returns>
+        ///  <returns>The jobBackup edited</returns> 
         ///  <remarks>The Id still unchanged.</remarks>
         public JobBackup Reset()
         {
