@@ -64,7 +64,7 @@ namespace EasySave
                                         while (input > 5)
                                         {
                                             _view.Display(_rm.GetString("menuChoiceError"));
-                                            input = CheckInput() -1;
+                                            input = CheckInput() - 1;
 
                                         }
                                         _view.Display(_rm.GetString("menuJobLabel"));
@@ -87,13 +87,13 @@ namespace EasySave
                                         //Insert in the list the job
                                         _view.Display(_rm.GetString("menuChooseSpace"));
                                         DisplayJobBackup();
-                                        input = CheckInput() -1;
+                                        input = CheckInput() - 1;
                                         while (input > 5)
                                         {
                                             _view.Display(_rm.GetString("menuChoiceError"));
-                                            input = CheckInput() -1;
+                                            input = CheckInput() - 1;
                                         }
-                                        _view.Display (_rm.GetString("menuJobLabel"));
+                                        _view.Display(_rm.GetString("menuJobLabel"));
                                         _listOfJobBackup[input].Label = Console.ReadLine();
                                         _view.Display(_rm.GetString("menuJobSource"));
                                         _listOfJobBackup[input].SourceDirectory = CheckSourceDirectory();
@@ -103,7 +103,7 @@ namespace EasySave
                                         //Save the JobBackup list in JSON file
                                         JSonReaderWriter.SaveJobBackup(_listOfJobBackup);
                                         Console.Clear();
-                                        _view.Display("  "+ _listOfJobBackup[input].Label + _rm.GetString("successCreated"));
+                                        _view.Display("  " + _listOfJobBackup[input].Label + _rm.GetString("successCreated"));
                                         _view.Display("");
                                         break;
                                     //Return to the start
@@ -184,42 +184,41 @@ namespace EasySave
                 }
             }
         }
-            //to delete a job backup
-            private void DeleteSave()
+        //to delete a job backup
+        private void DeleteSave()
+        {
+            _view.Display(_rm.GetString("menuAskJobDelete"));
+            DisplayJobBackup();
+            _view.Display(_rm.GetString("menuOtherReturnStart"));
+
+            //Choose the job backup in the list
+            int input = CheckInput() - 1;
+            if (input > 4)
             {
-                _view.Display(_rm.GetString("menuAskJobDelete"));
-                DisplayJobBackup();
-                _view.Display(_rm.GetString("menuOtherReturnStart"));
-                int input = CheckInput() - 1;
-                switch (input)
-                {
-                    default:
-                        Start();
-                        break;
-                }
-                //Choose the job backup in the list
-                _listOfJobBackup[input].Reset();
+                Start();
             }
-            private void DisplayJobBackup()
+            _listOfJobBackup[input] = _listOfJobBackup[input].Reset();
+        }
+        private void DisplayJobBackup()
+        {
+            int max = 1;
+            foreach (JobBackup i in _listOfJobBackup)
             {
-                int max = 1;
-                foreach (JobBackup i in _listOfJobBackup)
+                String type = "";
+                if (i.IsDifferential is true && i.Label != "")
                 {
-                    String type = "";
-                    if (i.IsDifferential is true && i.Label != "")
-                    {
-                        type = _rm.GetString("jobTypeDifferential");
-                        _view.Display(String.Format("  {0}  -  {1} '{2}' {3} '{4}' {5} '{6}' {7} '{8}'", max, _rm.GetString("jobLabel"), i.Label, _rm.GetString("jobSourceDirectory"), i.SourceDirectory, _rm.GetString("jobDestinationDirectory"), i.DestinationDirectory, _rm.GetString("jobType"), type));
-                        max++;
-                    }
-                    else if (i.IsDifferential is false && i.Label != "")
-                    {
-                        type = _rm.GetString("jobTypeComplete");
-                        _view.Display(String.Format("  {0}  -  {1} '{2}' {3} '{4}' {5} '{6}' {7} '{8}'", max, _rm.GetString("jobLabel"), i.Label, _rm.GetString("jobSourceDirectory"), i.SourceDirectory, _rm.GetString("jobDestinationDirectory"), i.DestinationDirectory, _rm.GetString("jobType"), type));
-                        max++;
-                    }
+                    type = _rm.GetString("jobTypeDifferential");
+                    _view.Display(String.Format("  {0}  -  {1} '{2}' {3} '{4}' {5} '{6}' {7} '{8}'", max, _rm.GetString("jobLabel"), i.Label, _rm.GetString("jobSourceDirectory"), i.SourceDirectory, _rm.GetString("jobDestinationDirectory"), i.DestinationDirectory, _rm.GetString("jobType"), type));
+                    max++;
+                }
+                else if (i.IsDifferential is false && i.Label != "")
+                {
+                    type = _rm.GetString("jobTypeComplete");
+                    _view.Display(String.Format("  {0}  -  {1} '{2}' {3} '{4}' {5} '{6}' {7} '{8}'", max, _rm.GetString("jobLabel"), i.Label, _rm.GetString("jobSourceDirectory"), i.SourceDirectory, _rm.GetString("jobDestinationDirectory"), i.DestinationDirectory, _rm.GetString("jobType"), type));
+                    max++;
                 }
             }
+        }
         private int CheckInput()
         {
             Boolean test = false;
@@ -236,8 +235,8 @@ namespace EasySave
                 catch (FormatException)
                 {
                     Console.WriteLine(_rm.GetString("errorFormatNumber"));
-                }   
-                
+                }
+
             }
             return Convert.ToInt32(letter);
         }

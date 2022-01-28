@@ -49,41 +49,58 @@ namespace EasySave
         }
 
         ///  <summary>Change parameters to the default one.</summary>
+        ///  <returns>The jobBackup edited</returns>
         ///  <remarks>The Id still unchanged.</remarks>
-        public void Reset()
+        public JobBackup Reset()
         {
             _label = "";
             _sourceDirectory = "";
             _destinationDirectory = "";
             _isDifferential = false;
+            return this;
         }
 
         ///  <summary>Execute the save according to attributes.</summary>
         ///  <remarks>Use it whether differential or not.</remarks>
-        public void Execute()
+        public bool Execute()
         {
+            bool error = false;
 
-            if( !Directory.Exists(_destinationDirectory))
+            if (!Directory.Exists(_destinationDirectory))
             {
-                Directory.CreateDirectory(DestinationDirectory);
+                try
+                {
+                    Directory.CreateDirectory(DestinationDirectory);
+                }
+                catch (ArgumentException)
+                {
+                    error = true;
+                }
             }
 
-            if (_isDifferential)
+            if (!error)
             {
-                DoDifferentialSave();
+
+                if (_isDifferential)
+                {
+                    DoDifferentialSave();
+                }
+                else
+                {
+                    SaveAllFiles();
+                }
             }
-            else
-            {
-                SaveAllFiles();
-            }
+            return error;
         }
 
 
 
         ///  <summary>Save all files from _sourceDirectory to _destDirectory.</summary>
         ///  <remarks>This method ignores deleted files.</remarks>
-        private void SaveAllFiles()
+        private bool SaveAllFiles()
         {
+            bool error = false;
+
             string[] files = Directory.GetFiles(_sourceDirectory);
 
             int fileTransfered = 0;                 //Incease each file transfered
@@ -107,7 +124,7 @@ namespace EasySave
                 historyStopwatch.Start();
 
                 SaveFileWithOverWrite(file, destFile);
-                
+
                 historyStopwatch.Stop();
                 fileTransfered++;
 
@@ -116,7 +133,7 @@ namespace EasySave
                 progressLog.TargetFile = destFile;
                 progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
                 progressLog.Progression = 100 * fileTransfered / fileToTranfer;
-                progressLog.SaveLog();
+                progressLog.SaveLog(_id);
 
                 historyLog.SourceFile = file;
                 historyLog.TargetFile = destFile;
@@ -134,7 +151,9 @@ namespace EasySave
             progressLog.TotalFilesSize = 0;
             progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
             progressLog.Progression = 0;
-            progressLog.SaveLog();
+            progressLog.SaveLog(_id);
+
+            return error;
         }
 
 
@@ -142,8 +161,10 @@ namespace EasySave
 
         /// <summary> Save all differents files between _sourceDirectory and _destDirectory to _destDirectory.</summary>
         /// <remarks>This method ignores deleted files.</remarks>
-        private void DoDifferentialSave()
+        private bool DoDifferentialSave()
         {
+            bool error = false;
+
             String[] files = findFilesForDifferentialSave();
 
             int fileTransfered = 0;                 //Incease each file transfered
@@ -158,31 +179,31 @@ namespace EasySave
             {
                 try
                 {
-                // Creation of the destFile
-                string fileName = Path.GetFileName(file);
-                string destFile = Path.Combine(_destinationDirectory, fileName);
+                    // Creation of the destFile
+                    string fileName = Path.GetFileName(file);
+                    string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                FileInfo fileInfo = new FileInfo(file);
-                historyStopwatch.Reset();
-                historyStopwatch.Start();
+                    FileInfo fileInfo = new FileInfo(file);
+                    historyStopwatch.Reset();
+                    historyStopwatch.Start();
 
-                SaveFileWithOverWrite(file, destFile);
-                historyStopwatch.Stop();
-                fileTransfered++;
+                    SaveFileWithOverWrite(file, destFile);
+                    historyStopwatch.Stop();
+                    fileTransfered++;
 
-                progressLog.SourceFile = file;
-                progressLog.TargetFile = destFile;
-                progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
-                progressLog.Progression =  100*  fileTransfered / fileToTranfer;
-                progressLog.SaveLog();
+                    progressLog.SourceFile = file;
+                    progressLog.TargetFile = destFile;
+                    progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
+                    progressLog.Progression = 100 * fileTransfered / fileToTranfer;
+                    progressLog.SaveLog(_id);
 
-                historyLog.SourceFile = file;
-                historyLog.TargetFile = destFile;
-                historyLog.FileSize = (ulong)fileInfo.Length;
-                historyLog.TransferTime = historyStopwatch.Elapsed.TotalMilliseconds;
-                historyLog.SaveLog();
+                    historyLog.SourceFile = file;
+                    historyLog.TargetFile = destFile;
+                    historyLog.FileSize = (ulong)fileInfo.Length;
+                    historyLog.TransferTime = historyStopwatch.Elapsed.TotalMilliseconds;
+                    historyLog.SaveLog();
                 }
-                catch( FileNotFoundException )
+                catch (FileNotFoundException)
                 {
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
@@ -201,7 +222,7 @@ namespace EasySave
                     progressLog.TotalFilesSize = 0;
                     progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
                     progressLog.Progression = 0;
-                    progressLog.SaveLog();
+                    progressLog.SaveLog(_id);
 
                     break;
 
@@ -217,8 +238,9 @@ namespace EasySave
             progressLog.TotalFilesSize = 0;
             progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
             progressLog.Progression = 0;
-            progressLog.SaveLog();
+            progressLog.SaveLog(_id);
 
+            return error;
         }
 
 
@@ -242,7 +264,7 @@ namespace EasySave
         {
             List<String> filesToSave = new List<string>();
             String[] filesInSourceDirectory = Directory.GetFiles(_sourceDirectory);
-            
+
             foreach (String file in filesInSourceDirectory)
             {
                 // Creation of the destFile

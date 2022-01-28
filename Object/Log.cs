@@ -48,7 +48,7 @@ namespace EasySave
             
         }
 
-        public virtual void SaveLog(List<ProgressLog> progressLogs)
+        public virtual void SaveLog( int index)
         {
 
         }
