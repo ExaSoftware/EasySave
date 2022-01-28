@@ -76,7 +76,6 @@ namespace EasySave
             File.WriteAllText(String.Format(@"{0}\SavedJobBackup.json", _DEFAULT_JOB_BACKUP_FILE_PATH), jsonStringJobBackup);
         }
 
-
         /// <summary>Method which save a list of progressLog into a json file</summary>
         /// <param name="progressLogList"></param>
         public void SaveProgressLog(ProgressLog myProgressLog, int index)
@@ -100,8 +99,6 @@ namespace EasySave
             myJsonList[index] = myProgressLog;
             string jsonString = JsonConvert.SerializeObject(myJsonList, Formatting.Indented);
             File.WriteAllText(path, jsonString);
-
         }
-
     }
 }

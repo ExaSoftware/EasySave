@@ -14,7 +14,7 @@ namespace EasySave
     public abstract class Log
     {
         /// <summary> Job save label </summary>
-        public string _label;
+        protected string _label;
         /// <summary> Source file path of the file which have been saved </summary>
         protected string _sourceFile;
         /// <summary> Target file path of the file which have been saved </summary>
