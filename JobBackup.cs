@@ -3,18 +3,13 @@ using System.IO;
 using System.Diagnostics;
 using static EasySave.JobBackUpModel;
 using EasySave.Object;
+using System.Collections.Generic;
 
 namespace EasySave
 {
     /// <summary>
     ///  JobBackup is a Picasso class. It allows you to save files from a directory to an other with differents methods.
-    ///  
-    ///  (String) Label: the name of the save
-    ///  (String: Path format) SourceDirectory: the source directory
-    ///  (String: Path format) DestinationDirectory: the destination directory
-    ///  (Boolean) IsDifferential: Define if the save is differential or no
-    ///  
-    ///  JobBackup has to be instantiate with the default contructor or the complete one.
+    ///  Few constructors are available.
     /// </summary>
     public class JobBackup
     {
@@ -23,7 +18,6 @@ namespace EasySave
         private String _sourceDirectory;
         private String _destinationDirectory;
         private Boolean _isDifferential;
-        private ProgressLog _progressLog;
         private int _id;
 
         // Properties
@@ -31,11 +25,21 @@ namespace EasySave
         public string DestinationDirectory { get => _destinationDirectory; set => _destinationDirectory = value; }
         public bool IsDifferential { get => _isDifferential; set => _isDifferential = value; }
         public string Label { get => _label; set => _label = value; }
+        public int Id { get => _id; set => _id = value; }
 
-        // Default constructor to use in serialize
+        ///  <summary> Default constructor to use in serialization.</summary>
         public JobBackup() { }
 
-        // Constructor with all attributes definition
+        public JobBackup(int id)
+        {
+            this._id = id;
+        }
+
+        ///  <summary>Constructors of JobBackup.</summary>
+        ///  <param name="Label"> the name of the save.</param>
+        ///  <param name="SourceDirectory"> the source directory.</param>
+        ///  <param name="DestinationDirectory"> the destination directory.</param>
+        ///  <param name="IsDifferential"> Define if the save is differential or not.</param>
         public JobBackup(String label, String sourceDirectory, String destinationDirectory, Boolean isDifferential)
         {
             this._label = label;
@@ -43,7 +47,9 @@ namespace EasySave
             this._destinationDirectory = destinationDirectory;
             this._isDifferential = isDifferential;
         }
-        
+
+        ///  <summary>Change parameters to the default one.</summary>
+        ///  <remarks>The Id still unchanged.</remarks>
         public void Reset()
         {
             _label = "";
@@ -52,106 +58,217 @@ namespace EasySave
             _isDifferential = false;
         }
 
+        ///  <summary>Execute the save according to attributes.</summary>
+        ///  <remarks>Use it whether differential or not.</remarks>
         public void Execute()
         {
+
+            if( !Directory.Exists(_destinationDirectory))
+            {
+                Directory.CreateDirectory(DestinationDirectory);
+            }
+
             if (_isDifferential)
             {
                 DoDifferentialSave();
-                Console.WriteLine("Executing a differential save");
             }
-
             else
             {
                 SaveAllFiles();
             }
         }
 
-        // Save all files from _sourceDirectory to _destDirectory
-        private string SaveAllFiles()
+
+
+        ///  <summary>Save all files from _sourceDirectory to _destDirectory.</summary>
+        ///  <remarks>This method ignores deleted files.</remarks>
+        private void SaveAllFiles()
         {
+            string[] files = Directory.GetFiles(_sourceDirectory);
+
+            int fileTransfered = 0;                 //Incease each file transfered
+            int fileToTranfer = files.Length;       //Ammount of file to transfer
+            long sizeTotal = totalFileSize(files);
+
             // Setup stopwatch
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
+            Stopwatch historyStopwatch = new Stopwatch();
+            ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered);
+            HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0);
 
-            if (Directory.Exists(_sourceDirectory))
+            // Copy the files and overwrite destination files if they already exist.
+            foreach (string file in files)
             {
-                string[] files = Directory.GetFiles(_sourceDirectory);
-                int counter = 0;
+                // Use static Path methods to extract only the file name from the path.
+                string fileName = Path.GetFileName(file);
+                string destFile = Path.Combine(_destinationDirectory, fileName);
+                FileInfo fileInfo = new FileInfo(file);
 
-                // Copy the files and overwrite destination files if they already exist.
-                foreach (string file in files)
-                {
-                    // Use static Path methods to extract only the file name from the path.
-                    string fileName = Path.GetFileName(file);
-                    string destFile = Path.Combine(_destinationDirectory, fileName);
+                historyStopwatch.Reset();
+                historyStopwatch.Start();
 
-                    //The overwrite parameter is the "true" below
-                    SaveFileWithOverWrite(file, destFile);
-                    Console.WriteLine("{0} file mooved to: {1}", fileName, _destinationDirectory);
-                    counter++;
-                }
-                Console.WriteLine("{0} files mooved to: {1}", counter, _destinationDirectory);
+                SaveFileWithOverWrite(file, destFile);
+                
+                historyStopwatch.Stop();
+                fileTransfered++;
+
+                //Write logs
+                progressLog.SourceFile = file;
+                progressLog.TargetFile = destFile;
+                progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
+                progressLog.Progression = 100 * fileTransfered / fileToTranfer;
+                progressLog.SaveLog();
+
+                historyLog.SourceFile = file;
+                historyLog.TargetFile = destFile;
+                historyLog.FileSize = (ulong)fileInfo.Length;
+                historyLog.TransferTime = historyStopwatch.Elapsed.TotalMilliseconds;
+                historyLog.SaveLog();
             }
-            else
-            {
-                Console.WriteLine("Source path does not exist!");
-            }
 
-            stopwatch.Stop();
-            return stopwatch.Elapsed.TotalMilliseconds.ToString();
+            //Reset progressLog
+            progressLog.SourceFile = "";
+            progressLog.TargetFile = "";
+            progressLog.State = "END";
+            progressLog.TotalFilesRemaining = 0;
+            progressLog.TotalFilesToCopy = 0;
+            progressLog.TotalFilesSize = 0;
+            progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
+            progressLog.Progression = 0;
+            progressLog.SaveLog();
         }
 
 
+
+
+        /// <summary> Save all differents files between _sourceDirectory and _destDirectory to _destDirectory.</summary>
+        /// <remarks>This method ignores deleted files.</remarks>
         private void DoDifferentialSave()
         {
-            // Get files from the source directory
-            String[] files = Directory.GetFiles(_sourceDirectory);
-            int counter = 0;
-            Stopwatch stopwatch = new Stopwatch();
+            String[] files = findFilesForDifferentialSave();
 
-            foreach ( String file in files)
+            int fileTransfered = 0;                 //Incease each file transfered
+            int fileToTranfer = files.Length;       //Ammount of file to transfer
+            long sizeTotal = totalFileSize(files);
+            Stopwatch historyStopwatch = new Stopwatch();
+            ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered);
+            HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0);
+
+
+            foreach (String file in files)
+            {
+                try
+                {
+                // Creation of the destFile
+                string fileName = Path.GetFileName(file);
+                string destFile = Path.Combine(_destinationDirectory, fileName);
+
+                FileInfo fileInfo = new FileInfo(file);
+                historyStopwatch.Reset();
+                historyStopwatch.Start();
+
+                SaveFileWithOverWrite(file, destFile);
+                historyStopwatch.Stop();
+                fileTransfered++;
+
+                progressLog.SourceFile = file;
+                progressLog.TargetFile = destFile;
+                progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
+                progressLog.Progression =  100*  fileTransfered / fileToTranfer;
+                progressLog.SaveLog();
+
+                historyLog.SourceFile = file;
+                historyLog.TargetFile = destFile;
+                historyLog.FileSize = (ulong)fileInfo.Length;
+                historyLog.TransferTime = historyStopwatch.Elapsed.TotalMilliseconds;
+                historyLog.SaveLog();
+                }
+                catch( FileNotFoundException )
+                {
+                    string fileName = Path.GetFileName(file);
+                    string destFile = Path.Combine(_destinationDirectory, fileName);
+
+                    historyLog.SourceFile = file;
+                    historyLog.TargetFile = destFile;
+                    historyLog.FileSize = 0;
+                    historyLog.TransferTime = -1;
+                    historyLog.SaveLog();
+
+                    progressLog.SourceFile = "";
+                    progressLog.TargetFile = "";
+                    progressLog.State = "END";
+                    progressLog.TotalFilesRemaining = 0;
+                    progressLog.TotalFilesToCopy = 0;
+                    progressLog.TotalFilesSize = 0;
+                    progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
+                    progressLog.Progression = 0;
+                    progressLog.SaveLog();
+
+                    break;
+
+                }
+            }
+
+            //Reset progressLog
+            progressLog.SourceFile = "";
+            progressLog.TargetFile = "";
+            progressLog.State = "END";
+            progressLog.TotalFilesRemaining = 0;
+            progressLog.TotalFilesToCopy = 0;
+            progressLog.TotalFilesSize = 0;
+            progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
+            progressLog.Progression = 0;
+            progressLog.SaveLog();
+
+        }
+
+
+
+        private long totalFileSize(String[] files)
+        {
+            long totalSize = 0;
+
+            foreach (String file in files)
+            {
+                FileInfo fileInfo = new FileInfo(file);
+                totalSize += fileInfo.Length;
+            }
+
+            return totalSize;
+        }
+
+
+
+        private String[] findFilesForDifferentialSave()
+        {
+            List<String> filesToSave = new List<string>();
+            String[] filesInSourceDirectory = Directory.GetFiles(_sourceDirectory);
+            
+            foreach (String file in filesInSourceDirectory)
             {
                 // Creation of the destFile
                 string fileName = Path.GetFileName(file);
                 string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                //Get the hashCode of source file
-                int inComingFileHash = File.ReadAllBytes(file).GetHashCode();
-
-                //If the file exist, compare both hashCode
                 if (File.Exists(destFile))
                 {
+                    //Get the hashCode of source file
+                    int inComingFileHash = File.ReadAllBytes(file).GetHashCode();
                     //Get the hashCode of the destFle
                     int destinationFileHash = File.ReadAllBytes(destFile).GetHashCode();
 
-                    // !CompareLists(destinationFileHash, inComingFileHash)
-
                     if (inComingFileHash != destinationFileHash)
                     {
-                        FileInfo fileInfo = new FileInfo(file);
-                        stopwatch.Reset();
-                        stopwatch.Start();
-                        SaveFileWithOverWrite(file, destFile);
-                        stopwatch.Stop();
-                        counter++;
-                        HistoryLog historyLog = new HistoryLog(this._label,file, destFile, (ulong)fileInfo.Length, stopwatch.Elapsed.TotalMilliseconds);
+                        filesToSave.Add(file);
                     }
                 }
-                //Else, copy the file
                 else
                 {
-                    FileInfo fileInfo = new FileInfo(file);
-                    stopwatch.Reset();
-                    stopwatch.Start();
-                    SaveFileWithOverWrite(file, destFile);
-                    stopwatch.Stop();
-                    counter++;
-                    HistoryLog historyLog = new HistoryLog(this._label, file, destFile, (ulong)fileInfo.Length, stopwatch.Elapsed.TotalMilliseconds);
-                    Console.WriteLine("{0} file mooved to: {1}", fileName, _destinationDirectory);
+                    filesToSave.Add(file);
                 }
             }
-        }
 
+            return filesToSave.ToArray();
+        }
 
     }
 }

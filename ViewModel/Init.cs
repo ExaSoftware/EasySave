@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Text.Json;
 using System.Threading;
 
@@ -45,10 +44,15 @@ namespace EasySave
 
         public static List<JobBackup> CreateJobBackupList()
         {
-            List<JobBackup> parts = new List<JobBackup>();
-            for (int i = 0; i < 5; i++)
+            LogModel reader = new LogModel();
+            List<JobBackup> parts = reader.ReadJobBackup();
+
+            if (parts.Equals(null))
             {
-                parts.Add(new JobBackup {});
+                for (int i = 0; i < 5; i++)
+                {
+                    parts.Add(new JobBackup(i));
+                }
             }
             return parts;
         }

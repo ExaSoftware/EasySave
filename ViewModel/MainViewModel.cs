@@ -11,14 +11,16 @@ namespace EasySave
 {
     public class MainViewModel
     {
-        //Pick up the console input value 
+        //Attributes
         private List<JobBackup> _listOfJobBackup;
         private ResourceManager _rm;
         private View _view;
         private Configuration _configuration;
 
+
         public MainViewModel()
         {
+            //Creation of a list of 5 JobBackup
             _listOfJobBackup = Init.CreateJobBackupList();
             _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
             _view = new View();
@@ -27,6 +29,7 @@ namespace EasySave
 
         public void Start()
         {
+            LogModel JSonReaderWriter = new LogModel();
             Boolean app = true;
             while (app is true)
             {
@@ -71,6 +74,8 @@ namespace EasySave
                                         _view.Display(_rm.GetString("menuJobDestination"));
                                         _listOfJobBackup[input].DestinationDirectory = Console.ReadLine();
                                         _listOfJobBackup[input].IsDifferential = false;
+                                        //Save the JobBackup list in JSON file
+                                        JSonReaderWriter.SaveJobBackup(_listOfJobBackup);
                                         Console.Clear();
                                         _view.Display("  " + _listOfJobBackup[input].Label + _rm.GetString("successCreated"));
                                         _view.Display("");
@@ -95,6 +100,8 @@ namespace EasySave
                                         _view.Display(_rm.GetString("menuJobDestination"));
                                         _listOfJobBackup[input].DestinationDirectory = Console.ReadLine();
                                         _listOfJobBackup[input].IsDifferential = true;
+                                        //Save the JobBackup list in JSON file
+                                        JSonReaderWriter.SaveJobBackup(_listOfJobBackup);
                                         Console.Clear();
                                         _view.Display("  "+ _listOfJobBackup[input].Label + _rm.GetString("successCreated"));
                                         _view.Display("");
@@ -107,6 +114,8 @@ namespace EasySave
                             //To delete a job backup
                             case 2:
                                 DeleteSave();
+                                //Save the JobBackup list in JSON file
+                                JSonReaderWriter.SaveJobBackup(_listOfJobBackup);
                                 Console.Clear();
                                 _view.Display(_rm.GetString("deleted"));
                                 break;
@@ -221,8 +230,8 @@ namespace EasySave
                 letter = Console.ReadLine();
                 try
                 {
-                    int saisie = int.Parse(letter) ;
-                    test = true;
+                    int saisie = int.Parse(letter);
+                    test = saisie > _listOfJobBackup.Count ? false : true;
                 }
                 catch (FormatException)
                 {
