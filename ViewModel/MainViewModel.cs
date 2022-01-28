@@ -126,7 +126,7 @@ namespace EasySave
                                 DisplayJobBackup();
                                 input = CheckInput() - 1;
                                 Console.Clear();
-                                _view.Display(_rm.GetString("executing") + _listOfJobBackup[input].Label + "\n");
+                                _view.Display(_rm.GetString("executing") + " " + _listOfJobBackup[input].Label + "\n");
                                 _listOfJobBackup[input].Execute();
                                 _view.Display(String.Format("{0}{1}", _rm.GetString("successfullyDone"), Environment.NewLine));
                                 break;
