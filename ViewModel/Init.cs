@@ -34,6 +34,9 @@ namespace EasySave
             }
         }
 
+        /// <summary>
+        /// Create Data Directory of EasySave which contains logs, configuration and saves
+        /// </summary>
         public static void CreateDataDirectoryIfNotExists()
         {
             if (!Directory.Exists(@"C:\EasySave"))

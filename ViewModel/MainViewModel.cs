@@ -20,6 +20,7 @@ namespace EasySave
 
         public MainViewModel()
         {
+            Init.CreateDataDirectoryIfNotExists();
             //Creation of a list of 5 JobBackup
             _listOfJobBackup = Init.CreateJobBackupList();
             _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
