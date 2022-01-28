@@ -246,6 +246,9 @@
   <data name="menuWarn15" xml:space="preserve">
     <value>  Put a number between 1 and 5</value>
   </data>
+  <data name="noBackupJob" xml:space="preserve">
+    <value>Please create a job backup to be able to run it.</value>
+  </data>
   <data name="saveError" xml:space="preserve">
     <value>An error occured with this save:</value>
   </data>
