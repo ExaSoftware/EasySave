@@ -69,14 +69,18 @@ namespace EasySave
         public bool Execute()
         {
             bool error = false;
-
             if (!Directory.Exists(_destinationDirectory))
             {
                 try
                 {
                     Directory.CreateDirectory(DestinationDirectory);
+
                 }
                 catch (ArgumentException)
+                {
+                    error = true;
+                }
+                catch(DirectoryNotFoundException)
                 {
                     error = true;
                 }
@@ -129,7 +133,7 @@ namespace EasySave
                     historyStopwatch.Reset();
                     historyStopwatch.Start();
 
-                    SaveFileWithOverWrite(file, destFile);
+                    error = SaveFileWithOverWrite(file, destFile);
 
                     historyStopwatch.Stop();
                     fileTransfered++;
@@ -208,7 +212,7 @@ namespace EasySave
                     historyStopwatch.Reset();
                     historyStopwatch.Start();
 
-                    SaveFileWithOverWrite(file, destFile);
+                    error = SaveFileWithOverWrite(file, destFile);
                     historyStopwatch.Stop();
                     fileTransfered++;
 

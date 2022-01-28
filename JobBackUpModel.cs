@@ -6,14 +6,30 @@ namespace EasySave
 {
     public static class JobBackUpModel
     {
-        public static void SaveFileWithOverWrite(string file, string destFile)
+        public static bool SaveFileWithOverWrite(string file, string destFile)
         {
+            try
+            {
             System.IO.File.Copy(file, destFile, true);
+                return false;
+            }
+            catch(Exception)
+            {
+                return true;
+            }
         }
 
-        public static void SaveFileWithoutOverWrite(string file, string destFile)
+        public static bool SaveFileWithoutOverWrite(string file, string destFile)
         {
-            System.IO.File.Copy(file, destFile, false);
+            try
+            {
+                System.IO.File.Copy(file, destFile, false);
+                return false;
+            }
+            catch (Exception)
+            {
+                return true;
+            }
         }
     }
 }
