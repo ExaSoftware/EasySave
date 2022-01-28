@@ -1,25 +1,20 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
+
 
 namespace EasySave
 {
     ///<summary>Public Log class which models a log file</summary>
-
     public abstract class Log
     {
         /// <summary> Job save label </summary>
-        public string _label;
+        protected string _label;
         /// <summary> Source file path of the file which have been saved </summary>
         protected string _sourceFile;
         /// <summary> Target file path of the file which have been saved </summary>
         protected string _targetFile;
 
-        protected LogModel _myLogModel;
+        protected JsonReadWriteModel _myLogModel;
 
         ///<summary>Log class builder</summary>
         public Log()
@@ -36,7 +31,7 @@ namespace EasySave
             _label = label;
             _sourceFile = sourceFile;
             _targetFile = targetFile;
-            _myLogModel = new LogModel();
+            _myLogModel = new JsonReadWriteModel();
         }
 
         /// <summary>
@@ -47,11 +42,16 @@ namespace EasySave
             
         }
 
+        public virtual void SaveLog( int index)
+        {
+
+        }
+
         /// <summary>
         /// Getter which returns the history log name
         /// </summary>
         /// <returns>The history log name</returns>
-         [JsonProperty(Order = 1)]
+        [JsonProperty(Order = 1)]
         public string Name 
         {
             get => _label;

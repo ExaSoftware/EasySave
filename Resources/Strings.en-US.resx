@@ -117,8 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="deleted" xml:space="preserve">
+    <value>  Deleted!</value>
+  </data>
+  <data name="done" xml:space="preserve">
+    <value>  Done!</value>
+  </data>
+  <data name="errorDirectoryNotFound" xml:space="preserve">
+    <value>  Directory not found, try again</value>
+  </data>
+  <data name="errorFormatNumber" xml:space="preserve">
+    <value>  Please put a number</value>
+  </data>
+  <data name="executing" xml:space="preserve">
+    <value>  Executing </value>
+  </data>
   <data name="jobDestinationDirectory" xml:space="preserve">
-    <value>Destination Directory</value>
+    <value>Destination Directory:</value>
   </data>
   <data name="jobFileMovedTo" xml:space="preserve">
     <value>file moved to:</value>
@@ -127,13 +142,13 @@
     <value>files moved to:</value>
   </data>
   <data name="jobLabel" xml:space="preserve">
-    <value>Label</value>
+    <value>Label:</value>
   </data>
   <data name="jobSourceDirectory" xml:space="preserve">
-    <value>Source Directory</value>
+    <value>Source Directory:</value>
   </data>
   <data name="jobType" xml:space="preserve">
-    <value>Type</value>
+    <value>Type:</value>
   </data>
   <data name="jobTypeComplete" xml:space="preserve">
     <value>Total</value>
@@ -145,87 +160,105 @@
     <value>  Choose the action</value>
   </data>
   <data name="menuActionCreateJob" xml:space="preserve">
-    <value>  1  -  Create a new job backup</value>
+    <value>Create a new job backup</value>
   </data>
   <data name="menuActionDeleteJob" xml:space="preserve">
-    <value>  2  -  Delete a job backup</value>
+    <value>Delete a job backup</value>
   </data>
   <data name="menuActionExecuteAllJobs" xml:space="preserve">
-    <value>  4  -  Execute all job backup</value>
+    <value>Execute all job backup</value>
   </data>
   <data name="menuActionExecuteOneJob" xml:space="preserve">
-    <value>  3  -  Execute one job backup</value>
+    <value>Execute one job backup</value>
   </data>
-  <data name="menuIntroductionExit" xml:space="preserve">
-    <value>  3  -  Exit</value>
+  <data name="menuAskJobDelete" xml:space="preserve">
+    <value>  Which job do you whish to delete?</value>
+  </data>
+  <data name="menuChoiceError" xml:space="preserve">
+    <value>  Not a choice, restarting</value>
+  </data>
+  <data name="menuChooseJob" xml:space="preserve">
+    <value>  Choose a job</value>
+  </data>
+  <data name="menuChooseSpace" xml:space="preserve">
+    <value>  Choose a space from 1 to 5</value>
+  </data>
+  <data name="menuExit" xml:space="preserve">
+    <value>Exit</value>
   </data>
   <data name="menuIntroductionInsert" xml:space="preserve">
     <value>  Insert one of the numbers</value>
   </data>
   <data name="menuIntroductionOptions" xml:space="preserve">
-    <value>  2  -  Options</value>
+    <value>Options</value>
   </data>
   <data name="menuIntroductionStart" xml:space="preserve">
-    <value>  1  -  Start</value>
+    <value>Start</value>
+  </data>
+  <data name="menuJobCreated" xml:space="preserve">
+    <value>  Job Backup Created!</value>
+  </data>
+  <data name="menuJobDeleted" xml:space="preserve">
+    <value>  Job Backup Deleted!</value>
+  </data>
+  <data name="menuJobDestination" xml:space="preserve">
+    <value>  Write the path of the destination directory</value>
+  </data>
+  <data name="menuJobLabel" xml:space="preserve">
+    <value>  Write the name of the job backup</value>
+  </data>
+  <data name="menuJobSource" xml:space="preserve">
+    <value>  Write the path of the source directory</value>
   </data>
   <data name="menuLanguageChoose" xml:space="preserve">
     <value>  Choose the language</value>
   </data>
   <data name="menuLanguageEn" xml:space="preserve">
-    <value>  1  -  English</value>
+    <value>English</value>
   </data>
   <data name="menuLanguageFr" xml:space="preserve">
-    <value>  2  -  French</value>
+    <value>French</value>
+  </data>
+  <data name="menuOtherReturnStart" xml:space="preserve">
+    <value>  Other  - Return to start</value>
+  </data>
+  <data name="menuReturnStart" xml:space="preserve">
+    <value>Return to start</value>
   </data>
   <data name="menuSaveDifferential" xml:space="preserve">
-    <value>  2  -  Differential save</value>
+    <value>Differential save</value>
   </data>
   <data name="menuSaveTotal" xml:space="preserve">
-    <value>  1  -  Total save</value>
+    <value>Total save</value>
   </data>
   <data name="menuSaveType" xml:space="preserve">
     <value>  Which save type do you whish to use?</value>
   </data>
-  <data name="menuStartAskJobDelete" xml:space="preserve">
-    <value>  Which job do you whish to delete?</value>
-  </data>
-  <data name="menuStartChooseSpace" xml:space="preserve">
-    <value>  Choose a space from 1 to 5</value>
-  </data>
-  <data name="menuStartJobChoose" xml:space="preserve">
-    <value>  Choose a job</value>
-  </data>
-  <data name="menuStartJobCreated" xml:space="preserve">
-    <value>  Job Backup Created!</value>
-  </data>
-  <data name="menuStartJobDeleted" xml:space="preserve">
-    <value>  Job Backup Deleted!</value>
-  </data>
-  <data name="menuStartJobDestination" xml:space="preserve">
-    <value>  Write the path of the destination directory</value>
-  </data>
-  <data name="menuStartJobDone" xml:space="preserve">
-    <value>  Done!</value>
-  </data>
-  <data name="menuStartJobLabel" xml:space="preserve">
-    <value>  Write the name of the job backup</value>
-  </data>
-  <data name="menuStartJobSource" xml:space="preserve">
-    <value>  Write the path of the source directory</value>
-  </data>
-  <data name="menuStartRestarting" xml:space="preserve">
-    <value>  Not a choice, restarting</value>
-  </data>
-  <data name="menuStartWarn12" xml:space="preserve">
+  <data name="menuWarn12" xml:space="preserve">
     <value>  Put a number between 1 and 2</value>
   </data>
-  <data name="menuStartWarn13" xml:space="preserve">
+  <data name="menuWarn13" xml:space="preserve">
     <value>  Put a number between 1 and 3</value>
   </data>
-  <data name="menuStartWarn14" xml:space="preserve">
+  <data name="menuWarn14" xml:space="preserve">
     <value>  Put a number between 1 and 4</value>
+  </data>
+  <data name="menuWarn15" xml:space="preserve">
+    <value>  Put a number between 1 and 5</value>
+  </data>
+  <data name="noBackupJob" xml:space="preserve">
+    <value>Please create a job backup to be able to run it.</value>
+  </data>
+  <data name="saveError" xml:space="preserve">
+    <value>An error occured with this save:</value>
   </data>
   <data name="sourcePathNotExists" xml:space="preserve">
     <value>Source path does not exist!</value>
+  </data>
+  <data name="successCreated" xml:space="preserve">
+    <value>  Created!</value>
+  </data>
+  <data name="successfullyDone" xml:space="preserve">
+    <value>  Successfully done!</value>
   </data>
 </root>
