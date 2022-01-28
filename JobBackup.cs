@@ -53,7 +53,7 @@ namespace EasySave
         }
 
         ///  <summary>Change parameters to the default one.</summary>
-        ///  <returns>The jobBackup edited</returns>
+        ///  <returns>The jobBackup edited</returns> 
         ///  <remarks>The Id still unchanged.</remarks>
         public JobBackup Reset()
         {
