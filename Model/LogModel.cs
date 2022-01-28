@@ -17,7 +17,9 @@ namespace EasySave
         private const string _DEFAULT_JOB_BACKUP_FILE_PATH = @"C:\EasySave\Job-Backup";
 
         /// <summary>A list of History log objects which contains all saving action files</summary>
-        private List<HistoryLog> myListHistoryLog = new List<HistoryLog>();
+        private List<HistoryLog> _myListHistoryLog = new List<HistoryLog>();
+
+        private List<ProgressLog> _myProgressLogList = new List<ProgressLog>();
 
         /// <summary>Method which check if the directory exist and create the file if it doesn't exist, 
         /// then deserialized the file if it exists for appends the new save job or create a new log file
@@ -39,8 +41,8 @@ namespace EasySave
 
                 else
                 { 
-                    myListHistoryLog.Add(myHistoryLog);                                                         //if the file doesn't exist, append the new HistoryLog in the empty list of HistoryLog
-                    string jsonString = JsonConvert.SerializeObject(myListHistoryLog, Formatting.Indented);     //Serialize the list of HistoryLog into a json file
+                    _myListHistoryLog.Add(myHistoryLog);                                                         //if the file doesn't exist, append the new HistoryLog in the empty list of HistoryLog
+                    string jsonString = JsonConvert.SerializeObject(_myListHistoryLog, Formatting.Indented);     //Serialize the list of HistoryLog into a json file
                     File.WriteAllText(path, jsonString);                                                        //Write the file with the object HistoryLog
                 }
             }
@@ -74,12 +76,24 @@ namespace EasySave
 
         /// <summary>Method which save a list of progressLog into a json file</summary>
         /// <param name="progressLogList"></param>
-        public void SaveProgressLog(List<ProgressLog> progressLogList)
+        public void SaveProgressLog(ProgressLog myProgressLog, int index)
        {
             String path = String.Format(@"{0}\Progresslog.json", _DEFAULT_LOG_FILE_PATH);
             if (!Directory.Exists(_DEFAULT_LOG_FILE_PATH)) Directory.CreateDirectory(_DEFAULT_LOG_FILE_PATH);
-            string json = JsonConvert.SerializeObject(progressLogList, Formatting.Indented);
-            File.WriteAllText(path, json);
-       }
+            if (File.Exists(path))
+            {
+                string myJsonFile = File.ReadAllText(path);                                        
+                var myJsonList = JsonConvert.DeserializeObject<List<ProgressLog>>(myJsonFile);
+                myJsonList[index] = myProgressLog;                                                
+                string jsonString = JsonConvert.SerializeObject(myJsonList, Formatting.Indented);   
+                File.WriteAllText(path, jsonString);                                                
+            }
+
+            else
+            {
+                _myProgressLogList[index] = myProgressLog;                                                  
+                string jsonString = JsonConvert.SerializeObject(_myProgressLogList, Formatting.Indented);     
+                File.WriteAllText(path, jsonString);
+            }
     }
 }
