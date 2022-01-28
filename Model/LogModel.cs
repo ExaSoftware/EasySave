@@ -28,40 +28,41 @@ namespace EasySave
         ///<param name=myHistoryLog>An object HistoryLog</param>
         public void SaveHistoryLog(HistoryLog myHistoryLog)
         {
-                string path = String.Format(@"{0}\Historylog-{1}.json", _DEFAULT_LOG_FILE_PATH, DateTime.Now.ToString("d-MM-yyyy"));    //Create the path file
-                if (!Directory.Exists(_DEFAULT_LOG_FILE_PATH)) Directory.CreateDirectory(_DEFAULT_LOG_FILE_PATH);                       //Check that the directory exist and create it if it doesn't exist
+            string path = String.Format(@"{0}\Historylog-{1}.json", _DEFAULT_LOG_FILE_PATH, DateTime.Now.ToString("d-MM-yyyy"));    //Create the path file
+            if (!Directory.Exists(_DEFAULT_LOG_FILE_PATH)) Directory.CreateDirectory(_DEFAULT_LOG_FILE_PATH);                       //Check that the directory exist and create it if it doesn't exist
 
-                if (File.Exists(path))
-                {
-                    string myJsonFile = File.ReadAllText(path);                                         //Get the right file 
-                    var myJsonList = JsonConvert.DeserializeObject<List<HistoryLog>>(myJsonFile);       //Convert the Json file into a list of HistoryLog
-                    myJsonList.Add(myHistoryLog);                                                       //Append the parameter in the list which have been retrieve from the json file
-                    string jsonString = JsonConvert.SerializeObject(myJsonList, Formatting.Indented);   //Serialize the list of HistoryLog into a json file
-                    File.WriteAllText(path, jsonString);                                                //Over write the file with the new object
-                }
-
-                else
-                { 
-                    _myListHistoryLog.Add(myHistoryLog);                                                         //if the file doesn't exist, append the new HistoryLog in the empty list of HistoryLog
-                    string jsonString = JsonConvert.SerializeObject(_myListHistoryLog, Formatting.Indented);     //Serialize the list of HistoryLog into a json file
-                    File.WriteAllText(path, jsonString);                                                        //Write the file with the object HistoryLog
-                }
+            if (File.Exists(path))
+            {
+                string myJsonFile = File.ReadAllText(path);                                         //Get the right file 
+                var myJsonList = JsonConvert.DeserializeObject<List<HistoryLog>>(myJsonFile);       //Convert the Json file into a list of HistoryLog
+                myJsonList.Add(myHistoryLog);                                                       //Append the parameter in the list which have been retrieve from the json file
+                string jsonString = JsonConvert.SerializeObject(myJsonList, Formatting.Indented);   //Serialize the list of HistoryLog into a json file
+                File.WriteAllText(path, jsonString);                                                //Over write the file with the new object
             }
+
+            else
+            {
+                _myListHistoryLog.Add(myHistoryLog);                                                         //if the file doesn't exist, append the new HistoryLog in the empty list of HistoryLog
+                string jsonString = JsonConvert.SerializeObject(_myListHistoryLog, Formatting.Indented);     //Serialize the list of HistoryLog into a json file
+                File.WriteAllText(path, jsonString);                                                        //Write the file with the object HistoryLog
+            }
+        }
 
         /// <summary>Method which read a json file and convert it into a list of list of JobBackup</summary>
         /// <returns>The list of JobBackup associate to the json file</returns>
         public List<JobBackup> ReadJobBackup()
         {
-            string path = String.Format(@"{0}\SavedJobBackup.json", _DEFAULT_JOB_BACKUP_FILE_PATH);          
+            string path = String.Format(@"{0}\SavedJobBackup.json", _DEFAULT_JOB_BACKUP_FILE_PATH);
             if (File.Exists(path))
             {
-                    string myJsonFile = File.ReadAllText(path);
-                    var JobBackupJsonList = JsonConvert.DeserializeObject<List<JobBackup>>(myJsonFile);
-                    return JobBackupJsonList;
+                string myJsonFile = File.ReadAllText(path);
+                var JobBackupJsonList = JsonConvert.DeserializeObject<List<JobBackup>>(myJsonFile);
+                return JobBackupJsonList;
             }
             else
             {
-                return new List<JobBackup>();
+                File.Create(path).Close();
+                return null;
             }
         }
 
@@ -71,6 +72,7 @@ namespace EasySave
         {
             if (!Directory.Exists(_DEFAULT_JOB_BACKUP_FILE_PATH)) Directory.CreateDirectory(_DEFAULT_JOB_BACKUP_FILE_PATH);
             string jsonStringJobBackup = JsonConvert.SerializeObject(jobBackupList, Formatting.Indented);
+
             File.WriteAllText(String.Format(@"{0}\SavedJobBackup.json", _DEFAULT_JOB_BACKUP_FILE_PATH), jsonStringJobBackup);
         }
 
@@ -87,8 +89,18 @@ namespace EasySave
                     ProgressLog progressLog = new ProgressLog();
                     _myProgressLogList.Add(progressLog);
                 }
+
+                string defaultJsonString = JsonConvert.SerializeObject(_myProgressLogList, Formatting.Indented);
+                File.WriteAllText(path, defaultJsonString);
             }
-       }
+
+            string myJsonFile = File.ReadAllText(path);
+            var myJsonList = JsonConvert.DeserializeObject<List<ProgressLog>>(myJsonFile);
+            myJsonList[index] = myProgressLog;
+            string jsonString = JsonConvert.SerializeObject(myJsonList, Formatting.Indented);
+            File.WriteAllText(path, jsonString);
+
+        }
 
     }
 }
