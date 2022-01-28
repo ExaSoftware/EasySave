@@ -247,7 +247,7 @@
     <value>  Put a number between 1 and 5</value>
   </data>
   <data name="saveError" xml:space="preserve">
-    <value>This save doesn't work properly</value>
+    <value>An error occured with this save:</value>
   </data>
   <data name="sourcePathNotExists" xml:space="preserve">
     <value>Source path does not exist!</value>
