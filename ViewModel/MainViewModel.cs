@@ -157,7 +157,7 @@ namespace EasySave
                                 foreach (JobBackup item in _listOfJobBackup)
                                 {
                                     //Check if there's an error with the parameters of the save
-                                    if (item.Execute())
+                                    if (!String.IsNullOrEmpty(item.Label) && item.Execute())
                                     {
                                         _view.Display(_rm.GetString("saveError") + " " + _listOfJobBackup[input].Label + "\n");
                                         isError = true;
