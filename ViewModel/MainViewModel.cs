@@ -75,7 +75,7 @@ namespace EasySave
                                         }
                                         //Display and choose parameters
                                         _view.Display(_rm.GetString("menuJobLabel"));
-                                        _listOfJobBackup[input].Label = Console.ReadLine();
+                                        _listOfJobBackup[input].Label = GetInputJobLabel();
                                         _view.Display(_rm.GetString("menuJobSource"));
                                         _listOfJobBackup[input].SourceDirectory = CheckSourceDirectory();
                                         _view.Display(_rm.GetString("menuJobDestination"));
@@ -104,7 +104,7 @@ namespace EasySave
                                         }
                                         //Display and choose parameters
                                         _view.Display(_rm.GetString("menuJobLabel"));
-                                        _listOfJobBackup[input].Label = Console.ReadLine();
+                                        _listOfJobBackup[input].Label = GetInputJobLabel();
                                         _view.Display(_rm.GetString("menuJobSource"));
                                         _listOfJobBackup[input].SourceDirectory = CheckSourceDirectory();
                                         _view.Display(_rm.GetString("menuJobDestination"));
@@ -157,7 +157,7 @@ namespace EasySave
                                 foreach (JobBackup item in _listOfJobBackup)
                                 {
                                     //Check if there's an error with the parameters of the save
-                                    if (item.Execute() == true)
+                                    if (item.Execute())
                                     {
                                         _view.Display(_rm.GetString("saveError") + " " + _listOfJobBackup[input].Label + "\n");
                                         isError = true;
@@ -306,6 +306,20 @@ namespace EasySave
                 }
             }
             return letter;
+        }
+
+        private String GetInputJobLabel()
+        {
+            String entry = String.Empty;
+            do
+            {
+                entry = Console.ReadLine();
+                if (String.IsNullOrEmpty(entry))
+                {
+                    _view.Display(_rm.GetString("emptyInputJobLabel"));
+                }
+            } while (String.IsNullOrEmpty(entry));
+            return entry;
         }
     }
 }

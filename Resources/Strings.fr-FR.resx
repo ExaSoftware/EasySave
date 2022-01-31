@@ -123,6 +123,9 @@
   <data name="done" xml:space="preserve">
     <value>  Terminé !</value>
   </data>
+  <data name="emptyInputJobLabel" xml:space="preserve">
+    <value>  Le nom du travail de sauvegarde ne peut pas être vide, merci de réessayer.</value>
+  </data>
   <data name="errorDirectoryNotFound" xml:space="preserve">
     <value>Répertoire non trouvé, veuillez réessayer</value>
   </data>
