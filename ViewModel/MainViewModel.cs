@@ -310,7 +310,7 @@ namespace EasySave
 
         private String GetInputJobLabel()
         {
-            String entry = String.Empty;
+            string entry;
             do
             {
                 entry = Console.ReadLine();
