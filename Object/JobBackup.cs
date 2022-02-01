@@ -81,7 +81,7 @@ namespace EasySave
                     error = true;
 
                 }
-                catch(DirectoryNotFoundException)
+                catch(Exception)
                 {
                     error = true;
                 }
