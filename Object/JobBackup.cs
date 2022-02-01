@@ -78,8 +78,9 @@ namespace EasySave
                 catch (ArgumentException)
                 {
                     error = true;
+
                 }
-                catch(DirectoryNotFoundException)
+                catch(Exception)
                 {
                     error = true;
                 }
@@ -153,7 +154,7 @@ namespace EasySave
                     historyLog.TransferTime = historyStopwatch.Elapsed.TotalMilliseconds;
                     historyLog.SaveLog();
                 }
-                catch (FileNotFoundException)
+                catch (FileNotFoundException FileE)
                 {
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
@@ -162,6 +163,22 @@ namespace EasySave
                     historyLog.TargetFile = destFile;
                     historyLog.FileSize = 0;
                     historyLog.TransferTime = -1;
+                    historyLog.Error = FileE.ToString();
+                    historyLog.SaveLog();
+
+                    error = true;
+                    break;
+                }
+                catch (Exception e)
+                {
+                    string fileName = Path.GetFileName(file);
+                    string destFile = Path.Combine(_destinationDirectory, fileName);
+
+                    historyLog.SourceFile = file;
+                    historyLog.TargetFile = destFile;
+                    historyLog.FileSize = 0;
+                    historyLog.TransferTime = -1;
+                    historyLog.Error = e.ToString();
                     historyLog.SaveLog();
 
                     error = true;
@@ -233,7 +250,7 @@ namespace EasySave
                     historyLog.TransferTime = historyStopwatch.Elapsed.TotalMilliseconds;
                     historyLog.SaveLog();
                 }
-                catch (FileNotFoundException)
+                catch (FileNotFoundException fileE)
                 {
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
@@ -242,6 +259,22 @@ namespace EasySave
                     historyLog.TargetFile = destFile;
                     historyLog.FileSize = 0;
                     historyLog.TransferTime = -1;
+                    historyLog.Error = fileE.ToString();
+                    historyLog.SaveLog();
+
+                    error = true;
+                    break;
+                }
+                catch (Exception e)
+                {
+                    string fileName = Path.GetFileName(file);
+                    string destFile = Path.Combine(_destinationDirectory, fileName);
+
+                    historyLog.SourceFile = file;
+                    historyLog.TargetFile = destFile;
+                    historyLog.FileSize = 0;
+                    historyLog.TransferTime = -1;
+                    historyLog.Error = e.ToString();
                     historyLog.SaveLog();
 
                     error = true;

@@ -21,7 +21,7 @@ namespace EasySave
 
         //Introduction
         public void DisplayIntroduction(){
-            Console.WriteLine(_rm.GetString("menuIntroductionInsert"));
+            Console.WriteLine(String.Format("  {0}", _rm.GetString("menuIntroductionInsert")));
             Console.WriteLine("");
             Console.WriteLine(String.Format("  1  -  {0}", _rm.GetString("menuIntroductionStart")));
             Console.WriteLine(String.Format("  2  -  {0}", _rm.GetString("menuIntroductionOptions")));
@@ -32,7 +32,7 @@ namespace EasySave
         //Display of which save to choose
         public void DisplayChooseAction()
         {
-            Console.WriteLine(_rm.GetString("menuAction"));
+            Console.WriteLine(String.Format("  {0}", _rm.GetString("menuAction")));
             Console.WriteLine("");
             Console.WriteLine(String.Format("  1  -  {0}", _rm.GetString("menuActionCreateJob")));
             Console.WriteLine(String.Format("  2  -  {0}", _rm.GetString("menuActionDeleteJob")));
@@ -45,7 +45,7 @@ namespace EasySave
         //Display of which save to choose
         public void DisplayChooseSave()
         {
-            Console.WriteLine(_rm.GetString("menuSaveType"));
+            Console.WriteLine(String.Format("  {0}", _rm.GetString("menuSaveType")));
             Console.WriteLine("");
             Console.WriteLine(String.Format("  1  -  {0}", _rm.GetString("menuSaveTotal")));
             Console.WriteLine(String.Format("  2  -  {0}", _rm.GetString("menuSaveDifferential")));
@@ -57,7 +57,7 @@ namespace EasySave
         //Display of which save to choose
         public void DisplayChooseLanguage()
         {
-            Console.WriteLine(_rm.GetString("menuLanguageChoose"));
+            Console.WriteLine(String.Format("  {0}", _rm.GetString("menuLanguageChoose")));
             Console.WriteLine("");
             Console.WriteLine(String.Format("  1  -  {0}", _rm.GetString("menuLanguageEn")));
             Console.WriteLine(String.Format("  2  -  {0}", _rm.GetString("menuLanguageFr")));

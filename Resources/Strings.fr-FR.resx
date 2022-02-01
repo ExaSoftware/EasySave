@@ -117,29 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="deleted" xml:space="preserve">
-    <value>  Supprimé !</value>
+  <data name="backupJobDeleted" xml:space="preserve">
+    <value>Travail de sauvegarde supprimé !</value>
   </data>
-  <data name="done" xml:space="preserve">
-    <value>  Terminé !</value>
+  <data name="backupJobExecutionSuccessfullyDone" xml:space="preserve">
+    <value>Exécution du travail de sauvegarde '{0}' terminée avec succès !</value>
+  </data>
+  <data name="emptyInputJobLabel" xml:space="preserve">
+    <value>Le nom du travail de sauvegarde ne peut pas être vide, merci de réessayer.</value>
   </data>
   <data name="errorDirectoryNotFound" xml:space="preserve">
     <value>Répertoire non trouvé, veuillez réessayer</value>
   </data>
   <data name="errorFormatNumber" xml:space="preserve">
-    <value>  Entrez un nombre</value>
+    <value>Veuillez entrer un nombre</value>
   </data>
-  <data name="executing" xml:space="preserve">
-    <value>  Exécution</value>
+  <data name="jobBackupSuccessCreated" xml:space="preserve">
+    <value>Travail de sauvegarde '{0}' crée avec succès !</value>
   </data>
   <data name="jobDestinationDirectory" xml:space="preserve">
     <value>Répertoire de destination :</value>
-  </data>
-  <data name="jobFileMovedTo" xml:space="preserve">
-    <value>fichier déplacé vers :</value>
-  </data>
-  <data name="jobFilesMovedTo" xml:space="preserve">
-    <value>fichiers déplacés vers :</value>
   </data>
   <data name="jobLabel" xml:space="preserve">
     <value>Label :</value>
@@ -156,8 +153,11 @@
   <data name="jobTypeDifferential" xml:space="preserve">
     <value>Différentielle</value>
   </data>
+  <data name="languageChangedSuccess" xml:space="preserve">
+    <value>Changement de la langue vers '{0}' exécuté avec succès !</value>
+  </data>
   <data name="menuAction" xml:space="preserve">
-    <value>  Choisissez une action</value>
+    <value>Choisissez une action</value>
   </data>
   <data name="menuActionCreateJob" xml:space="preserve">
     <value>Créer un nouveau travail de sauvegarde</value>
@@ -172,22 +172,22 @@
     <value>Lancer un travail de sauvegarde</value>
   </data>
   <data name="menuAskJobDelete" xml:space="preserve">
-    <value>  Quel travail de sauvegarde souhaitez-vous supprimer ?</value>
+    <value>Quel travail de sauvegarde souhaitez-vous supprimer ?</value>
   </data>
   <data name="menuChoiceError" xml:space="preserve">
-    <value>  Choix non valide, réaffichage du menu</value>
+    <value>Choix non valide, réaffichage du menu</value>
   </data>
   <data name="menuChooseJob" xml:space="preserve">
-    <value>  Choisissez un travail de sauvegarde</value>
+    <value>Choisissez un travail de sauvegarde</value>
   </data>
   <data name="menuChooseSpace" xml:space="preserve">
-    <value>  Choisissez un emplacement de 1 à 5</value>
+    <value>Choisissez un emplacement de 1 à 5</value>
   </data>
   <data name="menuExit" xml:space="preserve">
     <value>Quitter</value>
   </data>
   <data name="menuIntroductionInsert" xml:space="preserve">
-    <value>  Tapez un des chiffres suivants</value>
+    <value>Tapez un des chiffres suivants</value>
   </data>
   <data name="menuIntroductionOptions" xml:space="preserve">
     <value>Options</value>
@@ -195,23 +195,17 @@
   <data name="menuIntroductionStart" xml:space="preserve">
     <value>Démarrer</value>
   </data>
-  <data name="menuJobCreated" xml:space="preserve">
-    <value>  Travail de sauvegarde crée avec succès !</value>
-  </data>
-  <data name="menuJobDeleted" xml:space="preserve">
-    <value>  Travail de sauvegarde supprimé avec succès !</value>
-  </data>
   <data name="menuJobDestination" xml:space="preserve">
-    <value>  Écrivez le chemin du répertoire de destination</value>
+    <value>Écrivez le chemin du répertoire de destination</value>
   </data>
   <data name="menuJobLabel" xml:space="preserve">
-    <value>  Écrivez le nom du travail de sauvegarde</value>
+    <value>Écrivez le nom du travail de sauvegarde</value>
   </data>
   <data name="menuJobSource" xml:space="preserve">
-    <value>  Écrivez le chemin du répertoire source</value>
+    <value>Écrivez le chemin du répertoire source</value>
   </data>
   <data name="menuLanguageChoose" xml:space="preserve">
-    <value>  Choisir la langue</value>
+    <value>Choisissez la langue</value>
   </data>
   <data name="menuLanguageEn" xml:space="preserve">
     <value>Anglais</value>
@@ -220,7 +214,7 @@
     <value>Français</value>
   </data>
   <data name="menuOtherReturnStart" xml:space="preserve">
-    <value>  Autre - Retourner au début</value>
+    <value>Autre - Retourner au début</value>
   </data>
   <data name="menuReturnStart" xml:space="preserve">
     <value>Retourner au début</value>
@@ -232,33 +226,30 @@
     <value>Sauvegarde complète</value>
   </data>
   <data name="menuSaveType" xml:space="preserve">
-    <value>  Quel type de sauvegarde souhaitez-vous utiliser ?</value>
-  </data>
-  <data name="menuStartRestarting" xml:space="preserve">
-    <value>  Choix non valide, redémarrage</value>
+    <value>Quel type de sauvegarde souhaitez-vous utiliser ?</value>
   </data>
   <data name="menuWarn12" xml:space="preserve">
-    <value>  Entrez un chiffre entre 1 et 2</value>
+    <value>Entrez un chiffre entre 1 et 2</value>
   </data>
   <data name="menuWarn13" xml:space="preserve">
-    <value>  Entrez un chiffre entre 1 et 3</value>
+    <value>Entrez un chiffre entre 1 et 3</value>
   </data>
   <data name="menuWarn14" xml:space="preserve">
-    <value>  Entrez un chiffre entre 1 et 4</value>
+    <value>Entrez un chiffre entre 1 et 4</value>
   </data>
   <data name="menuWarn15" xml:space="preserve">
-    <value>  Entrez un chiffre entre 1 et 5</value>
+    <value>Entrez un chiffre entre 1 et 5</value>
   </data>
   <data name="noBackupJob" xml:space="preserve">
     <value>Veuillez créer un travail de sauvegarde pour pouvoir l'exécuter.</value>
   </data>
+  <data name="runningBackupJob" xml:space="preserve">
+    <value>Exécution du travail de sauvegarde '{0}'...</value>
+  </data>
   <data name="saveError" xml:space="preserve">
-    <value>Une erreur est survenue avec cette sauvegarde :</value>
+    <value>Une erreur est survenue avec cette sauvegarde : '{0}'</value>
   </data>
-  <data name="successCreated" xml:space="preserve">
-    <value>  Crée !</value>
-  </data>
-  <data name="successfullyDone" xml:space="preserve">
-    <value>  Complété avec succès !</value>
+  <data name="sequentialExecutionSuccessfullyDone" xml:space="preserve">
+    <value>L'exécution séquentielle des travaux de sauvegarde s'est terminée avec succès !</value>
   </data>
 </root>
