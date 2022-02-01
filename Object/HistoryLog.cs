@@ -14,6 +14,7 @@ namespace EasySave
         /// <summary>Transfer time of the file which have been saved</summary>
         private double _transferTime;
 
+        private string _error;
         /// <summary> Timestamp when the job have been saved </summary>
         protected string _time;
 
@@ -23,6 +24,7 @@ namespace EasySave
             _fileSize = fileSize;
             _transferTime = transferTime;
             _time = DateTime.Now.ToString("d/MM/yyyy HH:mm:ss");
+            _error = "";
         }
 
         /// <summary>
@@ -56,6 +58,13 @@ namespace EasySave
         {
             get => _time;
             set => _time = value;
+        }
+
+        [JsonProperty(Order = 7)]
+        public string Error
+        {
+            get => _error;
+            set => _error = value;
         }
 
         /// <summary>
