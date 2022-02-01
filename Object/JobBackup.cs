@@ -152,6 +152,7 @@ namespace EasySave
                     historyLog.TargetFile = destFile;
                     historyLog.FileSize = (ulong)fileInfo.Length;
                     historyLog.TransferTime = historyStopwatch.Elapsed.TotalMilliseconds;
+                    historyLog.Error = "";
                     historyLog.SaveLog();
                 }
                 catch (FileNotFoundException FileE)
@@ -248,6 +249,7 @@ namespace EasySave
                     historyLog.TargetFile = destFile;
                     historyLog.FileSize = (ulong)fileInfo.Length;
                     historyLog.TransferTime = historyStopwatch.Elapsed.TotalMilliseconds;
+                    historyLog.Error = "";
                     historyLog.SaveLog();
                 }
                 catch (FileNotFoundException fileE)
