@@ -323,8 +323,7 @@ namespace EasySave
             foreach (String file in filesInDirectory)
             {
                 // Creation of the destFile
-                string fileName = Path.GetFileName(file);
-                string destFile = Path.Combine(directory, fileName);
+                string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
 
                 if (File.Exists(destFile))
                 {
