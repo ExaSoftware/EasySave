@@ -74,13 +74,13 @@ namespace EasySave
                 try
                 {
                     Directory.CreateDirectory(DestinationDirectory);
-
                 }
                 catch (ArgumentException)
                 {
                     error = true;
+
                 }
-                catch(DirectoryNotFoundException)
+                catch(Exception)
                 {
                     error = true;
                 }
@@ -88,7 +88,6 @@ namespace EasySave
 
             if (!error)
             {
-
                 if (_isDifferential)
                 {
                     error = DoDifferentialSave();
@@ -109,13 +108,18 @@ namespace EasySave
         {
             bool error = false;
 
-            string[] files = Directory.GetFiles(_sourceDirectory);
+            //Creation of all sub directories
+            foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
+            { 
+                Directory.CreateDirectory(path.Replace(_sourceDirectory, _destinationDirectory));
+            }
 
+            string[] files = Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories);
             int fileTransfered = 0;                 //Incease each file transfered
             int fileToTranfer = files.Length;       //Ammount of file to transfer
             long sizeTotal = totalFileSize(files);
 
-            // Setup stopwatch
+            // Setup objects
             Stopwatch historyStopwatch = new Stopwatch();
             ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered);
             HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0);
@@ -125,9 +129,8 @@ namespace EasySave
             {
                 try
                 {
-                    // Use static Path methods to extract only the file name from the path.
-                    string fileName = Path.GetFileName(file);
-                    string destFile = Path.Combine(_destinationDirectory, fileName);
+                    string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
+                    
                     FileInfo fileInfo = new FileInfo(file);
 
                     historyStopwatch.Reset();
@@ -151,7 +154,7 @@ namespace EasySave
                     historyLog.TransferTime = historyStopwatch.Elapsed.TotalMilliseconds;
                     historyLog.SaveLog();
                 }
-                catch (FileNotFoundException)
+                catch (FileNotFoundException FileE)
                 {
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
@@ -160,6 +163,22 @@ namespace EasySave
                     historyLog.TargetFile = destFile;
                     historyLog.FileSize = 0;
                     historyLog.TransferTime = -1;
+                    historyLog.Error = FileE.ToString();
+                    historyLog.SaveLog();
+
+                    error = true;
+                    break;
+                }
+                catch (Exception e)
+                {
+                    string fileName = Path.GetFileName(file);
+                    string destFile = Path.Combine(_destinationDirectory, fileName);
+
+                    historyLog.SourceFile = file;
+                    historyLog.TargetFile = destFile;
+                    historyLog.FileSize = 0;
+                    historyLog.TransferTime = -1;
+                    historyLog.Error = e.ToString();
                     historyLog.SaveLog();
 
                     error = true;
@@ -183,30 +202,33 @@ namespace EasySave
 
 
 
-
         /// <summary> Save all differents files between _sourceDirectory and _destDirectory to _destDirectory.</summary>
         /// <remarks>This method ignores deleted files.</remarks>
         private bool DoDifferentialSave()
         {
             bool error = false;
+            String[] files = findFilesForDifferentialSave(_sourceDirectory);
 
-            String[] files = findFilesForDifferentialSave();
+            //Creation of all sub directories
+            foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
+            {
+                Directory.CreateDirectory(path.Replace(_sourceDirectory, _destinationDirectory));
+            }
 
             int fileTransfered = 0;                 //Incease each file transfered
             int fileToTranfer = files.Length;       //Ammount of file to transfer
             long sizeTotal = totalFileSize(files);
+
             Stopwatch historyStopwatch = new Stopwatch();
             ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered);
             HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0);
-
 
             foreach (String file in files)
             {
                 try
                 {
                     // Creation of the destFile
-                    string fileName = Path.GetFileName(file);
-                    string destFile = Path.Combine(_destinationDirectory, fileName);
+                    string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
 
                     FileInfo fileInfo = new FileInfo(file);
                     historyStopwatch.Reset();
@@ -228,7 +250,7 @@ namespace EasySave
                     historyLog.TransferTime = historyStopwatch.Elapsed.TotalMilliseconds;
                     historyLog.SaveLog();
                 }
-                catch (FileNotFoundException)
+                catch (FileNotFoundException fileE)
                 {
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
@@ -237,6 +259,22 @@ namespace EasySave
                     historyLog.TargetFile = destFile;
                     historyLog.FileSize = 0;
                     historyLog.TransferTime = -1;
+                    historyLog.Error = fileE.ToString();
+                    historyLog.SaveLog();
+
+                    error = true;
+                    break;
+                }
+                catch (Exception e)
+                {
+                    string fileName = Path.GetFileName(file);
+                    string destFile = Path.Combine(_destinationDirectory, fileName);
+
+                    historyLog.SourceFile = file;
+                    historyLog.TargetFile = destFile;
+                    historyLog.FileSize = 0;
+                    historyLog.TransferTime = -1;
+                    historyLog.Error = e.ToString();
                     historyLog.SaveLog();
 
                     error = true;
@@ -275,16 +313,15 @@ namespace EasySave
 
 
 
-        private String[] findFilesForDifferentialSave()
+        private String[] findFilesForDifferentialSave(String directory)
         {
             List<String> filesToSave = new List<string>();
-            String[] filesInSourceDirectory = Directory.GetFiles(_sourceDirectory);
+            String[] filesInDirectory = Directory.GetFiles(directory, "*", SearchOption.AllDirectories);
 
-            foreach (String file in filesInSourceDirectory)
+            foreach (String file in filesInDirectory)
             {
                 // Creation of the destFile
-                string fileName = Path.GetFileName(file);
-                string destFile = Path.Combine(_destinationDirectory, fileName);
+                string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
 
                 if (File.Exists(destFile))
                 {
@@ -303,9 +340,9 @@ namespace EasySave
                     filesToSave.Add(file);
                 }
             }
-
             return filesToSave.ToArray();
         }
+
 
     }
 }
