@@ -29,7 +29,7 @@ namespace EasySave
         public void SaveHistoryLog(HistoryLog myHistoryLog)
         {
             string path = String.Format(@"{0}\Historylog-{1}.json", _DEFAULT_LOG_FILE_PATH, DateTime.Now.ToString("d-MM-yyyy"));    //Create the path file
-            if (!Directory.Exists(_DEFAULT_LOG_FILE_PATH)) Directory.CreateDirectory(_DEFAULT_LOG_FILE_PATH);                       //Check that the directory exist and create it if it doesn't exist
+            Directory.CreateDirectory(_DEFAULT_LOG_FILE_PATH);                       //Check that the directory exist and create it if it doesn't exist
 
             if (File.Exists(path))
             {
@@ -70,7 +70,7 @@ namespace EasySave
         /// <param name="jobBackupList"></param>
         public void SaveJobBackup(List<JobBackup> jobBackupList)
         {
-            if (!Directory.Exists(_DEFAULT_JOB_BACKUP_FILE_PATH)) Directory.CreateDirectory(_DEFAULT_JOB_BACKUP_FILE_PATH);
+            Directory.CreateDirectory(_DEFAULT_JOB_BACKUP_FILE_PATH);
             string jsonStringJobBackup = JsonConvert.SerializeObject(jobBackupList, Formatting.Indented);
 
             File.WriteAllText(String.Format(@"{0}\SavedJobBackup.json", _DEFAULT_JOB_BACKUP_FILE_PATH), jsonStringJobBackup);
@@ -81,7 +81,7 @@ namespace EasySave
         public void SaveProgressLog(ProgressLog myProgressLog, int index)
         {
             String path = String.Format(@"{0}\Progresslog.json", _DEFAULT_LOG_FILE_PATH);
-            if (!Directory.Exists(_DEFAULT_LOG_FILE_PATH)) Directory.CreateDirectory(_DEFAULT_LOG_FILE_PATH);
+            Directory.CreateDirectory(_DEFAULT_LOG_FILE_PATH);
             if (!File.Exists(path))
             {
                 for (int i = 0; i < 5; i++)
