@@ -132,6 +132,9 @@
   <data name="errorFormatNumber" xml:space="preserve">
     <value>Veuillez entrer un nombre</value>
   </data>
+  <data name="errorJobBackupNotCreated" xml:space="preserve">
+    <value>Vous ne pouvez pas exécuter ce travail de sauvegarde car il n'a pas été crée.</value>
+  </data>
   <data name="jobBackupSuccessCreated" xml:space="preserve">
     <value>Travail de sauvegarde '{0}' crée avec succès !</value>
   </data>
