@@ -39,15 +39,8 @@ namespace EasySave
         /// </summary>
         public static void CreateDataDirectoryIfNotExists()
         {
-            if (!Directory.Exists(@"C:\EasySave"))
-            {
-                Directory.CreateDirectory(@"C:\EasySave");
-            }
-
-            if (!Directory.Exists(@"C:\EasySave\Job-Backup"))
-            {
-                Directory.CreateDirectory(@"C:\EasySave\Job-Backup");
-            }
+            Directory.CreateDirectory(@"C:\EasySave");
+            Directory.CreateDirectory(@"C:\EasySave\Job-Backup");
         }
 
         public static List<JobBackup> CreateJobBackupList()
