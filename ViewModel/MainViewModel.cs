@@ -69,7 +69,6 @@ namespace EasySave
                                         break;
                                     //Return to the start
                                     case 3:
-                                        Console.Clear();
                                         break;
                                 }
                                 break;
@@ -88,29 +87,19 @@ namespace EasySave
                                 _view.Display(String.Format("  {0}", _rm.GetString("menuChooseJob")) + Environment.NewLine);
                                 DisplayJobBackup();
                                 input = CheckInput() - 1;
-                                Console.Clear();
-                                if (String.IsNullOrEmpty(_listOfJobBackup[input].Label)) //If the job backup doesn't created by user
+                                //Check if there's an error with the parameters of the save
+                                if (_listOfJobBackup[input].Execute()==true)
                                 {
-                                    _view.Display(_rm.GetString("errorJobBackupNotCreated") + Environment.NewLine); 
+                                    _view.Display(String.Format(_rm.GetString("saveError"), _listOfJobBackup[input].Label) + Environment.NewLine);
+                                    isError = true;
+                                    break;
                                 }
-                                else
+                                if (!isError)
                                 {
                                     _view.Display(String.Format(_rm.GetString("runningBackupJob"), _listOfJobBackup[input].Label));
-                                    //Check if there's an error with the parameters of the save
-                                    if (_listOfJobBackup[input].Execute())
-                                    {
-                                        _view.Display(String.Format(_rm.GetString("saveError"), _listOfJobBackup[input].Label) + Environment.NewLine);
-                                        isError = true;
-                                        break;
-                                    }
-                                    if (!isError)
-                                    {
-                                        _view.Display(String.Format(_rm.GetString("backupJobExecutionSuccessfullyDone"), _listOfJobBackup[input].Label) + Environment.NewLine);
-                                    }
-                                    
+                                    _view.Display(String.Format(_rm.GetString("backupJobExecutionSuccessfullyDone"), _listOfJobBackup[input].Label) + Environment.NewLine);
                                 }
                                 break;
-
 
                             //Execute all jobs backup
                             case 4:
@@ -133,7 +122,6 @@ namespace EasySave
                                 }
                                 break;
                             case 5:
-                                Console.Clear();
                                 break;
                             //Warn
                             default:
@@ -308,7 +296,7 @@ namespace EasySave
             DisplayJobBackup();
             input = CheckInput() - 1;
             //Check if the input is in the list
-            while (input > 5)
+            while (input > 4)
             {
                 _view.Display(String.Format("  {0}", _rm.GetString("menuChoiceError")));
                 input = CheckInput() - 1;
