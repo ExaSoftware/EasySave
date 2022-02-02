@@ -89,7 +89,7 @@ namespace EasySave
                                 DisplayJobBackup();
                                 input = CheckInput() - 1;
                                 Console.Clear();
-                                if (String.IsNullOrEmpty(_listOfJobBackup[input].Label)) //If the job backup doesn't created by user
+                                if (String.IsNullOrEmpty(_listOfJobBackup[input].Label)) //If the job backup isn't created by the user
                                 {
                                     _view.Display(_rm.GetString("errorJobBackupNotCreated") + Environment.NewLine);
                                 }
