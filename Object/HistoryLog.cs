@@ -18,12 +18,20 @@ namespace EasySave
         /// <summary> Timestamp when the job have been saved </summary>
         protected string _time;
 
+        ///<sumary>Necessary time to encrypt the file</summary>
+        protected double _encryptionTime;
+
+        /// <summary>Code error needed in the View to notify the user</summary>
+        protected string _codeError;
+
         /// <summary>History log builder</summary>
-        public HistoryLog(string label, string sourceFile, string targetFile, ulong fileSize, double transferTime) : base(label, sourceFile, targetFile)
+        public HistoryLog(string label, string sourceFile, string targetFile, ulong fileSize, double transferTime, double encryptionTime) : base(label, sourceFile, targetFile)
         {
             _fileSize = fileSize;
             _transferTime = transferTime;
             _time = DateTime.Now.ToString("d/MM/yyyy HH:mm:ss");
+            _encryptionTime = encryptionTime;
+            _codeError = "";
             _error = "";
         }
 
@@ -61,12 +69,25 @@ namespace EasySave
         }
 
         [JsonProperty(Order = 7)]
+        public double NeccessaryEncryptionTime
+        {
+            get => _encryptionTime;
+            set => _encryptionTime = value;
+        }
+
+        [JsonProperty(Order = 8)]
         public string Error
         {
             get => _error;
             set => _error = value;
         }
 
+        [JsonProperty(Order = 9)]
+        public string CodeError
+        {
+            get => _codeError;
+            set => _codeError = value;
+        }
         /// <summary>
         /// Method which call SaveHistoryLog() from LogModel for created a history log file in C:\EasySave\Logs repository
         /// </summary>

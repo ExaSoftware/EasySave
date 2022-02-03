@@ -122,7 +122,7 @@ namespace EasySave
             // Setup objects
             Stopwatch historyStopwatch = new Stopwatch();
             ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered);
-            HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0);
+            HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0, 0);
 
             // Copy the files and overwrite destination files if they already exist.
             foreach (string file in files)
@@ -222,7 +222,7 @@ namespace EasySave
 
             Stopwatch historyStopwatch = new Stopwatch();
             ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered);
-            HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0);
+            HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0, 0);
 
             foreach (String file in files)
             {
