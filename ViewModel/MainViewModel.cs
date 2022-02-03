@@ -60,65 +60,16 @@ namespace EasySave
                                 {
                                     //For Total Save
                                     case 1:
-                                        Console.Clear();
-                                        _view.Display("");
-                                        //Insert in the list the job
-                                        _view.Display(String.Format("  {0}", _rm.GetString("menuChooseSpace")) + Environment.NewLine);
-                                        DisplayJobBackup();
-                                        input = CheckInput() - 1;
-                                        //Check if the input is in the list
-                                        while (input > 5)
-                                        {
-                                            _view.Display(String.Format("  {0}", _rm.GetString("menuChoiceError")));
-                                            input = CheckInput() - 1;
-
-                                        }
-                                        //Display and choose parameters
-                                        _view.Display(String.Format("  {0}", _rm.GetString("menuJobLabel")));
-                                        _listOfJobBackup[input].Label = GetInputJobLabel();
-                                        _view.Display(String.Format("  {0}", _rm.GetString("menuJobSource")));
-                                        _listOfJobBackup[input].SourceDirectory = CheckSourceDirectory();
-                                        _view.Display(String.Format("  {0}", _rm.GetString("menuJobDestination")));
-                                        _listOfJobBackup[input].DestinationDirectory = Console.ReadLine();
-                                        _listOfJobBackup[input].IsDifferential = false;
-                                        //Save the JobBackup list in JSON file
-                                        JSonReaderWriter.SaveJobBackup(_listOfJobBackup);
-                                        Console.Clear();
-                                        _view.Display(String.Format(_rm.GetString("jobBackupSuccessCreated"), _listOfJobBackup[input].Label) + Environment.NewLine);
-                                        //_view.Display("  " + _listOfJobBackup[input].Label + _rm.GetString("jobBackupSuccessCreated"));
-                                        _view.Display("");
+                                        JobCreation(input, JSonReaderWriter);
                                         break;
 
                                     //For Differential Save
                                     case 2:
-                                        Console.Clear();
-                                        _view.Display("");
-                                        //Insert in the list the job
-                                        _view.Display(String.Format("  {0}", _rm.GetString("menuChooseSpace")) + Environment.NewLine);
-                                        DisplayJobBackup();
-                                        input = CheckInput() - 1;
-                                        //Check if the input is in the list
-                                        while (input > 5)
-                                        {
-                                            _view.Display(String.Format("  {0}", _rm.GetString("menuChoiceError")));
-                                            input = CheckInput() - 1;
-                                        }
-                                        //Display and choose parameters
-                                        _view.Display(String.Format("  {0}", _rm.GetString("menuJobLabel")));
-                                        _listOfJobBackup[input].Label = GetInputJobLabel();
-                                        _view.Display(String.Format("  {0}", _rm.GetString("menuJobSource")));
-                                        _listOfJobBackup[input].SourceDirectory = CheckSourceDirectory();
-                                        _view.Display(String.Format("  {0}", _rm.GetString("menuJobDestination")));
-                                        _listOfJobBackup[input].DestinationDirectory = Console.ReadLine();
-                                        _listOfJobBackup[input].IsDifferential = true;
-                                        //Save the JobBackup list in JSON file
-                                        JSonReaderWriter.SaveJobBackup(_listOfJobBackup);
-                                        Console.Clear();
-                                        _view.Display(String.Format(_rm.GetString("jobBackupSuccessCreated"), _listOfJobBackup[input].Label) + Environment.NewLine);
-                                        _view.Display("");
+                                        JobCreation(input, JSonReaderWriter);
                                         break;
                                     //Return to the start
                                     case 3:
+                                        Console.Clear();
                                         break;
                                 }
                                 break;
@@ -137,19 +88,34 @@ namespace EasySave
                                 _view.Display(String.Format("  {0}", _rm.GetString("menuChooseJob")) + Environment.NewLine);
                                 DisplayJobBackup();
                                 input = CheckInput() - 1;
-                                //Check if there's an error with the parameters of the save
-                                if (_listOfJobBackup[input].Execute()==true)
+                                while (input > 4)
                                 {
-                                    _view.Display(String.Format(_rm.GetString("saveError"), _listOfJobBackup[input].Label) + Environment.NewLine);
-                                    isError = true;
-                                    break;
+                                    _view.Display(String.Format("  {0}", _rm.GetString("menuChoiceError")));
+                                    input = CheckInput() - 1;
                                 }
-                                if (!isError)
+                                Console.Clear();
+                                if (String.IsNullOrEmpty(_listOfJobBackup[input].Label)) //If the job backup isn't created by the user
+                                {
+                                    _view.Display(_rm.GetString("errorJobBackupNotCreated") + Environment.NewLine);
+                                }
+                                else
                                 {
                                     _view.Display(String.Format(_rm.GetString("runningBackupJob"), _listOfJobBackup[input].Label));
-                                    _view.Display(String.Format(_rm.GetString("backupJobExecutionSuccessfullyDone"), _listOfJobBackup[input].Label) + Environment.NewLine);
+                                    //Check if there's an error with the parameters of the save and launch the save
+                                    if (_listOfJobBackup[input].Execute())
+                                    {
+                                        _view.Display(String.Format(_rm.GetString("saveError"), _listOfJobBackup[input].Label) + Environment.NewLine);
+                                        isError = true;
+                                        break;
+                                    }
+                                    if (!isError)
+                                    {
+                                        _view.Display(String.Format(_rm.GetString("backupJobExecutionSuccessfullyDone"), _listOfJobBackup[input].Label) + Environment.NewLine);
+                                    }
+
                                 }
                                 break;
+
 
                             //Execute all jobs backup
                             case 4:
@@ -172,6 +138,7 @@ namespace EasySave
                                 }
                                 break;
                             case 5:
+                                Console.Clear();
                                 break;
                             //Warn
                             default:
@@ -310,6 +277,8 @@ namespace EasySave
             return letter;
         }
 
+        ///  <summary>Verify if the user input and convert it</summary>
+        ///  <returns>Converted user input to integer</returns> 
         private String GetInputJobLabel()
         {
             string entry;
@@ -322,6 +291,47 @@ namespace EasySave
                 }
             } while (String.IsNullOrEmpty(entry));
             return entry;
+        }
+
+        ///  <summary>Create the job</summary>
+        private void JobCreation(int input, JsonReadWriteModel JSonReaderWriter)
+        {
+            Console.Clear();
+            //Keep the choise of total or differential save
+            bool choosen;
+            if (input == 1)
+            {
+                choosen = false;
+            }
+            else
+            {
+                choosen = true;
+            }
+            _view.Display("");
+            //Insert in the list the job
+            _view.Display(String.Format("  {0}", _rm.GetString("menuChooseSpace")) + Environment.NewLine);
+            DisplayJobBackup();
+            input = CheckInput() - 1;
+            //Check if the input is in the list
+            while (input > 4)
+            {
+                _view.Display(String.Format("  {0}", _rm.GetString("menuChoiceError")));
+                input = CheckInput() - 1;
+            }
+            //Display and choose parameters
+            _view.Display(String.Format("  {0}", _rm.GetString("menuJobLabel")));
+            _listOfJobBackup[input].Label = GetInputJobLabel();
+            _view.Display(String.Format("  {0}", _rm.GetString("menuJobSource")));
+            _listOfJobBackup[input].SourceDirectory = CheckSourceDirectory();
+            _view.Display(String.Format("  {0}", _rm.GetString("menuJobDestination")));
+            _listOfJobBackup[input].DestinationDirectory = Console.ReadLine();
+            _listOfJobBackup[input].IsDifferential = choosen;
+            //Save the JobBackup list in JSON file
+            JSonReaderWriter.SaveJobBackup(_listOfJobBackup);
+            Console.Clear();
+            _view.Display(String.Format(_rm.GetString("jobBackupSuccessCreated"), _listOfJobBackup[input].Label) + Environment.NewLine);
+            //_view.Display("  " + _listOfJobBackup[input].Label + _rm.GetString("jobBackupSuccessCreated"));
+            _view.Display("");
         }
     }
 }

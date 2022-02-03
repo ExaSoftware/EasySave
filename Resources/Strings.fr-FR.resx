@@ -132,6 +132,9 @@
   <data name="errorFormatNumber" xml:space="preserve">
     <value>Veuillez entrer un nombre</value>
   </data>
+  <data name="errorJobBackupNotCreated" xml:space="preserve">
+    <value>Vous ne pouvez pas exécuter ce travail de sauvegarde car il n'a pas été crée.</value>
+  </data>
   <data name="jobBackupSuccessCreated" xml:space="preserve">
     <value>Travail de sauvegarde '{0}' crée avec succès !</value>
   </data>
@@ -175,7 +178,7 @@
     <value>Quel travail de sauvegarde souhaitez-vous supprimer ?</value>
   </data>
   <data name="menuChoiceError" xml:space="preserve">
-    <value>Choix non valide, réaffichage du menu</value>
+    <value>Choix non valide, veuillez choisir un autre nombre</value>
   </data>
   <data name="menuChooseJob" xml:space="preserve">
     <value>Choisissez un travail de sauvegarde</value>
