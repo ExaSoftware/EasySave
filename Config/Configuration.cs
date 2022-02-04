@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 
-namespace EasySave.Object
+namespace EasySave
 {
     public class Configuration
     {
