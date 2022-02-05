@@ -30,8 +30,18 @@ namespace EasySave
             InitializeComponent();
             
             LanguageManager.ChangeLanguage("en-US", App.Configuration);
-            
+
+            frame.Navigate(new DetailView());
         }
 
+        private void btnSettings_Click(object sender, RoutedEventArgs e)
+        {
+            frame.Navigate(new SettingsView());
+        }
+
+        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            frame.Navigate(new CreateJobView());
+        }
     }
 }
