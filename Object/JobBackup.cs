@@ -66,38 +66,49 @@ namespace EasySave
 
         ///  <summary>Execute the save according to attributes.</summary>
         ///  <remarks>Use it whether differential or not.</remarks>
-        public bool Execute()
+        public bool Execute(string buisnessSoftwareName)
         {
             bool error = false;
-            if (!Directory.Exists(_destinationDirectory))
+            Process[] procName = Process.GetProcessesByName(buisnessSoftwareName);
+            if (procName.Length != 0 && buisnessSoftwareName != "")
             {
-                try
-                {
-                    Directory.CreateDirectory(DestinationDirectory);
-                }
-                catch (ArgumentException)
-                {
-                    error = true;
-
-                }
-                catch(Exception)
-                {
-                    error = true;
-                }
+                Console.WriteLine("You can't execute a job backup because " + buisnessSoftwareName + "processus is running. Close it before and try again.");
+                error = true;
+                return error;
             }
-
-            if (!error)
+            else
             {
-                if (_isDifferential)
+               
+                if (!Directory.Exists(_destinationDirectory))
                 {
-                    error = DoDifferentialSave();
+                    try
+                    {
+                        Directory.CreateDirectory(DestinationDirectory);
+                    }
+                    catch (ArgumentException)
+                    {
+                        error = true;
+
+                    }
+                    catch(Exception)
+                    {
+                        error = true;
+                    }
                 }
-                else
+
+                if (!error)
                 {
-                    error = SaveAllFiles();
+                    if (_isDifferential)
+                    {
+                        error = DoDifferentialSave();
+                    }
+                    else
+                    {
+                        error = SaveAllFiles();
+                    }
                 }
+                return error;
             }
-            return error;
         }
 
 
@@ -107,7 +118,7 @@ namespace EasySave
         private bool SaveAllFiles()
         {
             bool error = false;
-
+            int encryptionTimeResult = 0;
             //Creation of all sub directories
             foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
             { 
@@ -117,7 +128,7 @@ namespace EasySave
             string[] files = Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories);
             int fileTransfered = 0;                 //Incease each file transfered
             int fileToTranfer = files.Length;       //Ammount of file to transfer
-            long sizeTotal = totalFileSize(files);
+            long sizeTotal = TotalFileSize(files);
 
             // Setup objects
             Stopwatch historyStopwatch = new Stopwatch();
@@ -136,36 +147,22 @@ namespace EasySave
                     historyStopwatch.Reset();
                     historyStopwatch.Start();
 
-                    error = SaveFileWithOverWrite(file, destFile);
+                    File.Copy(file, destFile, true);
 
                     historyStopwatch.Stop();
                     fileTransfered++;
 
                     //Write logs
-                    progressLog.SourceFile = file;
-                    progressLog.TargetFile = destFile;
-                    progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
-                    progressLog.Progression = 100 * fileTransfered / fileToTranfer;
-                    progressLog.SaveLog(_id);
+                    progressLog.FillProgressLog(file, destFile, (fileToTranfer - fileTransfered), (100 * fileTransfered / fileToTranfer), _id);
 
-                    historyLog.SourceFile = file;
-                    historyLog.TargetFile = destFile;
-                    historyLog.FileSize = (ulong)fileInfo.Length;
-                    historyLog.TransferTime = historyStopwatch.Elapsed.TotalMilliseconds;
-                    historyLog.Error = "";
-                    historyLog.SaveLog();
+                    historyLog.FillHistoryLog(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds,"", encryptionTimeResult);
                 }
                 catch (FileNotFoundException FileE)
                 {
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                    historyLog.SourceFile = file;
-                    historyLog.TargetFile = destFile;
-                    historyLog.FileSize = 0;
-                    historyLog.TransferTime = -1;
-                    historyLog.Error = FileE.ToString();
-                    historyLog.SaveLog();
+                    historyLog.FillHistoryLog(file, destFile, 0, -1, FileE.ToString(), encryptionTimeResult);
 
                     error = true;
                     break;
@@ -175,12 +172,7 @@ namespace EasySave
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                    historyLog.SourceFile = file;
-                    historyLog.TargetFile = destFile;
-                    historyLog.FileSize = 0;
-                    historyLog.TransferTime = -1;
-                    historyLog.Error = e.ToString();
-                    historyLog.SaveLog();
+                    historyLog.FillHistoryLog(file, destFile, 0, -1, e.ToString(),encryptionTimeResult);
 
                     error = true;
                     break;
@@ -188,19 +180,10 @@ namespace EasySave
             }
 
             //Reset progressLog
-            progressLog.SourceFile = "";
-            progressLog.TargetFile = "";
-            progressLog.State = "END";
-            progressLog.TotalFilesRemaining = 0;
-            progressLog.TotalFilesToCopy = 0;
-            progressLog.TotalFilesSize = 0;
-            progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
-            progressLog.Progression = 0;
-            progressLog.SaveLog(_id);
+            progressLog.ResetProgressLog(_id);
 
             return error;
         }
-
 
 
         /// <summary> Save all differents files between _sourceDirectory and _destDirectory to _destDirectory.</summary>
@@ -208,6 +191,7 @@ namespace EasySave
         private bool DoDifferentialSave()
         {
             bool error = false;
+            int encryptionTImeResult = 0;
             String[] files = findFilesForDifferentialSave(_sourceDirectory);
 
             //Creation of all sub directories
@@ -218,7 +202,7 @@ namespace EasySave
 
             int fileTransfered = 0;                 //Incease each file transfered
             int fileToTranfer = files.Length;       //Ammount of file to transfer
-            long sizeTotal = totalFileSize(files);
+            long sizeTotal = TotalFileSize(files);
 
             Stopwatch historyStopwatch = new Stopwatch();
             ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered);
@@ -235,34 +219,20 @@ namespace EasySave
                     historyStopwatch.Reset();
                     historyStopwatch.Start();
 
-                    error = SaveFileWithOverWrite(file, destFile);
+                    File.Copy(file, destFile, true);
                     historyStopwatch.Stop();
                     fileTransfered++;
 
-                    progressLog.SourceFile = file;
-                    progressLog.TargetFile = destFile;
-                    progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
-                    progressLog.Progression = 100 * fileTransfered / fileToTranfer;
-                    progressLog.SaveLog(_id);
+                    progressLog.FillProgressLog(file, destFile, (fileToTranfer - fileTransfered), (100 * fileTransfered / fileToTranfer), _id);
 
-                    historyLog.SourceFile = file;
-                    historyLog.TargetFile = destFile;
-                    historyLog.FileSize = (ulong)fileInfo.Length;
-                    historyLog.TransferTime = historyStopwatch.Elapsed.TotalMilliseconds;
-                    historyLog.Error = "";
-                    historyLog.SaveLog();
+                    historyLog.FillHistoryLog(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "",encryptionTImeResult);
                 }
                 catch (FileNotFoundException fileE)
                 {
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                    historyLog.SourceFile = file;
-                    historyLog.TargetFile = destFile;
-                    historyLog.FileSize = 0;
-                    historyLog.TransferTime = -1;
-                    historyLog.Error = fileE.ToString();
-                    historyLog.SaveLog();
+                    historyLog.FillHistoryLog(file, destFile, 0, -1, fileE.ToString(),encryptionTImeResult);
 
                     error = true;
                     break;
@@ -272,12 +242,7 @@ namespace EasySave
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                    historyLog.SourceFile = file;
-                    historyLog.TargetFile = destFile;
-                    historyLog.FileSize = 0;
-                    historyLog.TransferTime = -1;
-                    historyLog.Error = e.ToString();
-                    historyLog.SaveLog();
+                    historyLog.FillHistoryLog(file, destFile, 0, -1, e.ToString(),encryptionTImeResult);
 
                     error = true;
                     break;
@@ -285,22 +250,14 @@ namespace EasySave
             }
 
             //Reset progressLog
-            progressLog.SourceFile = "";
-            progressLog.TargetFile = "";
-            progressLog.State = "END";
-            progressLog.TotalFilesRemaining = 0;
-            progressLog.TotalFilesToCopy = 0;
-            progressLog.TotalFilesSize = 0;
-            progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
-            progressLog.Progression = 0;
-            progressLog.SaveLog(_id);
+            progressLog.ResetProgressLog(_id);
 
             return error;
         }
 
 
 
-        private long totalFileSize(String[] files)
+        private long TotalFileSize(String[] files)
         {
             long totalSize = 0;
 

@@ -69,7 +69,7 @@ namespace EasySave
         }
 
         [JsonProperty(Order = 7)]
-        public double NeccessaryEncryptionTime
+        public double EncryptionTime
         {
             get => _encryptionTime;
             set => _encryptionTime = value;
@@ -95,6 +95,17 @@ namespace EasySave
         public override void SaveLog()
         {
             _myLogModel.SaveHistoryLog(this);
+        }
+
+        public void FillHistoryLog(string sourceFile,string targetFile,long fileSize, double transfertTime, string error,int encryptionTime)
+        {
+            this.SourceFile = sourceFile;
+            this.TargetFile = targetFile;
+            this.FileSize = (ulong)fileSize;
+            this.TransferTime = transfertTime;
+            this.Error = error;
+            this.EncryptionTime = encryptionTime;
+            this.SaveLog();
         }
     }
 }
