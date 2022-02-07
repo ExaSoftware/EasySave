@@ -85,7 +85,7 @@
             
             <!-- Language -->
             <TextBlock Text="Langue" Grid.Row="0" VerticalAlignment="Center"/>
-            <ComboBox Grid.Row="0" Grid.Column="1" Height="20">
+            <ComboBox Grid.Row="0" Grid.Column="1" Height="25">
                 <ComboBoxItem Content="Français"/>
                 <ComboBoxItem Content="Anglais" />
             </ComboBox>
