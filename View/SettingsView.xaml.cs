@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -29,6 +30,18 @@ namespace EasySave
         {
             this.NavigationService.Navigate(new DetailView());
         }
+
+        private void btnSelectSourcePath_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            Nullable<bool> result = openFileDialog.ShowDialog();
+            if (result == true)
+            {
+                txtBoxBusinessSoftwarePath.Text = openFileDialog.FileName;
+                //TextBlock1.Text = System.IO.File.ReadAllText(openFileDlg.FileName);
+            }
+        }
+
         //prevent spam click when using of goback()
         /*public static SettingsView GetInstance()
         {
