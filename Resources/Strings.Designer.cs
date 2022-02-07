@@ -61,11 +61,281 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à bonjour.
+        ///   Recherche une chaîne localisée semblable à Retour.
         /// </summary>
-        public static string test {
+        public static string _return {
             get {
-                return ResourceManager.GetString("test", resourceCulture);
+                return ResourceManager.GetString("return", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Actif.
+        /// </summary>
+        public static string active {
+            get {
+                return ResourceManager.GetString("active", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à EasySave.
+        /// </summary>
+        public static string appTitle {
+            get {
+                return ResourceManager.GetString("appTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Détails.
+        /// </summary>
+        public static string boxDetailTitle {
+            get {
+                return ResourceManager.GetString("boxDetailTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Exécution.
+        /// </summary>
+        public static string boxExecutionTitle {
+            get {
+                return ResourceManager.GetString("boxExecutionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Journal.
+        /// </summary>
+        public static string boxLogTitle {
+            get {
+                return ResourceManager.GetString("boxLogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Logiciel métier.
+        /// </summary>
+        public static string businessSoftware {
+            get {
+                return ResourceManager.GetString("businessSoftware", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Logiciel métier.
+        /// </summary>
+        public static string businessSofware {
+            get {
+                return ResourceManager.GetString("businessSofware", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Annuler.
+        /// </summary>
+        public static string cancel {
+            get {
+                return ResourceManager.GetString("cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Créer ou modifier un travail de sauvegarde.
+        /// </summary>
+        public static string createJobViewTitle {
+            get {
+                return ResourceManager.GetString("createJobViewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Répertoire de destination :.
+        /// </summary>
+        public static string destinationDirectory {
+            get {
+                return ResourceManager.GetString("destinationDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Différentielle.
+        /// </summary>
+        public static string differential {
+            get {
+                return ResourceManager.GetString("differential", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Anglais.
+        /// </summary>
+        public static string english {
+            get {
+                return ResourceManager.GetString("english", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Nombre de fichiers restants.
+        /// </summary>
+        public static string filesLeftToCopy {
+            get {
+                return ResourceManager.GetString("filesLeftToCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Terminé.
+        /// </summary>
+        public static string finish {
+            get {
+                return ResourceManager.GetString("finish", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Français.
+        /// </summary>
+        public static string french {
+            get {
+                return ResourceManager.GetString("french", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Travaux de sauvegarde.
+        /// </summary>
+        public static string jobBackupList {
+            get {
+                return ResourceManager.GetString("jobBackupList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Type de sauvegarde.
+        /// </summary>
+        public static string jobCreateBackupType {
+            get {
+                return ResourceManager.GetString("jobCreateBackupType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Répertoire de destination.
+        /// </summary>
+        public static string jobCreateDestinationDirectory {
+            get {
+                return ResourceManager.GetString("jobCreateDestinationDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Répertoire source.
+        /// </summary>
+        public static string jobCreateSourceDirectory {
+            get {
+                return ResourceManager.GetString("jobCreateSourceDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Type de sauvegarde :.
+        /// </summary>
+        public static string jobType {
+            get {
+                return ResourceManager.GetString("jobType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Label.
+        /// </summary>
+        public static string label {
+            get {
+                return ResourceManager.GetString("label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Langue.
+        /// </summary>
+        public static string language {
+            get {
+                return ResourceManager.GetString("language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Paramètres.
+        /// </summary>
+        public static string settings {
+            get {
+                return ResourceManager.GetString("settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Répertoire source :.
+        /// </summary>
+        public static string sourceDirectory {
+            get {
+                return ResourceManager.GetString("sourceDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à État.
+        /// </summary>
+        public static string state {
+            get {
+                return ResourceManager.GetString("state", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Totale.
+        /// </summary>
+        public static string total {
+            get {
+                return ResourceManager.GetString("total", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Taille total des fichiers :.
+        /// </summary>
+        public static string totalFilesSize {
+            get {
+                return ResourceManager.GetString("totalFilesSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Nombre total de fichiers à copier.
+        /// </summary>
+        public static string totalFilesToCopy {
+            get {
+                return ResourceManager.GetString("totalFilesToCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Taille restante.
+        /// </summary>
+        public static string totalSizeRemaining {
+            get {
+                return ResourceManager.GetString("totalSizeRemaining", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Valider.
+        /// </summary>
+        public static string valid {
+            get {
+                return ResourceManager.GetString("valid", resourceCulture);
             }
         }
     }

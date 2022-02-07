@@ -117,7 +117,94 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="test" xml:space="preserve">
-    <value>hello</value>
+  <data name="active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="appTitle" xml:space="preserve">
+    <value>EasySave</value>
+  </data>
+  <data name="boxDetailTitle" xml:space="preserve">
+    <value>Detail</value>
+  </data>
+  <data name="boxExecutionTitle" xml:space="preserve">
+    <value>Execution</value>
+  </data>
+  <data name="boxLogTitle" xml:space="preserve">
+    <value>Logs</value>
+  </data>
+  <data name="businessSoftware" xml:space="preserve">
+    <value>Business software</value>
+  </data>
+  <data name="cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="createJobViewTitle" xml:space="preserve">
+    <value>Create or update a job backup</value>
+  </data>
+  <data name="destinationDirectory" xml:space="preserve">
+    <value>Destination directory:</value>
+  </data>
+  <data name="differential" xml:space="preserve">
+    <value>Differential</value>
+  </data>
+  <data name="english" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="filesLeftToCopy" xml:space="preserve">
+    <value>Number of files remaining</value>
+  </data>
+  <data name="finish" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="french" xml:space="preserve">
+    <value>French</value>
+  </data>
+  <data name="jobBackupList" xml:space="preserve">
+    <value>Job Backups</value>
+  </data>
+  <data name="jobCreateBackupType" xml:space="preserve">
+    <value>Backup type</value>
+  </data>
+  <data name="jobCreateDestinationDirectory" xml:space="preserve">
+    <value>Destination Directory</value>
+  </data>
+  <data name="jobCreateSourceDirectory" xml:space="preserve">
+    <value>Source Directory</value>
+  </data>
+  <data name="jobType" xml:space="preserve">
+    <value>Backup type:</value>
+  </data>
+  <data name="label" xml:space="preserve">
+    <value>Label</value>
+  </data>
+  <data name="language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="return" xml:space="preserve">
+    <value>Return</value>
+  </data>
+  <data name="settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="sourceDirectory" xml:space="preserve">
+    <value>Source directory:</value>
+  </data>
+  <data name="state" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="totalFilesSize" xml:space="preserve">
+    <value>Total files size:</value>
+  </data>
+  <data name="totalFilesToCopy" xml:space="preserve">
+    <value>Number of total files to copy</value>
+  </data>
+  <data name="totalSizeRemaining" xml:space="preserve">
+    <value>Size remaining</value>
+  </data>
+  <data name="valid" xml:space="preserve">
+    <value>Validate</value>
   </data>
 </root>
