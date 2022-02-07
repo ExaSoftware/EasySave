@@ -8,7 +8,7 @@
         xmlns:language="clr-namespace:EasySave.Resources"
         x:Class="EasySave.MainWindow"
         mc:Ignorable="d"
-        Title="EasySave" Height="600" Width="1080">
+        Title="{x:Static language:Strings.appTitle}" Height="600" Width="1080">
     <Window.Resources>
         
         <!-- Styles -->
@@ -42,7 +42,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Row="0" Background="#a30700">
-            <TextBlock Text="EasySave" Margin="20" FontFamily="Agency FB" FontSize="36" HorizontalAlignment="Left" Foreground="White"/>
+            <TextBlock Text="{x:Static language:Strings.appTitle}" Margin="20" FontFamily="Agency FB" FontSize="36" HorizontalAlignment="Left" Foreground="White"/>
             <Button Name="btnSettings" HorizontalAlignment="Right" Margin="20,0" Content="{iconPacks:Material Height=50, Kind=Cog, Width=50}" Height="64" Width="Auto" Click="btnSettings_Click" BorderThickness="0" Style="{StaticResource settingsButton}"/>
         </Grid>
         <Grid Grid.Row="1">
