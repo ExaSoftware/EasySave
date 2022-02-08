@@ -18,20 +18,6 @@ namespace EasySave.Object
         /// <summary>The current progression of the job saving</summary>
         private int _progression = 0;
 
-        ///  <summary>Create a ProgressLog object.</summary>
-        ///  <remarks>This method set attributes with default parameters.</remarks>
-        public ProgressLog()
-        {
-            this._label = "";
-            this._sourceFile = "";
-            this._targetFile = "";
-            this._state = "END";
-            this._totalFilesToCopy = 0;
-            this._totalFilesSize = 0;
-            this._totalFilesRemaining = 0;
-            this._progression = 0;
-        }
-
         /// <summary>
         /// Progress log builder
         /// </summary>
@@ -50,7 +36,6 @@ namespace EasySave.Object
             _totalFilesRemaining = totalFilesRemaining;
         }
 
-
         [JsonProperty(Order = 4)]
         public string State { get => _state; set => _state = value; }
         [JsonProperty(Order = 5)]
@@ -61,6 +46,27 @@ namespace EasySave.Object
         public int TotalFilesRemaining { get => _totalFilesRemaining; set => _totalFilesRemaining = value; }
         [JsonProperty(Order = 8)]
         public int Progression { get => _progression; set => _progression = value; }
+
+        public void FillProgressLog(string file,string destFile, int totalFilesRemaining,int progression,int id)
+        {
+            this._sourceFile = file;
+            this._targetFile = destFile;
+            this._totalFilesRemaining = totalFilesRemaining;
+            this._progression = progression;
+            this.SaveLog(id);
+        }
+
+        public void ResetProgressLog(int id)
+        {
+            this._sourceFile = "";
+            this._targetFile = "";
+            this._state = "END";
+            this._totalFilesRemaining = 0;
+            this._totalFilesToCopy = 0;
+            this._totalFilesSize = 0;
+            this._progression = 0;
+            this.SaveLog(id);
+        }
 
         /// <summary>
         /// Method which call SaveProgressLog() from LogModel for created a progress log file in C:\EasySave\Logs repository
