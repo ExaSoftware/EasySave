@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EasySave.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -18,8 +19,11 @@ namespace EasySave
     /// </summary>
     public partial class DetailView : Page
     {
+        private DetailViewModel _detailViewModel;
         public DetailView()
         {
+            _detailViewModel = new DetailViewModel();
+            this.DataContext = _detailViewModel;
             InitializeComponent();
         }
 
