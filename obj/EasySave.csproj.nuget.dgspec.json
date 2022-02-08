@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\dupre\\OneDrive\\Documents\\ProjetProg\\EasySave\\EasySave.csproj": {}
+    "D:\\Documents\\Etudes\\cesi\\programmation_systeme\\EasySave\\EasySave.csproj": {}
   },
   "projects": {
-    "C:\\Users\\dupre\\OneDrive\\Documents\\ProjetProg\\EasySave\\EasySave.csproj": {
+    "D:\\Documents\\Etudes\\cesi\\programmation_systeme\\EasySave\\EasySave.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\dupre\\OneDrive\\Documents\\ProjetProg\\EasySave\\EasySave.csproj",
+        "projectUniqueName": "D:\\Documents\\Etudes\\cesi\\programmation_systeme\\EasySave\\EasySave.csproj",
         "projectName": "EasySave",
-        "projectPath": "C:\\Users\\dupre\\OneDrive\\Documents\\ProjetProg\\EasySave\\EasySave.csproj",
-        "packagesPath": "C:\\Users\\dupre\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\dupre\\OneDrive\\Documents\\ProjetProg\\EasySave\\obj\\",
+        "projectPath": "D:\\Documents\\Etudes\\cesi\\programmation_systeme\\EasySave\\EasySave.csproj",
+        "packagesPath": "C:\\Users\\Lucas HIMPENS\\.nuget\\packages\\",
+        "outputPath": "D:\\Documents\\Etudes\\cesi\\programmation_systeme\\EasySave\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\dupre\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Lucas HIMPENS\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -39,16 +43,6 @@
       "frameworks": {
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
-          "dependencies": {
-            "MahApps.Metro.IconPacks": {
-              "target": "Package",
-              "version": "[4.11.0, )"
-            },
-            "Newtonsoft.Json": {
-              "target": "Package",
-              "version": "[13.0.1, )"
-            }
-          },
           "imports": [
             "net461",
             "net462",
@@ -62,9 +56,6 @@
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
-            },
-            "Microsoft.WindowsDesktop.App.WPF": {
-              "privateAssets": "none"
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.404\\RuntimeIdentifierGraph.json"

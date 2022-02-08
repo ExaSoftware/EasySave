@@ -8,6 +8,7 @@ namespace EasySave.ViewModel
     {
         public CreateJobViewModel()
         {
+            
         }
 
         ///  <summary>Create the job</summary>
