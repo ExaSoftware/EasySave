@@ -19,6 +19,7 @@ namespace EasySave
         private String _destinationDirectory;
         private Boolean _isDifferential;
         private int _id;
+        private List<String> _extensionList = new List<string> { "pdf", "xlsx" };
 
         // Properties
         public string SourceDirectory { get => _sourceDirectory; set => _sourceDirectory = value; }
@@ -80,7 +81,7 @@ namespace EasySave
                     error = true;
 
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     error = true;
                 }
@@ -110,14 +111,14 @@ namespace EasySave
 
             //Creation of all sub directories
             foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
-            { 
+            {
                 Directory.CreateDirectory(path.Replace(_sourceDirectory, _destinationDirectory));
             }
 
             string[] files = Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories);
             int fileTransfered = 0;                 //Incease each file transfered
             int fileToTranfer = files.Length;       //Ammount of file to transfer
-            long sizeTotal = totalFileSize(files);
+            long sizeTotal = TotalFileSize(files);
 
             // Setup objects
             Stopwatch historyStopwatch = new Stopwatch();
@@ -129,16 +130,24 @@ namespace EasySave
             {
                 try
                 {
-                    string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
-                    
                     FileInfo fileInfo = new FileInfo(file);
+                    string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
+                    int encryptionTime;
 
                     historyStopwatch.Reset();
-                    historyStopwatch.Start();
 
-                    error = SaveFileWithOverWrite(file, destFile);
+                    if (_extensionList.Contains(fileInfo.Extension))
+                    {
+                        encryptionTime = CypherFile(file, destFile);
+                    }
+                    else
+                    {
+                        historyStopwatch.Start();
 
-                    historyStopwatch.Stop();
+                        error = SaveFileWithOverWrite(file, destFile);
+
+                        historyStopwatch.Stop();
+                    }
                     fileTransfered++;
 
                     //Write logs
@@ -207,7 +216,7 @@ namespace EasySave
         private bool DoDifferentialSave()
         {
             bool error = false;
-            String[] files = findFilesForDifferentialSave(_sourceDirectory);
+            String[] files = FindFilesForDifferentialSave(_sourceDirectory);
 
             //Creation of all sub directories
             foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
@@ -217,7 +226,7 @@ namespace EasySave
 
             int fileTransfered = 0;                 //Incease each file transfered
             int fileToTranfer = files.Length;       //Ammount of file to transfer
-            long sizeTotal = totalFileSize(files);
+            long sizeTotal = TotalFileSize(files);
 
             Stopwatch historyStopwatch = new Stopwatch();
             ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered);
@@ -229,13 +238,23 @@ namespace EasySave
                 {
                     // Creation of the destFile
                     string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
+                    int encryptionTime;
 
                     FileInfo fileInfo = new FileInfo(file);
-                    historyStopwatch.Reset();
-                    historyStopwatch.Start();
+                    if (_extensionList.Contains(fileInfo.Extension))
+                    {
+                        encryptionTime = CypherFile(file, destFile);
+                    }
+                    else
+                    {
+                        historyStopwatch.Reset();
+                        historyStopwatch.Start();
 
-                    error = SaveFileWithOverWrite(file, destFile);
-                    historyStopwatch.Stop();
+                        error = SaveFileWithOverWrite(file, destFile);
+
+                        historyStopwatch.Stop();
+                    }
+
                     fileTransfered++;
 
                     progressLog.SourceFile = file;
@@ -298,7 +317,7 @@ namespace EasySave
 
 
 
-        private long totalFileSize(String[] files)
+        private long TotalFileSize(String[] files)
         {
             long totalSize = 0;
 
@@ -313,7 +332,7 @@ namespace EasySave
 
 
 
-        private String[] findFilesForDifferentialSave(String directory)
+        private String[] FindFilesForDifferentialSave(String directory)
         {
             List<String> filesToSave = new List<string>();
             String[] filesInDirectory = Directory.GetFiles(directory, "*", SearchOption.AllDirectories);
@@ -343,6 +362,30 @@ namespace EasySave
             return filesToSave.ToArray();
         }
 
+
+        private int CypherFile(String sourceFile, String destFile)
+        {
+            Process process = new Process();
+            int time;
+
+            process.StartInfo.FileName = @"C:\EasySave\CryptoSoft\bin\Debug\netcoreapp3.1\CryptoSoft.exe";
+            process.StartInfo.Arguments = sourceFile + " " + destFile;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.Start();
+
+            if (process.HasExited)
+            {
+                time = Convert.ToInt32(process.StandardOutput.ReadToEnd());
+            }
+            else
+            {
+                process.WaitForExit();
+                time = Convert.ToInt32(process.StandardOutput.ReadToEnd());
+            }
+
+            process.Close();
+            return time;
+        }
 
     }
 }
