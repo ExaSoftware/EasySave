@@ -41,9 +41,12 @@ namespace EasySave
                 comboBoxLanguages.SelectedIndex = 1;
             }
 
-            String test = String.Join(";", settingsViewModel.Configuration.Extensions);
-            Trace.WriteLine(test);
-            txtBoxExtensionsList.Text = test;
+            if (settingsViewModel.Configuration.Extensions != null)
+            {
+                String test = String.Join(";", settingsViewModel.Configuration.Extensions);
+                txtBoxExtensionsList.Text = test;
+            }
+
             
 
         }
