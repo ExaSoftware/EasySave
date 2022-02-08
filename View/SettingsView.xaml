@@ -86,7 +86,7 @@
             
             <!-- Language -->
             <TextBlock Text="{x:Static language:Strings.language}" Grid.Row="0" VerticalAlignment="Center"/>
-            <ComboBox Grid.Row="0" Grid.Column="1" Height="25">
+            <ComboBox Grid.Row="0" Grid.Column="1" Height="25" Name="comboBoxLanguages">
                 <ComboBoxItem Content="{x:Static language:Strings.french}"/>
                 <ComboBoxItem Content="{x:Static language:Strings.english}" />
             </ComboBox>
@@ -95,8 +95,12 @@
             <TextBlock Text="{x:Static language:Strings.businessSoftware}" Grid.Row="1" VerticalAlignment="Center" Margin="0,0,5,0"/>
             <DockPanel Grid.Column="1" Grid.Row="1" Height="20">
                 <Button Name="btnSelectBusinessSoftwarePath" Margin="0" Padding="0" DockPanel.Dock="Right" Width="22" Content="{iconPacks:FontAwesome Kind=FolderPlusSolid, Height=16, Width=16}" Style="{StaticResource selectFolderButton}" Click="btnSelectSourcePath_Click"/>
-                <TextBox Name="txtBoxBusinessSoftwarePath" Height="Auto" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Text="{Binding Text, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+                <TextBox Name="txtBoxBusinessSoftwarePath" Height="Auto" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Text="{Binding Configuration.BusinessSoftware}" />
             </DockPanel>
+            
+            <!-- Extensions List -->
+            <TextBlock Text="Liste des extensions des fichiers à chiffrer (.exe;.pdf;.png)" Grid.Row="2" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <TextBox Name="txtBoxExtensionsList" Height="20" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Text="" Grid.Row="2" Grid.Column="1"/>
         </Grid>
 
         <!-- Page button control -->
@@ -107,7 +111,7 @@
                     <TextBlock Text="{x:Static language:Strings._return}" VerticalAlignment="Center" Foreground="White"/>
                 </StackPanel>
             </Button>
-            <Button Name="btnValid" Height="50" Width="Auto" Margin="10,0" Style="{StaticResource controlButtonStyle}">
+            <Button Name="btnValid" Height="50" Width="Auto" Margin="10,0" Style="{StaticResource controlButtonStyle}" Click="btnValid_Click">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="{iconPacks:FontAwesome Kind=CheckSolid}" Foreground="Green" VerticalAlignment="Center"  Padding="0" Margin="0,0,5,0"/>
                     <TextBlock Text="{x:Static language:Strings.valid}" VerticalAlignment="Center" Foreground="White"/>
