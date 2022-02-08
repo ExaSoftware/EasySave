@@ -124,7 +124,7 @@ namespace EasySave
             // Setup objects
             Stopwatch historyStopwatch = new Stopwatch();
             ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered);
-            HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0);
+            HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0,0);
 
             // Copy the files and overwrite destination files if they already exist.
             foreach (string file in files)
@@ -231,7 +231,7 @@ namespace EasySave
 
             Stopwatch historyStopwatch = new Stopwatch();
             ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered);
-            HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0);
+            HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0, 0);
 
             foreach (String file in files)
             {
@@ -303,15 +303,7 @@ namespace EasySave
             }
 
             //Reset progressLog
-            progressLog.SourceFile = "";
-            progressLog.TargetFile = "";
-            progressLog.State = "END";
-            progressLog.TotalFilesRemaining = 0;
-            progressLog.TotalFilesToCopy = 0;
-            progressLog.TotalFilesSize = 0;
-            progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
-            progressLog.Progression = 0;
-            progressLog.SaveLog(_id);
+            progressLog.ResetProgressLog(_id);
 
             return error;
         }

@@ -62,6 +62,27 @@ namespace EasySave.Object
         [JsonProperty(Order = 8)]
         public int Progression { get => _progression; set => _progression = value; }
 
+        public void FillProgressLog(string file, string destFile, int totalFilesRemaining, int progression, int id)
+        {
+            this._sourceFile = file;
+            this._targetFile = destFile;
+            this._totalFilesRemaining = totalFilesRemaining;
+            this._progression = progression;
+            this.SaveLog(id);
+        }
+
+        public void ResetProgressLog(int id)
+        {
+            this._sourceFile = "";
+            this._targetFile = "";
+            this._state = "END";
+            this._totalFilesRemaining = 0;
+            this._totalFilesToCopy = 0;
+            this._totalFilesSize = 0;
+            this._progression = 0;
+            this.SaveLog(id);
+        }
+
         /// <summary>
         /// Method which call SaveProgressLog() from LogModel for created a progress log file in C:\EasySave\Logs repository
         /// </summary>
