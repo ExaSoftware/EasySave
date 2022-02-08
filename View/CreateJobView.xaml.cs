@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using EasySave.ViewModel;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -62,6 +63,19 @@ namespace EasySave
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
+            this.NavigationService.Navigate(new DetailView());
+        }
+
+        private void btnValid_Click(object sender, RoutedEventArgs e)
+        {
+            CreateJobViewModel job = new CreateJobViewModel();
+            string name = label.Text;
+            string sourceDirectory = txtBoxSourcePath.Text;
+            string destinationDirectory = txtBoxDestinationPath.Text;
+            bool isDifferential = false;
+            if (type.SelectedIndex == 0) isDifferential = false;
+            if (type.SelectedIndex == 1) isDifferential = true;
+            job.JobCreation(name, sourceDirectory, destinationDirectory, isDifferential);
             this.NavigationService.Navigate(new DetailView());
         }
     }
