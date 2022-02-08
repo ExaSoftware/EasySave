@@ -143,7 +143,7 @@ namespace EasySave
                 {
                     FileInfo fileInfo = new FileInfo(file);
                     string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
-                    int encryptionTime;
+                    int encryptionTime = 0;
 
                     historyStopwatch.Reset();
 
@@ -155,7 +155,7 @@ namespace EasySave
                     {
                         historyStopwatch.Start();
 
-                    File.Copy(file, destFile, true);
+                        File.Copy(file, destFile, true);
                         error = SaveFileWithOverWrite(file, destFile);
 
                         historyStopwatch.Stop();
@@ -163,29 +163,15 @@ namespace EasySave
                     fileTransfered++;
 
                     //Write logs
-                    progressLog.SourceFile = file;
-                    progressLog.TargetFile = destFile;
-                    progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
-                    progressLog.Progression = 100 * fileTransfered / fileToTranfer;
-                    progressLog.SaveLog(_id);
-
-                    historyLog.SourceFile = file;
-                    historyLog.TargetFile = destFile;
-                    historyLog.FileSize = (ulong)fileInfo.Length;
-                    historyLog.TransferTime = historyStopwatch.Elapsed.TotalMilliseconds;
-                    historyLog.SaveLog();
+                    progressLog.FillProgressLog(file, destFile, (fileToTranfer - fileTransfered), (100 * fileTransfered / fileToTranfer), _id);
+                    historyLog.FillHistoryLog(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
                 }
                 catch (FileNotFoundException FileE)
                 {
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                    historyLog.SourceFile = file;
-                    historyLog.TargetFile = destFile;
-                    historyLog.FileSize = 0;
-                    historyLog.TransferTime = -1;
-                    historyLog.Error = FileE.ToString();
-                    historyLog.SaveLog();
+                    historyLog.FillHistoryLog(file, destFile, 0, -1, FileE.ToString(), 0);
 
                     error = true;
                     break;
@@ -195,15 +181,11 @@ namespace EasySave
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                    historyLog.SourceFile = file;
-                    historyLog.TargetFile = destFile;
-                    historyLog.FileSize = 0;
-                    historyLog.TransferTime = -1;
-                    historyLog.Error = e.ToString();
-                    historyLog.SaveLog();
+                    historyLog.FillHistoryLog(file, destFile, 0, -1, e.ToString(), 0);
 
                     error = true;
-            progressLog.ResetProgressLog(_id);
+                    break;
+                }
             }
 
             //Reset progressLog
@@ -245,7 +227,7 @@ namespace EasySave
                 {
                     // Creation of the destFile
                     string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
-                    int encryptionTime;
+                    int encryptionTime = 0;
 
                     FileInfo fileInfo = new FileInfo(file);
                     if (_extensionList.Contains(fileInfo.Extension))
@@ -257,8 +239,8 @@ namespace EasySave
                         historyStopwatch.Reset();
                         historyStopwatch.Start();
 
-                    File.Copy(file, destFile, true);
-                    historyStopwatch.Stop();
+                        File.Copy(file, destFile, true);
+                    
                         error = SaveFileWithOverWrite(file, destFile);
 
                         historyStopwatch.Stop();
@@ -266,29 +248,16 @@ namespace EasySave
 
                     fileTransfered++;
 
-                    progressLog.SourceFile = file;
-                    progressLog.TargetFile = destFile;
-                    progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
-                    progressLog.Progression = 100 * fileTransfered / fileToTranfer;
-                    progressLog.SaveLog(_id);
+                    progressLog.FillProgressLog(file, destFile, (fileToTranfer - fileTransfered), (100 * fileTransfered / fileToTranfer), _id);
 
-                    historyLog.SourceFile = file;
-                    historyLog.TargetFile = destFile;
-                    historyLog.FileSize = (ulong)fileInfo.Length;
-                    historyLog.TransferTime = historyStopwatch.Elapsed.TotalMilliseconds;
-                    historyLog.SaveLog();
+                    historyLog.FillHistoryLog(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
                 }
                 catch (FileNotFoundException fileE)
                 {
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                    historyLog.SourceFile = file;
-                    historyLog.TargetFile = destFile;
-                    historyLog.FileSize = 0;
-                    historyLog.TransferTime = -1;
-                    historyLog.Error = fileE.ToString();
-                    historyLog.SaveLog();
+                    historyLog.FillHistoryLog(file, destFile, 0, -1, fileE.ToString(), 0);
 
                     error = true;
                     break;
@@ -298,12 +267,7 @@ namespace EasySave
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                    historyLog.SourceFile = file;
-                    historyLog.TargetFile = destFile;
-                    historyLog.FileSize = 0;
-                    historyLog.TransferTime = -1;
-                    historyLog.Error = e.ToString();
-                    historyLog.SaveLog();
+                    historyLog.FillHistoryLog(file, destFile, 0, -1, e.ToString(),0);
 
                     error = true;
                     break;
