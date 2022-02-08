@@ -39,6 +39,7 @@ namespace EasySave
             // Load content of file in a TextBlock
             if (result == true)
             {
+                //test
                 txtBoxSourcePath.Text = openFileDialog.FileName;
                 //TextBlock1.Text = System.IO.File.ReadAllText(openFileDlg.FileName);
             }
