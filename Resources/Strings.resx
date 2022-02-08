@@ -117,142 +117,97 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="backupJobDeleted" xml:space="preserve">
-    <value>Travail de sauvegarde supprimé !</value>
+  <data name="active" xml:space="preserve">
+    <value>Actif</value>
   </data>
-  <data name="backupJobExecutionSuccessfullyDone" xml:space="preserve">
-    <value>Exécution du travail de sauvegarde '{0}' terminée avec succès !</value>
+  <data name="appTitle" xml:space="preserve">
+    <value>EasySave</value>
   </data>
-  <data name="emptyInputJobLabel" xml:space="preserve">
-    <value>Le nom du travail de sauvegarde ne peut pas être vide, merci de réessayer.</value>
+  <data name="boxDetailTitle" xml:space="preserve">
+    <value>Détails</value>
   </data>
-  <data name="errorDirectoryNotFound" xml:space="preserve">
-    <value>Répertoire non trouvé, veuillez réessayer</value>
+  <data name="boxExecutionTitle" xml:space="preserve">
+    <value>Exécution</value>
   </data>
-  <data name="errorFormatNumber" xml:space="preserve">
-    <value>Veuillez entrer un nombre</value>
+  <data name="boxLogTitle" xml:space="preserve">
+    <value>Journal</value>
   </data>
-  <data name="errorJobBackupNotCreated" xml:space="preserve">
-    <value>Vous ne pouvez pas exécuter ce travail de sauvegarde car il n'a pas été crée.</value>
+  <data name="businessSoftware" xml:space="preserve">
+    <value>Logiciel métier</value>
   </data>
-  <data name="jobBackupSuccessCreated" xml:space="preserve">
-    <value>Travail de sauvegarde '{0}' crée avec succès !</value>
+  <data name="businessSofware" xml:space="preserve">
+    <value>Logiciel métier</value>
   </data>
-  <data name="jobDestinationDirectory" xml:space="preserve">
+  <data name="cancel" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="createJobViewTitle" xml:space="preserve">
+    <value>Créer ou modifier un travail de sauvegarde</value>
+  </data>
+  <data name="destinationDirectory" xml:space="preserve">
     <value>Répertoire de destination :</value>
   </data>
-  <data name="jobLabel" xml:space="preserve">
-    <value>Label :</value>
-  </data>
-  <data name="jobSourceDirectory" xml:space="preserve">
-    <value>Répertoire source :</value>
-  </data>
-  <data name="jobType" xml:space="preserve">
-    <value>Type :</value>
-  </data>
-  <data name="jobTypeComplete" xml:space="preserve">
-    <value>Complète</value>
-  </data>
-  <data name="jobTypeDifferential" xml:space="preserve">
+  <data name="differential" xml:space="preserve">
     <value>Différentielle</value>
   </data>
-  <data name="languageChangedSuccess" xml:space="preserve">
-    <value>Changement de la langue vers '{0}' exécuté avec succès !</value>
-  </data>
-  <data name="menuAction" xml:space="preserve">
-    <value>Choisissez une action</value>
-  </data>
-  <data name="menuActionCreateJob" xml:space="preserve">
-    <value>Créer un nouveau travail de sauvegarde</value>
-  </data>
-  <data name="menuActionDeleteJob" xml:space="preserve">
-    <value>Supprimer un travail de sauvegarde</value>
-  </data>
-  <data name="menuActionExecuteAllJobs" xml:space="preserve">
-    <value>Lancer tous les travaux de sauvegarde</value>
-  </data>
-  <data name="menuActionExecuteOneJob" xml:space="preserve">
-    <value>Lancer un travail de sauvegarde</value>
-  </data>
-  <data name="menuAskJobDelete" xml:space="preserve">
-    <value>Quel travail de sauvegarde souhaitez-vous supprimer ?</value>
-  </data>
-  <data name="menuChoiceError" xml:space="preserve">
-    <value>Choix non valide, veuillez choisir un autre nombre</value>
-  </data>
-  <data name="menuChooseJob" xml:space="preserve">
-    <value>Choisissez un travail de sauvegarde</value>
-  </data>
-  <data name="menuChooseSpace" xml:space="preserve">
-    <value>Choisissez un emplacement de 1 à 5</value>
-  </data>
-  <data name="menuExit" xml:space="preserve">
-    <value>Quitter</value>
-  </data>
-  <data name="menuIntroductionInsert" xml:space="preserve">
-    <value>Tapez un des chiffres suivants</value>
-  </data>
-  <data name="menuIntroductionOptions" xml:space="preserve">
-    <value>Options</value>
-  </data>
-  <data name="menuIntroductionStart" xml:space="preserve">
-    <value>Démarrer</value>
-  </data>
-  <data name="menuJobDestination" xml:space="preserve">
-    <value>Écrivez le chemin du répertoire de destination</value>
-  </data>
-  <data name="menuJobLabel" xml:space="preserve">
-    <value>Écrivez le nom du travail de sauvegarde</value>
-  </data>
-  <data name="menuJobSource" xml:space="preserve">
-    <value>Écrivez le chemin du répertoire source</value>
-  </data>
-  <data name="menuLanguageChoose" xml:space="preserve">
-    <value>Choisissez la langue</value>
-  </data>
-  <data name="menuLanguageEn" xml:space="preserve">
+  <data name="english" xml:space="preserve">
     <value>Anglais</value>
   </data>
-  <data name="menuLanguageFr" xml:space="preserve">
+  <data name="filesLeftToCopy" xml:space="preserve">
+    <value>Nombre de fichiers restants</value>
+  </data>
+  <data name="finish" xml:space="preserve">
+    <value>Terminé</value>
+  </data>
+  <data name="french" xml:space="preserve">
     <value>Français</value>
   </data>
-  <data name="menuOtherReturnStart" xml:space="preserve">
-    <value>Autre - Retourner au début</value>
+  <data name="jobBackupList" xml:space="preserve">
+    <value>Travaux de sauvegarde</value>
   </data>
-  <data name="menuReturnStart" xml:space="preserve">
-    <value>Retourner au début</value>
+  <data name="jobCreateBackupType" xml:space="preserve">
+    <value>Type de sauvegarde</value>
   </data>
-  <data name="menuSaveDifferential" xml:space="preserve">
-    <value>Sauvegarde différentielle</value>
+  <data name="jobCreateDestinationDirectory" xml:space="preserve">
+    <value>Répertoire de destination</value>
   </data>
-  <data name="menuSaveTotal" xml:space="preserve">
-    <value>Sauvegarde complète</value>
+  <data name="jobCreateSourceDirectory" xml:space="preserve">
+    <value>Répertoire source</value>
   </data>
-  <data name="menuSaveType" xml:space="preserve">
-    <value>Quel type de sauvegarde souhaitez-vous utiliser ?</value>
+  <data name="jobType" xml:space="preserve">
+    <value>Type de sauvegarde :</value>
   </data>
-  <data name="menuWarn12" xml:space="preserve">
-    <value>Entrez un chiffre entre 1 et 2</value>
+  <data name="label" xml:space="preserve">
+    <value>Label</value>
   </data>
-  <data name="menuWarn13" xml:space="preserve">
-    <value>Entrez un chiffre entre 1 et 3</value>
+  <data name="language" xml:space="preserve">
+    <value>Langue</value>
   </data>
-  <data name="menuWarn14" xml:space="preserve">
-    <value>Entrez un chiffre entre 1 et 4</value>
+  <data name="return" xml:space="preserve">
+    <value>Retour</value>
   </data>
-  <data name="menuWarn15" xml:space="preserve">
-    <value>Entrez un chiffre entre 1 et 5</value>
+  <data name="settings" xml:space="preserve">
+    <value>Paramètres</value>
   </data>
-  <data name="noBackupJob" xml:space="preserve">
-    <value>Veuillez créer un travail de sauvegarde pour pouvoir l'exécuter.</value>
+  <data name="sourceDirectory" xml:space="preserve">
+    <value>Répertoire source :</value>
   </data>
-  <data name="runningBackupJob" xml:space="preserve">
-    <value>Exécution du travail de sauvegarde '{0}'...</value>
+  <data name="state" xml:space="preserve">
+    <value>État</value>
   </data>
-  <data name="saveError" xml:space="preserve">
-    <value>Une erreur est survenue avec cette sauvegarde : '{0}'</value>
+  <data name="total" xml:space="preserve">
+    <value>Totale</value>
   </data>
-  <data name="sequentialExecutionSuccessfullyDone" xml:space="preserve">
-    <value>L'exécution séquentielle des travaux de sauvegarde s'est terminée avec succès !</value>
+  <data name="totalFilesSize" xml:space="preserve">
+    <value>Taille total des fichiers :</value>
+  </data>
+  <data name="totalFilesToCopy" xml:space="preserve">
+    <value>Nombre total de fichiers à copier</value>
+  </data>
+  <data name="totalSizeRemaining" xml:space="preserve">
+    <value>Taille restante</value>
+  </data>
+  <data name="valid" xml:space="preserve">
+    <value>Valider</value>
   </data>
 </root>

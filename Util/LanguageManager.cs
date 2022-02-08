@@ -1,6 +1,8 @@
 ﻿using EasySave.Object;
 using System;
 using System.Globalization;
+using System.Threading;
+using System.Windows;
 
 namespace EasySave.Util
 {
@@ -16,6 +18,9 @@ namespace EasySave.Util
             CultureInfo.CurrentUICulture = new CultureInfo(language, false);
             configuration.Language = language;
             configuration.Save();
+            /*Thread.Sleep(2000);
+            System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
+            Application.Current.Shutdown();*/
         }
     }
 }

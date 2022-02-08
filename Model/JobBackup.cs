@@ -19,6 +19,7 @@ namespace EasySave
         private String _destinationDirectory;
         private Boolean _isDifferential;
         private int _id;
+        private List<String> _extensionList = new List<string> { "pdf", "xlsx" };
 
         // Properties
         public string SourceDirectory { get => _sourceDirectory; set => _sourceDirectory = value; }
@@ -91,7 +92,7 @@ namespace EasySave
                     error = true;
 
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     error = true;
                 }
@@ -119,7 +120,7 @@ namespace EasySave
             int encryptionTimeResult = 0;
             //Creation of all sub directories
             foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
-            { 
+            {
                 Directory.CreateDirectory(path.Replace(_sourceDirectory, _destinationDirectory));
             }
 
@@ -138,16 +139,25 @@ namespace EasySave
             {
                 try
                 {
-                    string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
-                    
                     FileInfo fileInfo = new FileInfo(file);
+                    string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
+                    int encryptionTime;
 
                     historyStopwatch.Reset();
-                    historyStopwatch.Start();
+
+                    if (_extensionList.Contains(fileInfo.Extension))
+                    {
+                        encryptionTime = CypherFile(file, destFile);
+                    }
+                    else
+                    {
+                        historyStopwatch.Start();
 
                     File.Copy(file, destFile, true);
+                        error = SaveFileWithOverWrite(file, destFile);
 
-                    historyStopwatch.Stop();
+                        historyStopwatch.Stop();
+                    }
                     fileTransfered++;
 
                     //Write logs
@@ -190,6 +200,7 @@ namespace EasySave
             bool error = false;
             int encryptionTImeResult = 0;
             String[] files = findFilesForDifferentialSave(_sourceDirectory);
+            String[] files = FindFilesForDifferentialSave(_sourceDirectory);
 
             //Creation of all sub directories
             foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
@@ -211,13 +222,25 @@ namespace EasySave
                 {
                     // Creation of the destFile
                     string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
+                    int encryptionTime;
 
                     FileInfo fileInfo = new FileInfo(file);
-                    historyStopwatch.Reset();
-                    historyStopwatch.Start();
+                    if (_extensionList.Contains(fileInfo.Extension))
+                    {
+                        encryptionTime = CypherFile(file, destFile);
+                    }
+                    else
+                    {
+                        historyStopwatch.Reset();
+                        historyStopwatch.Start();
 
                     File.Copy(file, destFile, true);
                     historyStopwatch.Stop();
+                        error = SaveFileWithOverWrite(file, destFile);
+
+                        historyStopwatch.Stop();
+                    }
+
                     fileTransfered++;
 
                     progressLog.FillProgressLog(file, destFile, (fileToTranfer - fileTransfered), (100 * fileTransfered / fileToTranfer), _id);
@@ -269,7 +292,7 @@ namespace EasySave
 
 
 
-        private String[] findFilesForDifferentialSave(String directory)
+        private String[] FindFilesForDifferentialSave(String directory)
         {
             List<String> filesToSave = new List<string>();
             String[] filesInDirectory = Directory.GetFiles(directory, "*", SearchOption.AllDirectories);
@@ -299,6 +322,30 @@ namespace EasySave
             return filesToSave.ToArray();
         }
 
+
+        private int CypherFile(String sourceFile, String destFile)
+        {
+            Process process = new Process();
+            int time;
+
+            process.StartInfo.FileName = @"C:\EasySave\CryptoSoft\bin\Debug\netcoreapp3.1\CryptoSoft.exe";
+            process.StartInfo.Arguments = sourceFile + " " + destFile;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.Start();
+
+            if (process.HasExited)
+            {
+                time = Convert.ToInt32(process.StandardOutput.ReadToEnd());
+            }
+            else
+            {
+                process.WaitForExit();
+                time = Convert.ToInt32(process.StandardOutput.ReadToEnd());
+            }
+
+            process.Close();
+            return time;
+        }
 
     }
 }
