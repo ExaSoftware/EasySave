@@ -68,9 +68,20 @@ namespace EasySave
 
         ///  <summary>Execute the save according to attributes.</summary>
         ///  <remarks>Use it whether differential or not.</remarks>
-        public bool Execute()
+        public bool Execute(List<string> buisnessSoftwareName)
         {
             bool error = false;
+            int i = 0;
+            while (buisnessSoftwareName.Count > i )
+            {
+                Process[] procName = Process.GetProcessesByName(buisnessSoftwareName[i]);
+                if (procName.Length != 0)
+                {
+                    return true;
+                }
+                i -= 1;
+            } 
+               
             if (!Directory.Exists(_destinationDirectory))
             {
                 try
@@ -101,8 +112,7 @@ namespace EasySave
             }
             return error;
         }
-
-
+                   
 
         ///  <summary>Save all files from _sourceDirectory to _destDirectory.</summary>
         ///  <remarks>This method ignores deleted files.</remarks>
@@ -145,6 +155,7 @@ namespace EasySave
                     {
                         historyStopwatch.Start();
 
+                    File.Copy(file, destFile, true);
                         error = SaveFileWithOverWrite(file, destFile);
 
                         historyStopwatch.Stop();
@@ -192,31 +203,26 @@ namespace EasySave
                     historyLog.SaveLog();
 
                     error = true;
-                    break;
-                }
+            progressLog.ResetProgressLog(_id);
             }
 
             //Reset progressLog
-            progressLog.SourceFile = "";
-            progressLog.TargetFile = "";
-            progressLog.State = "END";
-            progressLog.TotalFilesRemaining = 0;
-            progressLog.TotalFilesToCopy = 0;
-            progressLog.TotalFilesSize = 0;
-            progressLog.TotalFilesRemaining = fileToTranfer - fileTransfered;
-            progressLog.Progression = 0;
-            progressLog.SaveLog(_id);
+            progressLog.ResetProgressLog(_id);
 
             return error;
         }
 
 
 
-        /// <summary> Save all differents files between _sourceDirectory and _destDirectory to _destDirectory.</summary>
-        /// <remarks>This method ignores deleted files.</remarks>
-        private bool DoDifferentialSave()
-        {
-            bool error = false;
+
+            /// <summary> Save all differents files between _sourceDirectory and _destDirectory to _destDirectory.</summary>
+            /// <remarks>This method ignores deleted files.</remarks>
+            private bool DoDifferentialSave()
+            {
+                bool error = false;
+
+            int encryptionTImeResult = 0;
+
             String[] files = FindFilesForDifferentialSave(_sourceDirectory);
 
             //Creation of all sub directories
@@ -251,6 +257,8 @@ namespace EasySave
                         historyStopwatch.Reset();
                         historyStopwatch.Start();
 
+                    File.Copy(file, destFile, true);
+                    historyStopwatch.Stop();
                         error = SaveFileWithOverWrite(file, destFile);
 
                         historyStopwatch.Stop();
