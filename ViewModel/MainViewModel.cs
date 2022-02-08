@@ -101,7 +101,8 @@ namespace EasySave
                                 {
                                     _view.Display(String.Format(_rm.GetString("runningBackupJob"), _listOfJobBackup[input].Label));
                                     //Check if there's an error with the parameters of the save and launch the save
-                                    if (_listOfJobBackup[input].Execute())
+
+                                    if (_listOfJobBackup[input].Execute(new List<string>()))
                                     {
                                         _view.Display(String.Format(_rm.GetString("saveError"), _listOfJobBackup[input].Label) + Environment.NewLine);
                                         isError = true;
@@ -124,7 +125,7 @@ namespace EasySave
                                 {
                                     if (!String.IsNullOrEmpty(item.Label)) _view.Display(String.Format(_rm.GetString("runningBackupJob"), item.Label));
                                     //Check if there's an error with the parameters of the save
-                                    if (!String.IsNullOrEmpty(item.Label) && item.Execute())
+                                    if (!String.IsNullOrEmpty(item.Label) && item.Execute(new List<string>()))
                                     {
                                         _view.Display(String.Format(_rm.GetString("saveError"), item.Label) + Environment.NewLine);
                                         isError = true;
