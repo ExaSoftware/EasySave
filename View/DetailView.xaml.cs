@@ -34,9 +34,7 @@ namespace EasySave
 
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            //MessageBox.Show("double click0." + listViewBackups.SelectedIndex);
-            CreateJobView editJobView = new CreateJobView();
-            editJobView.DataContext = listViewBackups.SelectedItem;
+            CreateJobView editJobView = new CreateJobView(new CreateJobViewModel((JobBackup)listViewBackups.SelectedItem));
             this.NavigationService.Navigate(editJobView);
         }
     }

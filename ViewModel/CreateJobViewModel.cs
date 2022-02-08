@@ -4,12 +4,20 @@ using System.Text;
 
 namespace EasySave.ViewModel
 {
-    class CreateJobViewModel
+    public class CreateJobViewModel
     {
+        private JobBackup _jobBackup;
         public CreateJobViewModel()
         {
             
         }
+
+        public CreateJobViewModel(JobBackup jobBackup)
+        {
+            _jobBackup = jobBackup;
+        }
+
+        public JobBackup JobBackup { get => _jobBackup; set => _jobBackup = value; }
 
         ///  <summary>Create the job</summary>
         public void JobCreation(string label,string SourceDirectory, string DestinationDirectory, bool isDifferential)

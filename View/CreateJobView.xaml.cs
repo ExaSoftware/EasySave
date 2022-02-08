@@ -24,6 +24,17 @@ namespace EasySave
         public CreateJobView()
         {
             InitializeComponent();
+            /*CreateJobViewModel createJobViewModel = this.DataContext as CreateJobViewModel;
+            MessageBox.Show(createJobViewModel.JobBackup.DestinationDirectory);*/
+        }
+
+        public CreateJobView(CreateJobViewModel vm)
+        {
+            InitializeComponent();
+            this.DataContext = vm;
+
+            if (vm.JobBackup.IsDifferential) type.SelectedIndex = 1;
+            if (!vm.JobBackup.IsDifferential) type.SelectedIndex = 0;
         }
 
         private void btnReturn_Click(object sender, RoutedEventArgs e)
