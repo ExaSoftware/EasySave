@@ -66,52 +66,50 @@ namespace EasySave
 
         ///  <summary>Execute the save according to attributes.</summary>
         ///  <remarks>Use it whether differential or not.</remarks>
-        public bool Execute(string buisnessSoftwareName)
+        public bool Execute(List<string> buisnessSoftwareName)
         {
             bool error = false;
-            Process[] procName = Process.GetProcessesByName(buisnessSoftwareName);
-            if (procName.Length != 0 && buisnessSoftwareName != "")
+            int i = 0;
+            while (buisnessSoftwareName.Count > i )
             {
-                Console.WriteLine("You can't execute a job backup because " + buisnessSoftwareName + "processus is running. Close it before and try again.");
-                error = true;
-                return error;
-            }
-            else
-            {
+                Process[] procName = Process.GetProcessesByName(buisnessSoftwareName[i]);
+                if (procName.Length != 0)
+                {
+                    return true;
+                }
+                i -= 1;
+            }           
                
-                if (!Directory.Exists(_destinationDirectory))
+            if (!Directory.Exists(_destinationDirectory))
+            {
+                try
                 {
-                    try
-                    {
-                        Directory.CreateDirectory(DestinationDirectory);
-                    }
-                    catch (ArgumentException)
-                    {
-                        error = true;
-
-                    }
-                    catch(Exception)
-                    {
-                        error = true;
-                    }
+                    Directory.CreateDirectory(DestinationDirectory);
                 }
-
-                if (!error)
+                catch (ArgumentException)
                 {
-                    if (_isDifferential)
-                    {
-                        error = DoDifferentialSave();
-                    }
-                    else
-                    {
-                        error = SaveAllFiles();
-                    }
+                    error = true;
+
                 }
-                return error;
+                catch(Exception)
+                {
+                    error = true;
+                }
             }
+
+            if (!error)
+            {
+                if (_isDifferential)
+                {
+                    error = DoDifferentialSave();
+                }
+                else
+                {
+                    error = SaveAllFiles();
+                }
+            }
+            return error;
         }
-
-
 
         ///  <summary>Save all files from _sourceDirectory to _destDirectory.</summary>
         ///  <remarks>This method ignores deleted files.</remarks>
@@ -181,7 +179,6 @@ namespace EasySave
 
             //Reset progressLog
             progressLog.ResetProgressLog(_id);
-
             return error;
         }
 
