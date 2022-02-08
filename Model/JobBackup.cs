@@ -112,7 +112,6 @@ namespace EasySave
             }
             return error;
         }
-                   
 
         ///  <summary>Save all files from _sourceDirectory to _destDirectory.</summary>
         ///  <remarks>This method ignores deleted files.</remarks>
@@ -155,7 +154,7 @@ namespace EasySave
                     {
                         historyStopwatch.Start();
 
-                        File.Copy(file, destFile, true);
+                    File.Copy(file, destFile, true);
                         error = SaveFileWithOverWrite(file, destFile);
 
                         historyStopwatch.Stop();
@@ -196,13 +195,11 @@ namespace EasySave
 
 
 
-
-            /// <summary> Save all differents files between _sourceDirectory and _destDirectory to _destDirectory.</summary>
-            /// <remarks>This method ignores deleted files.</remarks>
-            private bool DoDifferentialSave()
-            {
-                bool error = false;
-
+        /// <summary> Save all differents files between _sourceDirectory and _destDirectory to _destDirectory.</summary>
+        /// <remarks>This method ignores deleted files.</remarks>
+        private bool DoDifferentialSave()
+        {
+            bool error = false;
             int encryptionTImeResult = 0;
 
             String[] files = FindFilesForDifferentialSave(_sourceDirectory);
@@ -239,8 +236,8 @@ namespace EasySave
                         historyStopwatch.Reset();
                         historyStopwatch.Start();
 
-                        File.Copy(file, destFile, true);
-                    
+                    File.Copy(file, destFile, true);
+                    historyStopwatch.Stop();
                         error = SaveFileWithOverWrite(file, destFile);
 
                         historyStopwatch.Stop();
