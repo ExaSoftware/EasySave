@@ -79,7 +79,7 @@ namespace EasySave
                     return true;
                 }
                 i -= 1;
-            }           
+            } 
                
             if (!Directory.Exists(_destinationDirectory))
             {
@@ -199,7 +199,6 @@ namespace EasySave
         {
             bool error = false;
             int encryptionTImeResult = 0;
-            String[] files = findFilesForDifferentialSave(_sourceDirectory);
             String[] files = FindFilesForDifferentialSave(_sourceDirectory);
 
             //Creation of all sub directories
