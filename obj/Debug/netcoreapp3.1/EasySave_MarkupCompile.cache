@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NETCOREAPP;NETCOREAPP3_1;
 C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\App.xaml
-41248430628
+41267467212
 
-22-463462368
+18-2093343307
 226902598180
-View\CreateJobView.xaml;View\DetailView.xaml;View\MainWindow.xaml;View\SettingsView.xaml;
+View\CreateJobView.xaml;View\MainView.xaml;View\MainWindow.xaml;View\SettingsView.xaml;
 
 False
 

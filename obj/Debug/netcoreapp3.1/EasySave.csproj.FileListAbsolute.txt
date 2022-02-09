@@ -41,14 +41,12 @@ C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\bin\Debug\netcoreapp3.1\Ma
 C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
 C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\obj\Debug\netcoreapp3.1\EasySave.csproj.AssemblyReference.cache
 C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\obj\Debug\netcoreapp3.1\View\CreateJobView.g.cs
-C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\obj\Debug\netcoreapp3.1\View\DetailView.g.cs
 C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\obj\Debug\netcoreapp3.1\View\MainWindow.g.cs
 C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\obj\Debug\netcoreapp3.1\View\SettingsView.g.cs
 C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\obj\Debug\netcoreapp3.1\App.g.cs
 C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\obj\Debug\netcoreapp3.1\EasySave_MarkupCompile.cache
 C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\obj\Debug\netcoreapp3.1\EasySave_MarkupCompile.lref
 C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\obj\Debug\netcoreapp3.1\View\CreateJobView.baml
-C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\obj\Debug\netcoreapp3.1\View\DetailView.baml
 C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\obj\Debug\netcoreapp3.1\View\MainWindow.baml
 C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\obj\Debug\netcoreapp3.1\View\SettingsView.baml
 C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\obj\Debug\netcoreapp3.1\EasySave.g.resources
@@ -64,3 +62,5 @@ C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\obj\Debug\netcoreapp3.1\Ea
 C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\obj\Debug\netcoreapp3.1\EasySave.dll
 C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\obj\Debug\netcoreapp3.1\EasySave.pdb
 C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\obj\Debug\netcoreapp3.1\EasySave.genruntimeconfig.cache
+C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\obj\Debug\netcoreapp3.1\View\MainView.g.cs
+C:\Users\dupre\OneDrive\Documents\ProjetProg\EasySave\obj\Debug\netcoreapp3.1\View\MainView.baml
