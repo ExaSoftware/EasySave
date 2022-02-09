@@ -104,7 +104,7 @@ namespace EasySave {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/EasySave;V1.0.0.0;component/view/settingsview.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/EasySave;component/view/settingsview.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\View\SettingsView.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

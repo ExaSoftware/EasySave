@@ -133,7 +133,7 @@ namespace EasySave
             // Setup objects
             Stopwatch historyStopwatch = new Stopwatch();
             ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered);
-            HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0,0);
+            HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0, 0);
 
             // Copy the files and overwrite destination files if they already exist.
             foreach (string file in files)
@@ -155,7 +155,6 @@ namespace EasySave
                         historyStopwatch.Start();
 
                     File.Copy(file, destFile, true);
-                        error = SaveFileWithOverWrite(file, destFile);
 
                         historyStopwatch.Stop();
                     }
@@ -194,13 +193,12 @@ namespace EasySave
         }
 
 
-
         /// <summary> Save all differents files between _sourceDirectory and _destDirectory to _destDirectory.</summary>
         /// <remarks>This method ignores deleted files.</remarks>
         private bool DoDifferentialSave()
         {
             bool error = false;
-            int encryptionTImeResult = 0;
+            int encryptionTImeResult;
 
             String[] files = FindFilesForDifferentialSave(_sourceDirectory);
 
@@ -238,9 +236,7 @@ namespace EasySave
 
                     File.Copy(file, destFile, true);
                     historyStopwatch.Stop();
-                        error = SaveFileWithOverWrite(file, destFile);
-
-                        historyStopwatch.Stop();
+                     
                     }
 
                     fileTransfered++;
@@ -287,7 +283,6 @@ namespace EasySave
             }
         }
 
-
         private long TotalFileSize(String[] files)
         {
             long totalSize = 0;
@@ -300,8 +295,6 @@ namespace EasySave
 
             return totalSize;
         }
-
-
 
         private String[] FindFilesForDifferentialSave(String directory)
         {
