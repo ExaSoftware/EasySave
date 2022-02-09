@@ -67,20 +67,17 @@ namespace EasySave
 
         ///  <summary>Execute the save according to attributes.</summary>
         ///  <remarks>Use it whether differential or not.</remarks>
-        public bool Execute(List<string> buisnessSoftwareName)
+        public bool Execute(string buisnessSoftwareName)
         {
             bool error = false;
-            int i = 0;
-            while (buisnessSoftwareName.Count > i )
+
+            Process[] procName = Process.GetProcessesByName(buisnessSoftwareName);
+            if (procName.Length != 0)
             {
-                Process[] procName = Process.GetProcessesByName(buisnessSoftwareName[i]);
-                if (procName.Length != 0)
-                {
-                    return true;
-                }
-                i -= 1;
-            } 
-               
+                return true;
+            }
+
+
             if (!Directory.Exists(_destinationDirectory))
             {
                 try
@@ -118,6 +115,8 @@ namespace EasySave
         {
             bool error = false;
 
+            Directory.Delete(_destinationDirectory, true);
+
             //Creation of all sub directories
             foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
             {
@@ -153,7 +152,7 @@ namespace EasySave
                     {
                         historyStopwatch.Start();
 
-                    File.Copy(file, destFile, true);
+                        File.Copy(file, destFile, true);
 
                         historyStopwatch.Stop();
                     }
@@ -233,9 +232,9 @@ namespace EasySave
                         historyStopwatch.Reset();
                         historyStopwatch.Start();
 
-                    File.Copy(file, destFile, true);
-                    historyStopwatch.Stop();
-                     
+                        File.Copy(file, destFile, true);
+                        historyStopwatch.Stop();
+
                     }
 
                     fileTransfered++;
@@ -259,7 +258,7 @@ namespace EasySave
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                    historyLog.FillHistoryLog(file, destFile, 0, -1, e.ToString(),0);
+                    historyLog.FillHistoryLog(file, destFile, 0, -1, e.ToString(), 0);
 
                     error = true;
                     break;
