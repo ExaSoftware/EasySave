@@ -9,15 +9,24 @@ namespace EasySave.ViewModel
     {
         private JobBackup _jobBackup;
         private int _selectedIndex;
+
+        /// <summary>
+        /// Constructor used when we want to add a new jobackup
+        /// </summary>
         public CreateJobViewModel()
         {
-            
+            //When we add a job backup, set the default combobox value
+            _selectedIndex = 0;
         }
 
+        /// <summary>
+        /// Constructor used to bind the view with selected job backup in the list
+        /// </summary>
+        /// <param name="jobBackup"></param>
         public CreateJobViewModel(JobBackup jobBackup)
         {
             _jobBackup = jobBackup;
-
+            //Set value in combobox according to the type of backup
             if (_jobBackup.IsDifferential) _selectedIndex = 1;
             if (!_jobBackup.IsDifferential) _selectedIndex = 0;
         }
