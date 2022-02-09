@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Diagnostics;
-using static EasySave.JobBackUpModel;
 using EasySave.Object;
 using System.Collections.Generic;
 
