@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
 
 namespace EasySave.ViewModel
 {
     public class CreateJobViewModel
     {
         private JobBackup _jobBackup;
+        private int _selectedIndex;
         public CreateJobViewModel()
         {
             
@@ -15,14 +17,18 @@ namespace EasySave.ViewModel
         public CreateJobViewModel(JobBackup jobBackup)
         {
             _jobBackup = jobBackup;
+
+            if (_jobBackup.IsDifferential) _selectedIndex = 1;
+            if (!_jobBackup.IsDifferential) _selectedIndex = 0;
         }
 
         public JobBackup JobBackup { get => _jobBackup; set => _jobBackup = value; }
+        public int SelectedIndex { get => _selectedIndex; set => _selectedIndex = value; }
 
         ///  <summary>Create the job</summary>
         public void JobCreation(string label,string SourceDirectory, string DestinationDirectory, bool isDifferential)
         {
-            DetailViewModel detail = new DetailViewModel();
+            MainViewModel detail = new MainViewModel();
             List<JobBackup> list = detail.ListOfJobBackup;
             JsonReadWriteModel JSonReaderWriter = new JsonReadWriteModel();
 
