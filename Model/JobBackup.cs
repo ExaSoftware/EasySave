@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Diagnostics;
-using static EasySave.JobBackUpModel;
 using EasySave.Object;
 using System.Collections.Generic;
 
@@ -11,7 +10,7 @@ namespace EasySave
     ///  JobBackup is a Picasso class. It allows you to save files from a directory to an other with differents methods.
     ///  Few constructors are available.
     /// </summary>
-    public class JobBackup
+    public class JobBackup : IDisposable
     {
         // Attributes
         private String _label;
@@ -19,7 +18,8 @@ namespace EasySave
         private String _destinationDirectory;
         private Boolean _isDifferential;
         private int _id;
-        private List<String> _extensionList = new List<string> { "pdf", "xlsx" };
+        private List<String> _extensionList = new List<string> { "pdf", "xlsx", "docx" };
+        private bool _disposedValue;
 
         // Properties
         public string SourceDirectory { get => _sourceDirectory; set => _sourceDirectory = value; }
@@ -67,20 +67,17 @@ namespace EasySave
 
         ///  <summary>Execute the save according to attributes.</summary>
         ///  <remarks>Use it whether differential or not.</remarks>
-        public bool Execute(List<string> buisnessSoftwareName)
+        public bool Execute(string buisnessSoftwareName)
         {
             bool error = false;
-            int i = 0;
-            while (buisnessSoftwareName.Count > i )
+
+            Process[] procName = Process.GetProcessesByName(buisnessSoftwareName);
+            if (procName.Length != 0)
             {
-                Process[] procName = Process.GetProcessesByName(buisnessSoftwareName[i]);
-                if (procName.Length != 0)
-                {
-                    return true;
-                }
-                i -= 1;
-            } 
-               
+                return true;
+            }
+
+
             if (!Directory.Exists(_destinationDirectory))
             {
                 try
@@ -117,7 +114,9 @@ namespace EasySave
         private bool SaveAllFiles()
         {
             bool error = false;
-            int encryptionTimeResult = 0;
+
+            Directory.Delete(_destinationDirectory, true);
+
             //Creation of all sub directories
             foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
             {
@@ -141,7 +140,7 @@ namespace EasySave
                 {
                     FileInfo fileInfo = new FileInfo(file);
                     string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
-                    int encryptionTime;
+                    int encryptionTime = 0;
 
                     historyStopwatch.Reset();
 
@@ -153,8 +152,7 @@ namespace EasySave
                     {
                         historyStopwatch.Start();
 
-                    File.Copy(file, destFile, true);
-                        error = SaveFileWithOverWrite(file, destFile);
+                        File.Copy(file, destFile, true);
 
                         historyStopwatch.Stop();
                     }
@@ -162,15 +160,14 @@ namespace EasySave
 
                     //Write logs
                     progressLog.FillProgressLog(file, destFile, (fileToTranfer - fileTransfered), (100 * fileTransfered / fileToTranfer), _id);
-
-                    historyLog.FillHistoryLog(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds,"", encryptionTimeResult);
+                    historyLog.FillHistoryLog(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
                 }
                 catch (FileNotFoundException FileE)
                 {
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                    historyLog.FillHistoryLog(file, destFile, 0, -1, FileE.ToString(), encryptionTimeResult);
+                    historyLog.FillHistoryLog(file, destFile, 0, -1, FileE.ToString(), 0);
 
                     error = true;
                     break;
@@ -180,7 +177,7 @@ namespace EasySave
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                    historyLog.FillHistoryLog(file, destFile, 0, -1, e.ToString(),encryptionTimeResult);
+                    historyLog.FillHistoryLog(file, destFile, 0, -1, e.ToString(), 0);
 
                     error = true;
                     break;
@@ -189,6 +186,7 @@ namespace EasySave
 
             //Reset progressLog
             progressLog.ResetProgressLog(_id);
+
             return error;
         }
 
@@ -198,7 +196,8 @@ namespace EasySave
         private bool DoDifferentialSave()
         {
             bool error = false;
-            int encryptionTImeResult = 0;
+            int encryptionTImeResult;
+
             String[] files = FindFilesForDifferentialSave(_sourceDirectory);
 
             //Creation of all sub directories
@@ -221,7 +220,7 @@ namespace EasySave
                 {
                     // Creation of the destFile
                     string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
-                    int encryptionTime;
+                    int encryptionTime = 0;
 
                     FileInfo fileInfo = new FileInfo(file);
                     if (_extensionList.Contains(fileInfo.Extension))
@@ -233,25 +232,23 @@ namespace EasySave
                         historyStopwatch.Reset();
                         historyStopwatch.Start();
 
-                    File.Copy(file, destFile, true);
-                    historyStopwatch.Stop();
-                        error = SaveFileWithOverWrite(file, destFile);
-
+                        File.Copy(file, destFile, true);
                         historyStopwatch.Stop();
+
                     }
 
                     fileTransfered++;
 
                     progressLog.FillProgressLog(file, destFile, (fileToTranfer - fileTransfered), (100 * fileTransfered / fileToTranfer), _id);
 
-                    historyLog.FillHistoryLog(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "",encryptionTImeResult);
+                    historyLog.FillHistoryLog(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
                 }
                 catch (FileNotFoundException fileE)
                 {
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                    historyLog.FillHistoryLog(file, destFile, 0, -1, fileE.ToString(),encryptionTImeResult);
+                    historyLog.FillHistoryLog(file, destFile, 0, -1, fileE.ToString(), 0);
 
                     error = true;
                     break;
@@ -261,7 +258,7 @@ namespace EasySave
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                    historyLog.FillHistoryLog(file, destFile, 0, -1, e.ToString(),encryptionTImeResult);
+                    historyLog.FillHistoryLog(file, destFile, 0, -1, e.ToString(), 0);
 
                     error = true;
                     break;
@@ -275,6 +272,14 @@ namespace EasySave
         }
 
 
+        private void DeleteExcessFiles()
+        {
+            string[] files = Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories);
+            foreach (string file in files)
+            {
+
+            }
+        }
 
         private long TotalFileSize(String[] files)
         {
@@ -288,8 +293,6 @@ namespace EasySave
 
             return totalSize;
         }
-
-
 
         private String[] FindFilesForDifferentialSave(String directory)
         {
@@ -346,5 +349,33 @@ namespace EasySave
             return time;
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: supprimer l'état managé (objets managés)
+                }
+
+                // TODO: libérer les ressources non managées (objets non managés) et substituer le finaliseur
+                // TODO: affecter aux grands champs une valeur null
+                _disposedValue = true;
+            }
+        }
+
+        // // TODO: substituer le finaliseur uniquement si 'Dispose(bool disposing)' a du code pour libérer les ressources non managées
+        // ~JobBackup()
+        // {
+        //     // Ne changez pas ce code. Placez le code de nettoyage dans la méthode 'Dispose(bool disposing)'
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Ne changez pas ce code. Placez le code de nettoyage dans la méthode 'Dispose(bool disposing)'
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
 }

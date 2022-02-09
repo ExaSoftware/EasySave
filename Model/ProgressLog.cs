@@ -47,7 +47,7 @@ namespace EasySave.Object
         [JsonProperty(Order = 8)]
         public int Progression { get => _progression; set => _progression = value; }
 
-        public void FillProgressLog(string file,string destFile, int totalFilesRemaining,int progression,int id)
+        public void FillProgressLog(string file, string destFile, int totalFilesRemaining, int progression, int id)
         {
             this._sourceFile = file;
             this._targetFile = destFile;

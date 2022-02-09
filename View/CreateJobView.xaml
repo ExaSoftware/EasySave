@@ -95,7 +95,7 @@
                 <Button Name="btnSelectDestinationPath" Margin="0" Padding="0" DockPanel.Dock="Right" Width="Auto" Content="{iconPacks:FontAwesome Kind=FolderPlusSolid, Height=16, Width=16}" Style="{StaticResource selectFolderButton}" Click="btnSelectDestinationPath_Click"/>
                 <TextBox Name="txtBoxDestinationPath" Height="Auto" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Text="{Binding JobBackup.DestinationDirectory}" />
             </DockPanel>
-            <ComboBox Name="type" Grid.Row="3" Grid.Column="1" Height="25">
+            <ComboBox Name="type" Grid.Row="3" Grid.Column="1" Height="25" SelectedIndex="{Binding SelectedIndex}">
                 <ComboBoxItem Content="{x:Static language:Strings.total}" IsSelected="True"/>
                 <ComboBoxItem Content="{x:Static language:Strings.differential}" />
             </ComboBox>

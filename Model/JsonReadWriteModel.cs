@@ -57,12 +57,13 @@ namespace EasySave
             {
                 string myJsonFile = File.ReadAllText(path);
                 var JobBackupJsonList = JsonConvert.DeserializeObject<List<JobBackup>>(myJsonFile);
+                if (JobBackupJsonList == null) return new List<JobBackup>();
                 return JobBackupJsonList;
             }
             else
             {
                 File.Create(path).Close();
-                return null;
+                return new List<JobBackup>();
             }
         }
 
