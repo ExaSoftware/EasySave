@@ -19,14 +19,19 @@ namespace EasySave
     /// </summary>
     public partial class MainView : Page
     {
-        private MainViewModel _detailViewModel;
+        private MainViewModel _mainViewModel;
         public MainView()
         {
-            _detailViewModel = new MainViewModel();
-            this.DataContext = _detailViewModel;
+            _mainViewModel = new MainViewModel();
+            this.DataContext = _mainViewModel;
             InitializeComponent();
         }
-
+        private void btnDeleteJob_Click(object sender, RoutedEventArgs e)
+        {
+            MainViewModel view = new MainViewModel();
+            view.DeleteSave();
+            this.NavigationService.Navigate(new MainView());
+        }
         private void btnAddJob_Click(object sender, RoutedEventArgs e)
         {
             this.NavigationService.Navigate(new CreateJobView());
