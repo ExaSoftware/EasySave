@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
-using System.Resources;
 
 namespace EasySave.ViewModel
 {
@@ -8,19 +7,15 @@ namespace EasySave.ViewModel
     {
         //Attributes
         private List<JobBackup> _listOfJobBackup;
-        private ResourceManager _rm;
-        private View _view;
-        private Configuration _configuration;
+        private JsonReadWriteModel _jsonReadWriteModel;
 
         ///  <summary>Constructor of MainViewModel.</summary>
         public DetailViewModel()
         {
-            Init.CreateDataDirectoryIfNotExists();
             //Creation of a list of 5 JobBackup
-            _listOfJobBackup = Init.CreateJobBackupList();
-            _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
-            _view = new View();
-            _configuration = Init.LoadConfiguration();
+            //_listOfJobBackup = Init.CreateJobBackupList();
+            _jsonReadWriteModel = new JsonReadWriteModel();
+            _listOfJobBackup = _jsonReadWriteModel.ReadJobBackup();
         }
         public void Start()
         {
