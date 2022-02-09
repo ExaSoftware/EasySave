@@ -119,10 +119,6 @@ namespace EasySave
             //Creation of all sub directories
             foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
             {
-                Console.WriteLine(path);
-                Console.WriteLine(_destinationDirectory);
-                Console.WriteLine(_sourceDirectory);
-                Console.WriteLine(path.Replace(_sourceDirectory, _destinationDirectory));
                 Directory.CreateDirectory(path.Replace(_sourceDirectory, _destinationDirectory));
             }
 
