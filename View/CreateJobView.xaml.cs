@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -23,13 +24,7 @@ namespace EasySave
     {
         public CreateJobView()
         {
-            /*_createJobViewModel = new CreateJobViewModel();
-            this.DataContext = _createJobViewModel;*/
-            /*if (vm.JobBackup.IsDifferential) type.SelectedIndex = 1;
-            if (!vm.JobBackup.IsDifferential) type.SelectedIndex = 0;*/
             InitializeComponent();
-            /*CreateJobViewModel createJobViewModel = this.DataContext as CreateJobViewModel;
-            MessageBox.Show(createJobViewModel.JobBackup.DestinationDirectory);*/
         }
 
 
@@ -40,32 +35,16 @@ namespace EasySave
 
         private void btnSelectSourcePath_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-
-            // Launch OpenFileDialog by calling ShowDialog method
-            Nullable<bool> result = openFileDialog.ShowDialog();
-            // Get the selected file name and display in a TextBox.
-            // Load content of file in a TextBlock
-            if (result == true)
-            {
-                txtBoxSourcePath.Text = openFileDialog.FileName;
-                //TextBlock1.Text = System.IO.File.ReadAllText(openFileDlg.FileName);
-            }
+            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+            folderBrowserDialog.ShowDialog();
+            txtBoxSourcePath.Text = folderBrowserDialog.SelectedPath;
         }
 
         private void btnSelectDestinationPath_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-
-            // Launch OpenFileDialog by calling ShowDialog method
-            Nullable<bool> result = openFileDialog.ShowDialog();
-            // Get the selected file name and display in a TextBox.
-            // Load content of file in a TextBlock
-            if (result == true)
-            {
-                txtBoxDestinationPath.Text = openFileDialog.FileName;
-                //TextBlock1.Text = System.IO.File.ReadAllText(openFileDlg.FileName);
-            }
+            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+            folderBrowserDialog.ShowDialog();
+            txtBoxDestinationPath.Text = folderBrowserDialog.SelectedPath;
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
