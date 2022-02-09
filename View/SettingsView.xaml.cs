@@ -1,5 +1,4 @@
-﻿using EasySave.Util;
-using EasySave.ViewModel;
+﻿using EasySave.ViewModel;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -53,7 +52,7 @@ namespace EasySave
 
         private void btnReturn_Click(object sender, RoutedEventArgs e)
         {
-            this.NavigationService.Navigate(new DetailView());
+            this.NavigationService.Navigate(new MainView());
         }
 
         private void btnSelectSourcePath_Click(object sender, RoutedEventArgs e)

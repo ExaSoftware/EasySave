@@ -23,23 +23,19 @@ namespace EasySave
     {
         public CreateJobView()
         {
+            /*_createJobViewModel = new CreateJobViewModel();
+            this.DataContext = _createJobViewModel;*/
+            /*if (vm.JobBackup.IsDifferential) type.SelectedIndex = 1;
+            if (!vm.JobBackup.IsDifferential) type.SelectedIndex = 0;*/
             InitializeComponent();
             /*CreateJobViewModel createJobViewModel = this.DataContext as CreateJobViewModel;
             MessageBox.Show(createJobViewModel.JobBackup.DestinationDirectory);*/
         }
 
-        public CreateJobView(CreateJobViewModel vm)
-        {
-            InitializeComponent();
-            this.DataContext = vm;
-
-            if (vm.JobBackup.IsDifferential) type.SelectedIndex = 1;
-            if (!vm.JobBackup.IsDifferential) type.SelectedIndex = 0;
-        }
 
         private void btnReturn_Click(object sender, RoutedEventArgs e)
         {
-            this.NavigationService.Navigate(new DetailView());
+            this.NavigationService.Navigate(new MainView());
         }
 
         private void btnSelectSourcePath_Click(object sender, RoutedEventArgs e)
@@ -74,7 +70,7 @@ namespace EasySave
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            this.NavigationService.Navigate(new DetailView());
+            this.NavigationService.Navigate(new MainView());
         }
 
         private void btnValid_Click(object sender, RoutedEventArgs e)
@@ -87,7 +83,7 @@ namespace EasySave
             if (type.SelectedIndex == 0) isDifferential = false;
             if (type.SelectedIndex == 1) isDifferential = true;
             job.JobCreation(name, sourceDirectory, destinationDirectory, isDifferential);
-            this.NavigationService.Navigate(new DetailView());
+            this.NavigationService.Navigate(new MainView());
         }
     }
 }

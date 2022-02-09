@@ -1,5 +1,4 @@
-﻿using EasySave.Util;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
@@ -28,20 +27,13 @@ namespace EasySave
         public MainWindow()
         {
             InitializeComponent();
-            
-            LanguageManager.ChangeLanguage("en-US", App.Configuration);
 
-            frame.Navigate(new DetailView());
+            frame.Navigate(new MainView());
         }
 
         private void btnSettings_Click(object sender, RoutedEventArgs e)
         {
             frame.Navigate(new SettingsView());
-        }
-
-        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            frame.Navigate(new CreateJobView());
         }
     }
 }

@@ -17,12 +17,12 @@ namespace EasySave
     /// <summary>
     /// Logique d'interaction pour DetailView.xaml
     /// </summary>
-    public partial class DetailView : Page
+    public partial class MainView : Page
     {
-        private DetailViewModel _detailViewModel;
-        public DetailView()
+        private MainViewModel _detailViewModel;
+        public MainView()
         {
-            _detailViewModel = new DetailViewModel();
+            _detailViewModel = new MainViewModel();
             this.DataContext = _detailViewModel;
             InitializeComponent();
         }
@@ -34,7 +34,8 @@ namespace EasySave
 
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            CreateJobView editJobView = new CreateJobView(new CreateJobViewModel((JobBackup)listViewBackups.SelectedItem));
+            CreateJobView editJobView = new CreateJobView();
+            editJobView.DataContext = new CreateJobViewModel((JobBackup)listViewBackups.SelectedItem);
             this.NavigationService.Navigate(editJobView);
         }
     }
