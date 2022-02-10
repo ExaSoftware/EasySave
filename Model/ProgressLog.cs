@@ -47,7 +47,7 @@ namespace EasySave.Object
         [JsonProperty(Order = 8)]
         public int Progression { get => _progression; set => _progression = value; }
 
-        public void Fill(string file,string destFile, int totalFilesRemaining,int progression,int id)
+        public void Fill(string file, string destFile, int totalFilesRemaining, int progression, int id)
         {
             this._sourceFile = file;
             this._targetFile = destFile;
@@ -74,6 +74,29 @@ namespace EasySave.Object
         public override void SaveLog(int index)
         {
             _myLogModel.SaveProgressLog(this, index);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: supprimer l'état managé (objets managés)
+                    this._sourceFile = String.Empty;
+                    this._targetFile = String.Empty;
+                    this._state = String.Empty;
+                    this._totalFilesRemaining = 0;
+                    this._totalFilesToCopy = 0;
+                    this._totalFilesSize = 0;
+                    this._progression = 0;
+                }
+
+                // TODO: libérer les ressources non managées (objets non managés) et substituer le finaliseur
+                // TODO: affecter aux grands champs une valeur null
+
+                disposedValue = true;
+            }
         }
     }
 }

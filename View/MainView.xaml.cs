@@ -31,9 +31,12 @@ namespace EasySave
         }
         private void btnDeleteJob_Click(object sender, RoutedEventArgs e)
         {
-            _mainViewModel.DeleteSave(id);
-            listViewBackups.ItemsSource = null;
-            listViewBackups.ItemsSource = _mainViewModel.ListOfJobBackup;
+            if (listViewBackups.SelectedItems.Count != 0)
+            {
+                _mainViewModel.DeleteSave(id);
+                listViewBackups.ItemsSource = null;
+                listViewBackups.ItemsSource = _mainViewModel.ListOfJobBackup;
+            }
         }
         private void btnAddJob_Click(object sender, RoutedEventArgs e)
         {

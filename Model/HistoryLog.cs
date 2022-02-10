@@ -97,7 +97,7 @@ namespace EasySave
             _myLogModel.SaveHistoryLog(this);
         }
 
-        public void Fill(string sourceFile,string targetFile,long fileSize, double transfertTime, string error,int encryptionTime)
+        public void Fill(string sourceFile, string targetFile, long fileSize, double transfertTime, string error, int encryptionTime)
         {
             this.SourceFile = sourceFile;
             this.TargetFile = targetFile;
@@ -106,6 +106,28 @@ namespace EasySave
             this.Error = error;
             this.EncryptionTime = encryptionTime;
             this.SaveLog();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: supprimer l'état managé (objets managés)
+                    this.SourceFile = String.Empty;
+                    this.TargetFile = String.Empty;
+                    this.FileSize = (ulong)0;
+                    this.TransferTime = 0;
+                    this.Error = String.Empty;
+                    this.EncryptionTime = 0;
+                }
+
+                // TODO: libérer les ressources non managées (objets non managés) et substituer le finaliseur
+                // TODO: affecter aux grands champs une valeur null
+
+                disposedValue = true;
+            }
         }
     }
 }
