@@ -22,31 +22,40 @@ namespace EasySave.ViewModel
         {
             JsonReadWriteModel JSonReaderWriter = new JsonReadWriteModel();
             int count = 0;
-            //Search in the list if there's an id similar to the selected one
-            foreach (JobBackup item in _listOfJobBackup)
-            {
-                if (count == id)
+            if (_listOfJobBackup.Count !=0) { 
+                //Search in the list if there's an id similar to the selected one
+                foreach (JobBackup item in _listOfJobBackup)
                 {
-                    //check if the list isn't empty
-                    if (count == 0)
+                    if (count == id)
                     {
-                        _listOfJobBackup.Remove(item);
-                    }
-                    else
-                    {
-                        //Update the index of the elements in the list
-                        _listOfJobBackup[count].Id = _listOfJobBackup.Count - 1;
-                        //Remove the Job Backup from the list
-                        _listOfJobBackup.Remove(item);
-                    }
+                        //check if the list isn't empty
+                        if (_listOfJobBackup.Count == 1)
+                        {
+                            _listOfJobBackup.Remove(item);
+                            _listOfJobBackup.Clear();
+                        }
+                        else
+                        {
+                            //Remove the Job Backup from the list
+                            _listOfJobBackup.Remove(item);
+                            //Update the index of the elements in the list
+                        }
+                        break;
 
-                    //Save the list in json
-                    JSonReaderWriter.SaveJobBackup(_listOfJobBackup);
-                    break;
+                    }
+                    count++;
                 }
-                count++;
+                if (_listOfJobBackup.Count != 0)
+                {
+                    for (count = 0; count < _listOfJobBackup.Count; count++)
+                    {
+                        _listOfJobBackup[count].Id = count;
+                    }
+                }
+
             }
-            
+            //Save the list in json
+            JSonReaderWriter.SaveJobBackup(_listOfJobBackup);
         }
 
         public void ExecuteOne(JobBackup jobBackup)
