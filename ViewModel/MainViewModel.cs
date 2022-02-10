@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
+using System.Windows.Forms;
 
 namespace EasySave.ViewModel
 {
@@ -7,32 +8,35 @@ namespace EasySave.ViewModel
     {
         //Attributes
         private List<JobBackup> _listOfJobBackup;
+        private JobBackup _jobBackup;
         private JsonReadWriteModel _jsonReadWriteModel;
 
         ///  <summary>Constructor of MainViewModel.</summary>
         public MainViewModel()
         {
-            //Creation of a list of 5 JobBackup
-            //_listOfJobBackup = Init.CreateJobBackupList();
+            //Read the list in the json
             _jsonReadWriteModel = new JsonReadWriteModel();
             _listOfJobBackup = _jsonReadWriteModel.ReadJobBackup();
         }
-        public void DeleteSave()
+        public void DeleteSave(int id)
         {
             JsonReadWriteModel JSonReaderWriter = new JsonReadWriteModel();
             int count = 0;
-            //Delete element from list
+            //Search in the list if there's an id similar to the selected one
             foreach (JobBackup item in _listOfJobBackup)
             {
-                //Check the ID selected and delete the corresponding ID in the list / Json
-                //if (count == input)
-                //{
-                //   _listOfJobBackup.Remove(item);
-                //   JSonReaderWriter.SaveJobBackup(_listOfJobBackup);
-                //   break;
-                //}
+                if (count == id)
+                {
+                    //Remove the Job Backup from the list
+                    _listOfJobBackup.Remove(item);
+                    _listOfJobBackup[count].Id = _listOfJobBackup.Count - 1;
+                    //Save the list in json
+                    JSonReaderWriter.SaveJobBackup(_listOfJobBackup);
+                    break;
+                }
                 count++;
             }
+            
         }
 
         public void ExecuteOne()
