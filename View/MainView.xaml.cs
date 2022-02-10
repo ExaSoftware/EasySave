@@ -62,5 +62,15 @@ namespace EasySave
                 type.Text = rm.GetString("total");
             }
         }
+
+        private void btnExecuteSequentially_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnPlay_Click(object sender, RoutedEventArgs e)
+        {
+            _mainViewModel.ExecuteOne((JobBackup)listViewBackups.SelectedItem);
+        }
     }
 }
