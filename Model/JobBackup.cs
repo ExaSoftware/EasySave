@@ -81,12 +81,7 @@ namespace EasySave
                 {
                     try
                     {
-                        Directory.CreateDirectory(DestinationDirectory);
-                    }
-                    catch (ArgumentException)
-                    {
-                        error = true;
-
+                        Directory.CreateDirectory(_destinationDirectory);
                     }
                     catch (Exception)
                     {
@@ -116,7 +111,10 @@ namespace EasySave
             bool error = false;
             int encryptionTime = 0;
 
+            //Delete all files
             Directory.Delete(_destinationDirectory, true);
+            //Restart from zero. 
+            Directory.CreateDirectory(_destinationDirectory);
 
             //Creation of all sub directories
             foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
@@ -245,7 +243,7 @@ namespace EasySave
 
                     historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
                 }
-                
+
                 catch (Exception e)
                 {
                     string fileName = Path.GetFileName(file);
