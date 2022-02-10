@@ -26,6 +26,7 @@ namespace EasySave.ViewModel
         public CreateJobViewModel(JobBackup jobBackup)
         {
             _jobBackup = jobBackup;
+            MessageBox.Show(_jobBackup.Id.ToString());
             //Set value in combobox according to the type of backup
             if (_jobBackup.IsDifferential) _selectedIndex = 1;
             if (!_jobBackup.IsDifferential) _selectedIndex = 0;
@@ -39,6 +40,7 @@ namespace EasySave.ViewModel
         {
             MainViewModel main = new MainViewModel();
             List<JobBackup> list = main.ListOfJobBackup;
+            MessageBox.Show(this._jobBackup.Id.ToString());
             JsonReadWriteModel JSonReaderWriter = new JsonReadWriteModel();
             list.Add(new JobBackup(list.Count - 1));
 
