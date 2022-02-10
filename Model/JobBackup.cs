@@ -18,7 +18,7 @@ namespace EasySave
         private String _destinationDirectory;
         private Boolean _isDifferential;
         private int _id;
-        private List<String> _extensionList = new List<string> { ".pdf", ".xlsx", ".docx" };
+        private String[] _extensionList;
         private bool _disposedValue;
 
         // Properties
@@ -53,18 +53,6 @@ namespace EasySave
             this._isDifferential = isDifferential;
         }
 
-        ///  <summary>Change parameters to the default one.</summary>
-        ///  <returns>The jobBackup edited</returns> 
-        ///  <remarks>The Id still unchanged.</remarks>
-        public JobBackup Reset()
-        {
-            _label = "";
-            _sourceDirectory = "";
-            _destinationDirectory = "";
-            _isDifferential = false;
-            return this;
-        }
-
         ///  <summary>Execute the save according to attributes.</summary>
         ///  <remarks>Use it whether differential or not.</remarks>
         public bool Execute(string buisnessSoftwareName)
@@ -81,12 +69,7 @@ namespace EasySave
                 {
                     try
                     {
-                        Directory.CreateDirectory(DestinationDirectory);
-                    }
-                    catch (ArgumentException)
-                    {
-                        error = true;
-
+                        Directory.CreateDirectory(_destinationDirectory);
                     }
                     catch (Exception)
                     {
@@ -96,6 +79,8 @@ namespace EasySave
 
                 if (!error)
                 {
+                    _extensionList = App.Configuration.Extensions;
+
                     if (_isDifferential)
                     {
                         error = DoDifferentialSave();
@@ -116,7 +101,10 @@ namespace EasySave
             bool error = false;
             int encryptionTime = 0;
 
+            //Delete all files
             Directory.Delete(_destinationDirectory, true);
+            //Restart from zero. 
+            Directory.CreateDirectory(_destinationDirectory);
 
             //Creation of all sub directories
             foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
@@ -144,7 +132,7 @@ namespace EasySave
 
                     historyStopwatch.Reset();
 
-                    if (_extensionList.Contains(fileInfo.Extension))
+                    if (!(_extensionList is null) && new List<String>(_extensionList).Contains(fileInfo.Extension))
                     {
                         encryptionTime = CypherFile(file, destFile);
                     }
@@ -187,6 +175,7 @@ namespace EasySave
         private bool DoDifferentialSave()
         {
             bool error = false;
+            int encryptionTime = 0;
 
             String[] files = FindFilesForDifferentialSave(_sourceDirectory);
 
@@ -219,10 +208,9 @@ namespace EasySave
                 {
                     // Creation of the destFile
                     string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
-                    int encryptionTime = 0;
 
                     FileInfo fileInfo = new FileInfo(file);
-                    if (_extensionList.Contains(fileInfo.Extension))
+                    if (!(_extensionList is null) && new List<String>(_extensionList).Contains(fileInfo.Extension))
                     {
                         encryptionTime = CypherFile(file, destFile);
                     }
@@ -241,7 +229,6 @@ namespace EasySave
                         }
 
                         historyStopwatch.Stop();
-
                     }
 
                     fileTransfered++;
