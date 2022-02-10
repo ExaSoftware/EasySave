@@ -45,7 +45,7 @@ namespace EasySave.ViewModel
             if (id != -1)
             {
                 //Ajoute un élément dans la liste
-                list[id].Fill(label, sourceDirectory, destinationDirectory, isDifferential, id);
+                list[id].Fill(label, sourceDirectory, destinationDirectory, isDifferential);
             }
             //Insert a new list if it's not modified
             else
@@ -53,7 +53,8 @@ namespace EasySave.ViewModel
                 //Ajoute un élément dans la liste
                 
                 JobBackup newJobBackup = new JobBackup();
-                newJobBackup.Fill(label, sourceDirectory, destinationDirectory, isDifferential, id);
+                newJobBackup.Fill(label, sourceDirectory, destinationDirectory, isDifferential);
+                newJobBackup.Id = list.Count;
                 list.Add(newJobBackup);
             }
             //Save the JobBackup list in JSON file

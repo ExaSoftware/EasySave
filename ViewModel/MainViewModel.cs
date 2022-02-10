@@ -36,11 +36,13 @@ namespace EasySave.ViewModel
                         {
                             _listOfJobBackup.Remove(item);
                             _listOfJobBackup.Clear();
+                            item.Dispose();
                         }
                         else
                         {
                             //Remove the Job Backup from the list
                             _listOfJobBackup.Remove(item);
+                            item.Dispose();
                             //Update the index of the elements in the list
                         }
                         break;
