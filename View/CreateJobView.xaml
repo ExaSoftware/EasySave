@@ -96,7 +96,7 @@
                 <TextBox Name="txtBoxDestinationPath" Height="Auto" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Text="{Binding JobBackup.DestinationDirectory}" />
             </DockPanel>
             <ComboBox Name="type" Grid.Row="3" Grid.Column="1" Height="25" SelectedIndex="{Binding SelectedIndex}">
-                <ComboBoxItem Content="{x:Static language:Strings.total}" IsSelected="True"/>
+                <ComboBoxItem Content="{x:Static language:Strings.total}" />
                 <ComboBoxItem Content="{x:Static language:Strings.differential}" />
             </ComboBox>
         </Grid>
