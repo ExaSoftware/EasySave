@@ -34,7 +34,6 @@ namespace EasySave.ViewModel
                     if (count == 0)
                     {
                         _listOfJobBackup.Remove(item);
-                        _listOfJobBackup.Clear();
                     }
                     else
                     {
