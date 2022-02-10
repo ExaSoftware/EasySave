@@ -18,7 +18,7 @@ namespace EasySave
         private String _destinationDirectory;
         private Boolean _isDifferential;
         private int _id;
-        private List<String> _extensionList = new List<string> { ".pdf", ".xlsx", ".docx" };
+        private String[] _extensionList;
         private bool _disposedValue;
 
         // Properties
@@ -91,6 +91,8 @@ namespace EasySave
 
                 if (!error)
                 {
+                    _extensionList = App.Configuration.Extensions;
+
                     if (_isDifferential)
                     {
                         error = DoDifferentialSave();
@@ -142,7 +144,7 @@ namespace EasySave
 
                     historyStopwatch.Reset();
 
-                    if (_extensionList.Contains(fileInfo.Extension))
+                    if (!(_extensionList is null) && new List<String>(_extensionList).Contains(fileInfo.Extension))
                     {
                         encryptionTime = CypherFile(file, destFile);
                     }
@@ -220,7 +222,7 @@ namespace EasySave
                     string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
 
                     FileInfo fileInfo = new FileInfo(file);
-                    if (_extensionList.Contains(fileInfo.Extension))
+                    if (!(_extensionList is null) && new List<String>(_extensionList).Contains(fileInfo.Extension))
                     {
                         encryptionTime = CypherFile(file, destFile);
                     }
