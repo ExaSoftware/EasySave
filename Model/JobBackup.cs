@@ -53,18 +53,6 @@ namespace EasySave
             this._isDifferential = isDifferential;
         }
 
-        ///  <summary>Change parameters to the default one.</summary>
-        ///  <returns>The jobBackup edited</returns> 
-        ///  <remarks>The Id still unchanged.</remarks>
-        public JobBackup Reset()
-        {
-            _label = "";
-            _sourceDirectory = "";
-            _destinationDirectory = "";
-            _isDifferential = false;
-            return this;
-        }
-
         ///  <summary>Execute the save according to attributes.</summary>
         ///  <remarks>Use it whether differential or not.</remarks>
         public bool Execute(string buisnessSoftwareName)
