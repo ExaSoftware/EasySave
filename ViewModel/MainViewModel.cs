@@ -35,9 +35,9 @@ namespace EasySave.ViewModel
             }
         }
 
-        public void ExecuteOne()
+        public void ExecuteOne(JobBackup jobBackup)
         {
-            //_listOfJobBackup[input].Execute(new List<string>());
+            jobBackup.Execute(Configuration.GetInstance().BusinessSoftware);
         }
         public void ExecuteAll()
         {
