@@ -167,7 +167,7 @@ namespace EasySave
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
                     historyLog.Error = e.StackTrace;
-                    historyLog.Fill(file, destFile, 0, -1, e.ToString(), encryptionTimeResult);
+                    historyLog.Fill(file, destFile, 0, -1, e.ToString(), -1);
                     historyLog.Dispose();
                     progressLog.Dispose();
                     error = true;
