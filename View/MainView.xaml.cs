@@ -51,7 +51,7 @@ namespace EasySave
         {
             label.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Label;
             labelSourceDirectory.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].SourceDirectory;
-            destinationDirectory.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].SourceDirectory;
+            destinationDirectory.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].DestinationDirectory;
             ResourceManager rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
             if (_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].IsDifferential)
             {
