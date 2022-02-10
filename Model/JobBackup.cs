@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Diagnostics;
-using static EasySave.JobBackUpModel;
 using EasySave.Object;
 using System.Collections.Generic;
 
@@ -11,7 +10,7 @@ namespace EasySave
     ///  JobBackup is a Picasso class. It allows you to save files from a directory to an other with differents methods.
     ///  Few constructors are available.
     /// </summary>
-    public class JobBackup
+    public class JobBackup : IDisposable
     {
         // Attributes
         private String _label;
@@ -19,7 +18,8 @@ namespace EasySave
         private String _destinationDirectory;
         private Boolean _isDifferential;
         private int _id;
-        private List<String> _extensionList = new List<string> { "pdf", "xlsx" };
+        private List<String> _extensionList = new List<string> { "pdf", "xlsx", "docx" };
+        private bool _disposedValue;
 
         // Properties
         public string SourceDirectory { get => _sourceDirectory; set => _sourceDirectory = value; }
@@ -114,6 +114,9 @@ namespace EasySave
         private bool SaveAllFiles()
         {
             bool error = false;
+
+            Directory.Delete(_destinationDirectory, true);
+
             int encryptionTimeResult = 0;
 
             //Creation of all sub directories
@@ -139,7 +142,7 @@ namespace EasySave
                 {
                     FileInfo fileInfo = new FileInfo(file);
                     string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
-                    int encryptionTime;
+                    int encryptionTime = 0;
 
                     historyStopwatch.Reset();
 
@@ -193,7 +196,8 @@ namespace EasySave
         private bool DoDifferentialSave()
         {
             bool error = false;
-            int encryptionTImeResult = 0;
+            int encryptionTImeResult;
+
             String[] files = FindFilesForDifferentialSave(_sourceDirectory);
 
             //Creation of all sub directories
@@ -225,7 +229,7 @@ namespace EasySave
                 {
                     // Creation of the destFile
                     string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
-                    int encryptionTime;
+                    int encryptionTime = 0;
 
                     FileInfo fileInfo = new FileInfo(file);
                     if (_extensionList.Contains(fileInfo.Extension))
@@ -249,7 +253,6 @@ namespace EasySave
                         historyStopwatch.Stop();
                         error = SaveFileWithOverWrite(file, destFile);
 
-                        historyStopwatch.Stop();
                     }
 
                     fileTransfered++;
@@ -286,6 +289,14 @@ namespace EasySave
         }
 
 
+        private void DeleteExcessFiles()
+        {
+            string[] files = Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories);
+            foreach (string file in files)
+            {
+
+            }
+        }
 
         private long TotalFileSize(String[] files)
         {
@@ -299,8 +310,6 @@ namespace EasySave
 
             return totalSize;
         }
-
-
 
         private String[] FindFilesForDifferentialSave(String directory)
         {
@@ -357,5 +366,33 @@ namespace EasySave
             return time;
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: supprimer l'état managé (objets managés)
+                }
+
+                // TODO: libérer les ressources non managées (objets non managés) et substituer le finaliseur
+                // TODO: affecter aux grands champs une valeur null
+                _disposedValue = true;
+            }
+        }
+
+        // // TODO: substituer le finaliseur uniquement si 'Dispose(bool disposing)' a du code pour libérer les ressources non managées
+        // ~JobBackup()
+        // {
+        //     // Ne changez pas ce code. Placez le code de nettoyage dans la méthode 'Dispose(bool disposing)'
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Ne changez pas ce code. Placez le code de nettoyage dans la méthode 'Dispose(bool disposing)'
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
 }

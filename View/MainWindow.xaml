@@ -42,7 +42,8 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Row="0" Background="#a30700">
-            <TextBlock Text="{x:Static language:Strings.appTitle}" Margin="20" FontFamily="Agency FB" FontSize="36" HorizontalAlignment="Left" Foreground="White"/>
+            <Image Source="/easysave_logo.png" Height="80" Width="200" HorizontalAlignment="Left" Margin="20,5"/>
+            <!--<TextBlock Text="{x:Static language:Strings.appTitle}" Margin="20" FontFamily="Agency FB" FontSize="36" HorizontalAlignment="Left" Foreground="White"/>-->
             <Button Name="btnSettings" HorizontalAlignment="Right" Margin="20,0" Content="{iconPacks:Material Height=50, Kind=Cog, Width=50}" Height="64" Width="Auto" Click="btnSettings_Click" BorderThickness="0" Style="{StaticResource settingsButton}"/>
         </Grid>
         <Grid Grid.Row="1">

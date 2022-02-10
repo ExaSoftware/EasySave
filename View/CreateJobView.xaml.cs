@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -21,73 +22,49 @@ namespace EasySave
     /// </summary>
     public partial class CreateJobView : Page
     {
-        public CreateJobView()
+        private CreateJobViewModel _createJobViewModel;
+        public CreateJobView(CreateJobViewModel viewModel)
         {
+            this._createJobViewModel = viewModel;
+            this.DataContext = viewModel;
             InitializeComponent();
-            /*CreateJobViewModel createJobViewModel = this.DataContext as CreateJobViewModel;
-            MessageBox.Show(createJobViewModel.JobBackup.DestinationDirectory);*/
         }
 
-        public CreateJobView(CreateJobViewModel vm)
-        {
-            InitializeComponent();
-            this.DataContext = vm;
-
-            if (vm.JobBackup.IsDifferential) type.SelectedIndex = 1;
-            if (!vm.JobBackup.IsDifferential) type.SelectedIndex = 0;
-        }
 
         private void btnReturn_Click(object sender, RoutedEventArgs e)
         {
-            this.NavigationService.Navigate(new DetailView());
+            this.NavigationService.Navigate(new MainView());
         }
 
         private void btnSelectSourcePath_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-
-            // Launch OpenFileDialog by calling ShowDialog method
-            Nullable<bool> result = openFileDialog.ShowDialog();
-            // Get the selected file name and display in a TextBox.
-            // Load content of file in a TextBlock
-            if (result == true)
-            {
-                txtBoxSourcePath.Text = openFileDialog.FileName;
-                //TextBlock1.Text = System.IO.File.ReadAllText(openFileDlg.FileName);
-            }
+            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+            folderBrowserDialog.ShowDialog();
+            txtBoxSourcePath.Text = folderBrowserDialog.SelectedPath;
         }
 
         private void btnSelectDestinationPath_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-
-            // Launch OpenFileDialog by calling ShowDialog method
-            Nullable<bool> result = openFileDialog.ShowDialog();
-            // Get the selected file name and display in a TextBox.
-            // Load content of file in a TextBlock
-            if (result == true)
-            {
-                txtBoxDestinationPath.Text = openFileDialog.FileName;
-                //TextBlock1.Text = System.IO.File.ReadAllText(openFileDlg.FileName);
-            }
+            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+            folderBrowserDialog.ShowDialog();
+            txtBoxDestinationPath.Text = folderBrowserDialog.SelectedPath;
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            this.NavigationService.Navigate(new DetailView());
+            this.NavigationService.Navigate(new MainView());
         }
 
         private void btnValid_Click(object sender, RoutedEventArgs e)
         {
-            CreateJobViewModel job = new CreateJobViewModel();
             string name = label.Text;
             string sourceDirectory = txtBoxSourcePath.Text;
             string destinationDirectory = txtBoxDestinationPath.Text;
             bool isDifferential = false;
             if (type.SelectedIndex == 0) isDifferential = false;
             if (type.SelectedIndex == 1) isDifferential = true;
-            job.JobCreation(name, sourceDirectory, destinationDirectory, isDifferential);
-            this.NavigationService.Navigate(new DetailView());
+            _createJobViewModel.JobCreation(name, sourceDirectory, destinationDirectory, isDifferential);
+            this.NavigationService.Navigate(new MainView());
         }
     }
 }

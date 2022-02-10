@@ -22,7 +22,7 @@ namespace EasySave
         protected double _encryptionTime;
 
         /// <summary>Code error needed in the View to notify the user</summary>
-        protected string _codeError;
+        protected string _errorTitle;
 
         /// <summary>History log builder</summary>
         public HistoryLog(string label, string sourceFile, string targetFile, ulong fileSize, double transferTime, double encryptionTime) : base(label, sourceFile, targetFile)
@@ -31,7 +31,7 @@ namespace EasySave
             _transferTime = transferTime;
             _time = DateTime.Now.ToString("d/MM/yyyy HH:mm:ss");
             _encryptionTime = encryptionTime;
-            _codeError = "";
+            _errorTitle = "";
             _error = "";
         }
 
@@ -85,8 +85,8 @@ namespace EasySave
         [JsonProperty(Order = 9)]
         public string CodeError
         {
-            get => _codeError;
-            set => _codeError = value;
+            get => _errorTitle;
+            set => _errorTitle = value;
         }
         /// <summary>
         /// Method which call SaveHistoryLog() from LogModel for created a history log file in C:\EasySave\Logs repository
