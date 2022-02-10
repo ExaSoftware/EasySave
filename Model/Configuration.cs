@@ -1,21 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 
-namespace EasySave.Object
+namespace EasySave
 {
     public class Configuration
     {
         //Attributes for the configuration of the software
         private String _language;
+        private String _businessSoftware;
+        private String[] _extensions;
 
         private static Configuration _instance;
         public const String DEFAULT_CONFIG_FILE_PATH = @"C:\EasySave\Configuration.json";
-
-        public string Language { get => _language; set => _language = value; }
+        public string Language
+        {
+            get => _language;
+            set
+            {
+                _language = value;
+            }
+        }
+        public string BusinessSoftware
+        {
+            get => _businessSoftware;
+            set
+            {
+               _businessSoftware = value;
+            } 
+        }
+        public string[] Extensions
+        {
+            get => _extensions;
+            set
+            { 
+                _extensions = value;
+            }  
+        }
 
         /// <summary>
         /// Serialize and save Configuration object in json file

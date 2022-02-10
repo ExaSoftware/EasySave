@@ -57,12 +57,13 @@ namespace EasySave
             {
                 string myJsonFile = File.ReadAllText(path);
                 var JobBackupJsonList = JsonConvert.DeserializeObject<List<JobBackup>>(myJsonFile);
+                if (JobBackupJsonList == null) return new List<JobBackup>();
                 return JobBackupJsonList;
             }
             else
             {
                 File.Create(path).Close();
-                return null;
+                return new List<JobBackup>();
             }
         }
 
@@ -86,7 +87,7 @@ namespace EasySave
             {
                 for (int i = 0; i < 5; i++)
                 {
-                    ProgressLog progressLog = new ProgressLog();
+                    ProgressLog progressLog = new ProgressLog("", "", "", "END", 0, 0, 0);
                     _myProgressLogList.Add(progressLog);
                 }
 
