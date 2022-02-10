@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -17,6 +18,8 @@ namespace EasySave.ViewModel
             //Read the list in the json
             _jsonReadWriteModel = new JsonReadWriteModel();
             _listOfJobBackup = _jsonReadWriteModel.ReadJobBackup();
+
+
         }
         public void DeleteSave(int id)
         {
@@ -27,9 +30,19 @@ namespace EasySave.ViewModel
             {
                 if (count == id)
                 {
-                    //Remove the Job Backup from the list
-                    _listOfJobBackup.Remove(item);
-                    _listOfJobBackup[count].Id = _listOfJobBackup.Count - 1;
+                    //check if the list isn't empty
+                    if (count == 0)
+                    {
+                        _listOfJobBackup.Remove(item);
+                    }
+                    else
+                    {
+                        //Update the index of the elements in the list
+                        _listOfJobBackup[count].Id = _listOfJobBackup.Count - 1;
+                        //Remove the Job Backup from the list
+                        _listOfJobBackup.Remove(item);
+                    }
+
                     //Save the list in json
                     JSonReaderWriter.SaveJobBackup(_listOfJobBackup);
                     break;
@@ -41,7 +54,8 @@ namespace EasySave.ViewModel
 
         public void ExecuteOne(JobBackup jobBackup)
         {
-            jobBackup.Execute(Configuration.GetInstance().BusinessSoftware);
+            jobBackup.Execute(App.Configuration.BusinessSoftware);
+            Trace.WriteLine(App.Configuration.BusinessSoftware);
         }
         public void ExecuteAll()
         {
