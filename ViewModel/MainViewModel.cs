@@ -27,9 +27,20 @@ namespace EasySave.ViewModel
             {
                 if (count == id)
                 {
-                    //Remove the Job Backup from the list
-                    _listOfJobBackup.Remove(item);
-                    _listOfJobBackup[count].Id = _listOfJobBackup.Count - 1;
+                    //check if the list isn't empty
+                    if (count == 0)
+                    {
+                        _listOfJobBackup.Remove(item);
+                        _listOfJobBackup.Clear();
+                    }
+                    else
+                    {
+                        //Update the index of the elements in the list
+                        _listOfJobBackup[count].Id = _listOfJobBackup.Count - 1;
+                        //Remove the Job Backup from the list
+                        _listOfJobBackup.Remove(item);
+                    }
+
                     //Save the list in json
                     JSonReaderWriter.SaveJobBackup(_listOfJobBackup);
                     break;
