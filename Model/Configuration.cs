@@ -17,9 +17,6 @@ namespace EasySave
 
         private static Configuration _instance;
         public const String DEFAULT_CONFIG_FILE_PATH = @"C:\EasySave\Configuration.json";
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public string Language
         {
             get => _language;

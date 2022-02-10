@@ -39,6 +39,7 @@ namespace EasySave.ViewModel
         {
             MainViewModel main = new MainViewModel();
             List<JobBackup> list = main.ListOfJobBackup;
+            MessageBox.Show(this._jobBackup.Id.ToString());
             JsonReadWriteModel JSonReaderWriter = new JsonReadWriteModel();
             list.Add(new JobBackup(list.Count - 1));
 
