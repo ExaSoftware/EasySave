@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -17,6 +18,8 @@ namespace EasySave.ViewModel
             //Read the list in the json
             _jsonReadWriteModel = new JsonReadWriteModel();
             _listOfJobBackup = _jsonReadWriteModel.ReadJobBackup();
+
+
         }
         public void DeleteSave(int id)
         {
@@ -52,7 +55,8 @@ namespace EasySave.ViewModel
 
         public void ExecuteOne(JobBackup jobBackup)
         {
-            jobBackup.Execute(Configuration.GetInstance().BusinessSoftware);
+            jobBackup.Execute(App.Configuration.BusinessSoftware);
+            Trace.WriteLine(App.Configuration.BusinessSoftware);
         }
         public void ExecuteAll()
         {

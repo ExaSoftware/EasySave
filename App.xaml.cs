@@ -15,7 +15,7 @@ namespace EasySave
     /// </summary>
     public partial class App : Application
     {
-        private static Configuration _configuration;
+        public static Configuration _configuration;
         App()
         {
             Init.CreateDataDirectoryIfNotExists();
