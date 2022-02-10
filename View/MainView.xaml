@@ -142,11 +142,11 @@
                         <TextBlock Text="{x:Static language:Strings.sourceDirectory}" Grid.Row="0" Grid.Column="0"/>
                         <TextBlock Text="{x:Static language:Strings.destinationDirectory}" Grid.Row="1" Grid.Column="0" />
                         <TextBlock Text="{x:Static language:Strings.jobType}" Grid.Row="2" Grid.Column="0" />
-                        <TextBlock Text="{x:Static language:Strings.totalFilesSize}" Grid.Row="3" Grid.Column="0" />
+                        <!--<TextBlock Text="{x:Static language:Strings.totalFilesSize}" Grid.Row="3" Grid.Column="0" />-->
                         <TextBlock Text="C:\Depart" Grid.Row="0" Grid.Column="1"  Margin="5,0,0,0" Name="labelSourceDirectory"/>
                         <TextBlock Text="D:\Arrivee" Grid.Row="1" Grid.Column="1" Margin="5,0,0,0" Name="destinationDirectory"/>
                         <TextBlock Text="Complète" Grid.Row="2" Grid.Column="1" Margin="5,0,0,0" Name="type"/>
-                        <TextBlock Text="28 Mo" Grid.Row="3" Grid.Column="1" Margin="5,0,0,0"/>
+                        <!--<TextBlock Text="28 Mo" Grid.Row="3" Grid.Column="1" Margin="5,0,0,0" Name="totalFileSize"/>-->
                     </Grid>
                 </Border>
             </Grid>
