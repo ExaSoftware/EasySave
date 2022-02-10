@@ -18,7 +18,7 @@ namespace EasySave
         private String _destinationDirectory;
         private Boolean _isDifferential;
         private int _id;
-        private List<String> _extensionList = new List<string> { "pdf", "xlsx", "docx" };
+        private List<String> _extensionList = new List<string> { ".pdf", ".xlsx", ".docx" };
         private bool _disposedValue;
 
         // Properties
@@ -70,43 +70,43 @@ namespace EasySave
         public bool Execute(string buisnessSoftwareName)
         {
             bool error = false;
-
             Process[] procName = Process.GetProcessesByName(buisnessSoftwareName);
             if (procName.Length != 0)
             {
                 return true;
             }
-
-
-            if (!Directory.Exists(_destinationDirectory))
+            else
             {
-                try
+                if (!Directory.Exists(_destinationDirectory))
                 {
-                    Directory.CreateDirectory(DestinationDirectory);
-                }
-                catch (ArgumentException)
-                {
-                    error = true;
+                    try
+                    {
+                        Directory.CreateDirectory(DestinationDirectory);
+                    }
+                    catch (ArgumentException)
+                    {
+                        error = true;
 
+                    }
+                    catch (Exception)
+                    {
+                        error = true;
+                    }
                 }
-                catch (Exception)
-                {
-                    error = true;
-                }
-            }
 
-            if (!error)
-            {
-                if (_isDifferential)
+                if (!error)
                 {
-                    error = DoDifferentialSave();
+                    if (_isDifferential)
+                    {
+                        error = DoDifferentialSave();
+                    }
+                    else
+                    {
+                        error = SaveAllFiles();
+                    }
                 }
-                else
-                {
-                    error = SaveAllFiles();
-                }
+                return error;
             }
-            return error;
         }
 
         ///  <summary>Save all files from _sourceDirectory to _destDirectory.</summary>
@@ -114,6 +114,7 @@ namespace EasySave
         private bool SaveAllFiles()
         {
             bool error = false;
+            int encryptionTime = 0;
 
             Directory.Delete(_destinationDirectory, true);
 
@@ -140,7 +141,6 @@ namespace EasySave
                 {
                     FileInfo fileInfo = new FileInfo(file);
                     string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
-                    int encryptionTime = 0;
 
                     historyStopwatch.Reset();
 
@@ -151,42 +151,29 @@ namespace EasySave
                     else
                     {
                         historyStopwatch.Start();
-
                         File.Copy(file, destFile, true);
-
                         historyStopwatch.Stop();
                     }
                     fileTransfered++;
 
                     //Write logs
-                    progressLog.FillProgressLog(file, destFile, (fileToTranfer - fileTransfered), (100 * fileTransfered / fileToTranfer), _id);
-                    historyLog.FillHistoryLog(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
-                }
-                catch (FileNotFoundException FileE)
-                {
-                    string fileName = Path.GetFileName(file);
-                    string destFile = Path.Combine(_destinationDirectory, fileName);
-
-                    historyLog.FillHistoryLog(file, destFile, 0, -1, FileE.ToString(), 0);
-
-                    error = true;
-                    break;
+                    progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (100 * fileTransfered / fileToTranfer), _id);
+                    historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
                 }
                 catch (Exception e)
                 {
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                    historyLog.FillHistoryLog(file, destFile, 0, -1, e.ToString(), 0);
-
+                    historyLog.Fill(file, destFile, 0, -1, e.ToString(), encryptionTime);
+                    historyLog.Error = e.StackTrace;
                     error = true;
                     break;
                 }
             }
 
             //Reset progressLog
-            progressLog.ResetProgressLog(_id);
-
+            progressLog.Reset(_id);
             return error;
         }
 
@@ -203,7 +190,16 @@ namespace EasySave
             //Creation of all sub directories
             foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
             {
-                Directory.CreateDirectory(path.Replace(_sourceDirectory, _destinationDirectory));
+                //if the file exist in the destinationFile it stil exist in the sourcefile i create the sub directory
+                if ((Directory.Exists(_destinationDirectory) && Directory.Exists(_sourceDirectory)) || (Directory.Exists(_destinationDirectory) && !Directory.Exists(_sourceDirectory)))
+                {
+                    Directory.CreateDirectory(path.Replace(_sourceDirectory, _destinationDirectory));
+                }
+                //file doesn't exist in sourceFile then i delete it from destinationFile
+                else
+                {
+                    Directory.Delete(path.Replace(_sourceDirectory, _destinationDirectory), true);
+                }
             }
 
             int fileTransfered = 0;                 //Incease each file transfered
@@ -231,52 +227,40 @@ namespace EasySave
                         historyStopwatch.Reset();
                         historyStopwatch.Start();
 
-                        File.Copy(file, destFile, true);
+                        if ((File.Exists(_destinationDirectory) && File.Exists(_sourceDirectory)) || (File.Exists(_destinationDirectory) && !File.Exists(_sourceDirectory)))
+                        {
+                            File.Copy(file, destFile, true);
+                        }
+                        else
+                        {
+                            File.Delete(file);
+                        }
+
                         historyStopwatch.Stop();
                     }
 
                     fileTransfered++;
 
-                    progressLog.FillProgressLog(file, destFile, (fileToTranfer - fileTransfered), (100 * fileTransfered / fileToTranfer), _id);
+                    progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, 100 * fileTransfered / fileToTranfer, _id);
 
-                    historyLog.FillHistoryLog(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
+                    historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
                 }
-                catch (FileNotFoundException fileE)
-                {
-                    string fileName = Path.GetFileName(file);
-                    string destFile = Path.Combine(_destinationDirectory, fileName);
-
-                    historyLog.FillHistoryLog(file, destFile, 0, -1, fileE.ToString(), 0);
-
-                    error = true;
-                    break;
-                }
+                
                 catch (Exception e)
                 {
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                    historyLog.FillHistoryLog(file, destFile, 0, -1, e.ToString(), 0);
-
+                    historyLog.Fill(file, destFile, 0, -1, e.ToString(), -1);
+                    historyLog.Error = e.StackTrace;
                     error = true;
                     break;
                 }
             }
-
             //Reset progressLog
-            progressLog.ResetProgressLog(_id);
+            progressLog.Reset(_id);
 
             return error;
-        }
-
-
-        private void DeleteExcessFiles()
-        {
-            string[] files = Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories);
-            foreach (string file in files)
-            {
-
-            }
         }
 
         private long TotalFileSize(String[] files)

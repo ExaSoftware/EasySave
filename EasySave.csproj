@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
-    <ApplicationIcon>app_logo_64.ico</ApplicationIcon>
+    <ApplicationIcon>app_logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
