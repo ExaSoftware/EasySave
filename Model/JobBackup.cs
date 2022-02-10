@@ -196,7 +196,7 @@ namespace EasySave
         private bool DoDifferentialSave()
         {
             bool error = false;
-            int encryptionTImeResult;
+            int encryptionTime = 0;
 
             String[] files = FindFilesForDifferentialSave(_sourceDirectory);
 
@@ -220,7 +220,6 @@ namespace EasySave
                 {
                     // Creation of the destFile
                     string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
-                    int encryptionTime = 0;
 
                     FileInfo fileInfo = new FileInfo(file);
                     if (_extensionList.Contains(fileInfo.Extension))
@@ -234,7 +233,6 @@ namespace EasySave
 
                         File.Copy(file, destFile, true);
                         historyStopwatch.Stop();
-
                     }
 
                     fileTransfered++;
