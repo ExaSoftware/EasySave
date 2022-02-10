@@ -56,13 +56,14 @@ namespace EasySave
         ///  <summary>Change parameters to the default one.</summary>
         ///  <returns>The jobBackup edited</returns> 
         ///  <remarks>The Id still unchanged.</remarks>
-        public JobBackup Reset()
+        public void Fill(string label, string sourceDirectory, string destinationDirectory, bool isDifferential, int id)
         {
             _label = "";
             _sourceDirectory = "";
             _destinationDirectory = "";
-            _isDifferential = false;
-            return this;
+            _isDifferential = isDifferential;
+            _id = id;
+
         }
 
         ///  <summary>Execute the save according to attributes.</summary>
@@ -70,43 +71,48 @@ namespace EasySave
         public bool Execute(string buisnessSoftwareName)
         {
             bool error = false;
-            Process[] procName = Process.GetProcessesByName(buisnessSoftwareName);
-            if (procName.Length != 0)
+            Console.WriteLine(buisnessSoftwareName);
+            Console.WriteLine("passe");
+            if (buisnessSoftwareName != "" && buisnessSoftwareName != null)
             {
-                return true;
+                Process[] procName = Process.GetProcessesByName(buisnessSoftwareName);
+                if (procName.Length != 0)
+                {
+                    error = true;
+                    return error;
+                }
             }
-            else
+
+            if (!Directory.Exists(_destinationDirectory))
             {
-                if (!Directory.Exists(_destinationDirectory))
+                try
                 {
-                    try
-                    {
-                        Directory.CreateDirectory(DestinationDirectory);
-                    }
-                    catch (ArgumentException)
-                    {
-                        error = true;
-
-                    }
-                    catch (Exception)
-                    {
-                        error = true;
-                    }
+                    Directory.CreateDirectory(DestinationDirectory);
                 }
-
-                if (!error)
+                catch (ArgumentException)
                 {
-                    if (_isDifferential)
-                    {
-                        error = DoDifferentialSave();
-                    }
-                    else
-                    {
-                        error = SaveAllFiles();
-                    }
+                    error = true;
+
                 }
-                return error;
+                catch (Exception)
+                {
+                    error = true;
+                }
             }
+
+            if (!error)
+            {
+                if (_isDifferential)
+                {
+                    error = DoDifferentialSave();
+                }
+                else
+                {
+                    error = SaveAllFiles();
+                }
+            }
+            return error;
+
         }
 
         ///  <summary>Save all files from _sourceDirectory to _destDirectory.</summary>
@@ -194,7 +200,7 @@ namespace EasySave
             foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
             {
                 //if the file exist in the destinationFile it stil exist in the sourcefile i create the sub directory
-                if ((Directory.Exists(_destinationDirectory) && Directory.Exists(_sourceDirectory)) || (Directory.Exists(_destinationDirectory) && !Directory.Exists(_sourceDirectory)))
+                if ((Directory.Exists(_destinationDirectory) && Directory.Exists(_sourceDirectory)) || (!Directory.Exists(_destinationDirectory) && Directory.Exists(_sourceDirectory)))
                 {
                     Directory.CreateDirectory(path.Replace(_sourceDirectory, _destinationDirectory));
                 }
@@ -231,7 +237,7 @@ namespace EasySave
                         historyStopwatch.Reset();
                         historyStopwatch.Start();
 
-                        if ((File.Exists(_destinationDirectory) && File.Exists(_sourceDirectory)) || (File.Exists(_destinationDirectory) && !File.Exists(_sourceDirectory)))
+                        if ((File.Exists(_destinationDirectory) && File.Exists(_sourceDirectory)) || (!File.Exists(_destinationDirectory) && File.Exists(_sourceDirectory)))
                         {
                             File.Copy(file, destFile, true);
                         }
@@ -313,8 +319,6 @@ namespace EasySave
             }
             return filesToSave.ToArray();
         }
-
-
         private int CypherFile(String sourceFile, String destFile)
         {
             Process process = new Process();
@@ -338,7 +342,6 @@ namespace EasySave
             process.Close();
             return time;
         }
-
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)

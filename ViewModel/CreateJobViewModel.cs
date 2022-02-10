@@ -45,21 +45,16 @@ namespace EasySave.ViewModel
             if (id != -1)
             {
                 //Ajoute un élément dans la liste
-                list[id].Label = label;
-                list[id].SourceDirectory = sourceDirectory;
-                list[id].DestinationDirectory = destinationDirectory;
-                list[id].IsDifferential = isDifferential;
+                list[id].Fill(label, sourceDirectory, destinationDirectory, isDifferential, id);
             }
             //Insert a new list if it's not modified
             else
             {
                 //Ajoute un élément dans la liste
-                list.Add(new JobBackup());
-                list[list.Count-1].Label = label;
-                list[list.Count-1].SourceDirectory = sourceDirectory;
-                list[list.Count-1].DestinationDirectory = destinationDirectory;
-                list[list.Count-1].IsDifferential = isDifferential;
-                list[list.Count-1].Id = list.Count - 1;
+                
+                JobBackup newJobBackup = new JobBackup();
+                newJobBackup.Fill(label, sourceDirectory, destinationDirectory, isDifferential, id);
+                list.Add(newJobBackup);
             }
             //Save the JobBackup list in JSON file
             JSonReaderWriter.SaveJobBackup(list);
