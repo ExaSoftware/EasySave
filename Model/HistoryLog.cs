@@ -83,7 +83,7 @@ namespace EasySave
         }
 
         [JsonProperty(Order = 9)]
-        public string CodeError
+        public string ErrorTitle
         {
             get => _errorTitle;
             set => _errorTitle = value;
@@ -97,7 +97,7 @@ namespace EasySave
             _myLogModel.SaveHistoryLog(this);
         }
 
-        public void FillHistoryLog(string sourceFile, string targetFile, long fileSize, double transfertTime, string error, int encryptionTime)
+        public void Fill(string sourceFile,string targetFile,long fileSize, double transfertTime, string error,int encryptionTime)
         {
             this.SourceFile = sourceFile;
             this.TargetFile = targetFile;
