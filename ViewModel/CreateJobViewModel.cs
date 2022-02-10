@@ -26,7 +26,6 @@ namespace EasySave.ViewModel
         public CreateJobViewModel(JobBackup jobBackup)
         {
             _jobBackup = jobBackup;
-            MessageBox.Show(_jobBackup.Id.ToString());
             //Set value in combobox according to the type of backup
             if (_jobBackup.IsDifferential) _selectedIndex = 1;
             if (!_jobBackup.IsDifferential) _selectedIndex = 0;
