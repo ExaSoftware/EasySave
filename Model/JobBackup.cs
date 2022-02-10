@@ -163,23 +163,14 @@ namespace EasySave
 
                     historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTimeResult);
                 }
-                catch (FileNotFoundException FileE)
-                {
-                    string fileName = Path.GetFileName(file);
-                    string destFile = Path.Combine(_destinationDirectory, fileName);
-
-                    historyLog.Fill(file, destFile, 0, -1, FileE.ToString(), encryptionTimeResult);
-
-                    error = true;
-                    break;
-                }
+                
                 catch (Exception e)
                 {
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
                     historyLog.Fill(file, destFile, 0, -1, e.ToString(), encryptionTimeResult);
-
+                    historyLog.Error = e.StackTrace;
                     error = true;
                     break;
                 }
@@ -196,7 +187,6 @@ namespace EasySave
         private bool DoDifferentialSave()
         {
             bool error = false;
-            int encryptionTImeResult;
 
             String[] files = FindFilesForDifferentialSave(_sourceDirectory);
 
@@ -251,7 +241,6 @@ namespace EasySave
                         }
 
                         historyStopwatch.Stop();
-                        error = SaveFileWithOverWrite(file, destFile);
 
                     }
 
@@ -259,25 +248,16 @@ namespace EasySave
 
                     progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, 100 * fileTransfered / fileToTranfer, _id);
 
-                    historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTImeResult);
+                    historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
                 }
-                catch (FileNotFoundException fileE)
-                {
-                    string fileName = Path.GetFileName(file);
-                    string destFile = Path.Combine(_destinationDirectory, fileName);
-
-                    historyLog.Fill(file, destFile, 0, -1, fileE.ToString(), encryptionTImeResult);
-
-                    error = true;
-                    break;
-                }
+                
                 catch (Exception e)
                 {
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                    historyLog.Fill(file, destFile, 0, -1, e.ToString(), encryptionTImeResult);
-
+                    historyLog.Fill(file, destFile, 0, -1, e.ToString(), -1);
+                    historyLog.Error = e.StackTrace;
                     error = true;
                     break;
                 }
@@ -286,16 +266,6 @@ namespace EasySave
             progressLog.Reset(_id);
 
             return error;
-        }
-
-
-        private void DeleteExcessFiles()
-        {
-            string[] files = Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories);
-            foreach (string file in files)
-            {
-
-            }
         }
 
         private long TotalFileSize(String[] files)

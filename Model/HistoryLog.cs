@@ -83,7 +83,7 @@ namespace EasySave
         }
 
         [JsonProperty(Order = 9)]
-        public string CodeError
+        public string ErrorTitle
         {
             get => _errorTitle;
             set => _errorTitle = value;
