@@ -1,6 +1,8 @@
 ﻿using EasySave.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Resources;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -35,17 +37,30 @@ namespace EasySave
         private void btnAddJob_Click(object sender, RoutedEventArgs e)
         {
             //When we want add a job backup, there is no need to pass a job as parameter
-            CreateJobView addJobView = new CreateJobView();
-            addJobView.DataContext = new CreateJobViewModel();
+            CreateJobView addJobView = new CreateJobView(new CreateJobViewModel());
             this.NavigationService.Navigate(addJobView);
         }
 
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            CreateJobView editJobView = new CreateJobView();
-            editJobView.DataContext = new CreateJobViewModel((JobBackup)listViewBackups.SelectedItem);
+            CreateJobView editJobView = new CreateJobView(new CreateJobViewModel((JobBackup)listViewBackups.SelectedItem));
             this.NavigationService.Navigate(editJobView);
         }
 
+        private void listViewBackups_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            label.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Label;
+            labelSourceDirectory.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].SourceDirectory;
+            destinationDirectory.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].SourceDirectory;
+            ResourceManager rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
+            if (_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].IsDifferential)
+            {
+                type.Text = rm.GetString("differential");
+            }
+            else
+            {
+                type.Text = rm.GetString("total");
+            }
+        }
     }
 }
