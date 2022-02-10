@@ -199,7 +199,16 @@ namespace EasySave
             //Creation of all sub directories
             foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
             {
-                Directory.CreateDirectory(path.Replace(_sourceDirectory, _destinationDirectory));
+                //if the file exist in the destinationFile it stil exist in the sourcefile i create the sub directory
+                if ((Directory.Exists(_destinationDirectory) && Directory.Exists(_sourceDirectory)) || (Directory.Exists(_destinationDirectory) && !Directory.Exists(_sourceDirectory)))
+                {
+                    Directory.CreateDirectory(path.Replace(_sourceDirectory, _destinationDirectory));
+                }
+                //file doesn't exist in sourceFile then i delete it from destinationFile
+                else
+                {
+                    Directory.Delete(path.Replace(_sourceDirectory, _destinationDirectory), true);
+                }
             }
 
             int fileTransfered = 0;                 //Incease each file transfered
@@ -228,7 +237,15 @@ namespace EasySave
                         historyStopwatch.Reset();
                         historyStopwatch.Start();
 
-                        File.Copy(file, destFile, true);
+                        if ((File.Exists(_destinationDirectory) && File.Exists(_sourceDirectory)) || (File.Exists(_destinationDirectory) && !File.Exists(_sourceDirectory)))
+                        {
+                            File.Copy(file, destFile, true);
+                        }
+                        else
+                        {
+                            File.Delete(file);
+                        }
+
                         historyStopwatch.Stop();
                         error = SaveFileWithOverWrite(file, destFile);
 
@@ -237,7 +254,7 @@ namespace EasySave
 
                     fileTransfered++;
 
-                    progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (100 * fileTransfered / fileToTranfer), _id);
+                    progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, 100 * fileTransfered / fileToTranfer, _id);
 
                     historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTImeResult);
                 }
@@ -262,9 +279,6 @@ namespace EasySave
                     break;
                 }
             }
-
-
-
             //Reset progressLog
             progressLog.Reset(_id);
 
