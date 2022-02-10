@@ -22,6 +22,7 @@ namespace EasySave
     public partial class MainView : Page
     {
         private MainViewModel _mainViewModel;
+        private int id;
         public MainView()
         {
             _mainViewModel = new MainViewModel();
@@ -30,9 +31,9 @@ namespace EasySave
         }
         private void btnDeleteJob_Click(object sender, RoutedEventArgs e)
         {
-            MainViewModel view = new MainViewModel();
-            view.DeleteSave();
-            this.NavigationService.Navigate(new MainView());
+            _mainViewModel.DeleteSave(id);
+            listViewBackups.ItemsSource = null;
+            listViewBackups.ItemsSource = _mainViewModel.ListOfJobBackup;
         }
         private void btnAddJob_Click(object sender, RoutedEventArgs e)
         {
@@ -49,6 +50,7 @@ namespace EasySave
 
         private void listViewBackups_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            id = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Id;
             label.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Label;
             labelSourceDirectory.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].SourceDirectory;
             destinationDirectory.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].SourceDirectory;
