@@ -1,6 +1,8 @@
 ﻿using EasySave.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Resources;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -43,6 +45,22 @@ namespace EasySave
         {
             CreateJobView editJobView = new CreateJobView(new CreateJobViewModel((JobBackup)listViewBackups.SelectedItem));
             this.NavigationService.Navigate(editJobView);
+        }
+
+        private void listViewBackups_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            label.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Label;
+            labelSourceDirectory.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].SourceDirectory;
+            destinationDirectory.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].SourceDirectory;
+            ResourceManager rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
+            if (_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].IsDifferential)
+            {
+                type.Text = rm.GetString("differential");
+            }
+            else
+            {
+                type.Text = rm.GetString("total");
+            }
         }
     }
 }
