@@ -67,7 +67,7 @@ namespace EasySave
 
         private void btnExecuteSequentially_Click(object sender, RoutedEventArgs e)
         {
-
+            _mainViewModel.ExecuteAll();
         }
 
         private void btnPlay_Click(object sender, RoutedEventArgs e)

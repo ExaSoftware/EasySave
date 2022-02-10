@@ -47,7 +47,7 @@ namespace EasySave.ViewModel
         {
             foreach (JobBackup item in _listOfJobBackup)
             {
-                //item.Execute(new List<string>());
+                item.Execute(Configuration.GetInstance().BusinessSoftware);
             }
         }
         public List<JobBackup> ListOfJobBackup { get => _listOfJobBackup; set => _listOfJobBackup = value; }
