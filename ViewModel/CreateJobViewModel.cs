@@ -26,7 +26,6 @@ namespace EasySave.ViewModel
         public CreateJobViewModel(JobBackup jobBackup)
         {
             _jobBackup = jobBackup;
-            MessageBox.Show(_jobBackup.Id.ToString());
             //Set value in combobox according to the type of backup
             if (_jobBackup.IsDifferential) _selectedIndex = 1;
             if (!_jobBackup.IsDifferential) _selectedIndex = 0;
@@ -35,25 +34,35 @@ namespace EasySave.ViewModel
         public JobBackup JobBackup { get => _jobBackup; set => _jobBackup = value; }
         public int SelectedIndex { get => _selectedIndex; set => _selectedIndex = value; }
 
-        ///  <summary>Create the job</summary>
-        public void JobCreation(string label,string SourceDirectory, string DestinationDirectory, bool isDifferential)
+        ///  <summary>Create or modifiy the job</summary>
+        public void JobCreation(int id, string label, string sourceDirectory, string destinationDirectory, bool isDifferential)
         {
             MainViewModel main = new MainViewModel();
             List<JobBackup> list = main.ListOfJobBackup;
-            MessageBox.Show(this._jobBackup.Id.ToString());
             JsonReadWriteModel JSonReaderWriter = new JsonReadWriteModel();
-            list.Add(new JobBackup(list.Count - 1));
 
-            list[list.Count - 1].Label = label;
-            list[list.Count - 1].SourceDirectory = SourceDirectory;
-            list[list.Count - 1].DestinationDirectory = DestinationDirectory;
-            list[list.Count - 1].IsDifferential = isDifferential;
-
-            //Ajoute un élément dans la liste
+            //Modify a list
+            if (id != -1)
+            {
+                //Ajoute un élément dans la liste
+                list[id].Label = label;
+                list[id].SourceDirectory = sourceDirectory;
+                list[id].DestinationDirectory = destinationDirectory;
+                list[id].IsDifferential = isDifferential;
+            }
+            //Insert a new list if it's not modified
+            else
+            {
+                //Ajoute un élément dans la liste
+                list.Add(new JobBackup());
+                list[list.Count-1].Label = label;
+                list[list.Count-1].SourceDirectory = sourceDirectory;
+                list[list.Count-1].DestinationDirectory = destinationDirectory;
+                list[list.Count-1].IsDifferential = isDifferential;
+                list[list.Count-1].Id = list.Count - 1;
+            }
             //Save the JobBackup list in JSON file
             JSonReaderWriter.SaveJobBackup(list);
-            //_view.Display(String.Format(_rm.GetString("jobBackupSuccessCreated"), _listOfJobBackup[input].Label) + Environment.NewLine);
-            //_view.Display("  " + _listOfJobBackup[input].Label + _rm.GetString("jobBackupSuccessCreated"));
         }
 
     }

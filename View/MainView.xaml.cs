@@ -35,14 +35,17 @@ namespace EasySave
         private void btnAddJob_Click(object sender, RoutedEventArgs e)
         {
             //When we want add a job backup, there is no need to pass a job as parameter
-            CreateJobView addJobView = new CreateJobView(new CreateJobViewModel());
+            CreateJobView addJobView = new CreateJobView();
+            addJobView.DataContext = new CreateJobViewModel();
             this.NavigationService.Navigate(addJobView);
         }
 
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            CreateJobView editJobView = new CreateJobView(new CreateJobViewModel((JobBackup)listViewBackups.SelectedItem));
+            CreateJobView editJobView = new CreateJobView();
+            editJobView.DataContext = new CreateJobViewModel((JobBackup)listViewBackups.SelectedItem);
             this.NavigationService.Navigate(editJobView);
         }
+
     }
 }
