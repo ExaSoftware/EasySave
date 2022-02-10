@@ -1,5 +1,4 @@
-﻿using EasySave.Util;
-using EasySave.ViewModel;
+﻿using EasySave.ViewModel;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -23,7 +22,6 @@ namespace EasySave
     public partial class SettingsView : Page
     {
         private SettingsViewModel settingsViewModel;
-        private static SettingsView _instance;
 
         //settings view model
         public SettingsView()
@@ -31,29 +29,11 @@ namespace EasySave
             InitializeComponent();
             settingsViewModel = new SettingsViewModel();
             this.DataContext = settingsViewModel;
-
-            if (String.Equals(settingsViewModel.Configuration.Language, "fr-FR"))
-            {
-                comboBoxLanguages.SelectedIndex = 0;
-            }
-            if (String.Equals(settingsViewModel.Configuration.Language, "en-US"))
-            {
-                comboBoxLanguages.SelectedIndex = 1;
-            }
-
-            if (settingsViewModel.Configuration.Extensions != null)
-            {
-                String test = String.Join(";", settingsViewModel.Configuration.Extensions);
-                txtBoxExtensionsList.Text = test;
-            }
-
-            
-
         }
 
         private void btnReturn_Click(object sender, RoutedEventArgs e)
         {
-            this.NavigationService.Navigate(new DetailView());
+            this.NavigationService.Navigate(new MainView());
         }
 
         private void btnSelectSourcePath_Click(object sender, RoutedEventArgs e)
@@ -74,16 +54,7 @@ namespace EasySave
             if (comboBoxLanguages.SelectedIndex == 0) language = "fr-FR";
             if (comboBoxLanguages.SelectedIndex == 1) language = "en-US";
             settingsViewModel.SaveSettings(language, businessSoftware, extensions);
+            this.NavigationService.Navigate(new MainView());
         }
-
-        //prevent spam click when using of goback()
-        /*public static SettingsView GetInstance()
-        {
-            if (_instance == null)
-            {
-                _instance = new SettingsView();
-            }
-            return _instance;
-        }*/
     }
 }

@@ -86,7 +86,7 @@
             
             <!-- Language -->
             <TextBlock Text="{x:Static language:Strings.language}" Grid.Row="0" VerticalAlignment="Center"/>
-            <ComboBox Grid.Row="0" Grid.Column="1" Height="25" Name="comboBoxLanguages">
+            <ComboBox Grid.Row="0" Grid.Column="1" Height="25" Name="comboBoxLanguages" SelectedIndex="{Binding SelectedLanguage}">
                 <ComboBoxItem Content="{x:Static language:Strings.french}"/>
                 <ComboBoxItem Content="{x:Static language:Strings.english}" />
             </ComboBox>
@@ -100,7 +100,7 @@
             
             <!-- Extensions List -->
             <TextBlock Text="Liste des extensions des fichiers à chiffrer (.exe;.pdf;.png)" Grid.Row="2" VerticalAlignment="Center" Margin="0,0,5,0"/>
-            <TextBox Name="txtBoxExtensionsList" Height="20" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Text="" Grid.Row="2" Grid.Column="1"/>
+            <TextBox Name="txtBoxExtensionsList" Height="20" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Text="{Binding Extensions}" Grid.Row="2" Grid.Column="1"/>
         </Grid>
 
         <!-- Page button control -->

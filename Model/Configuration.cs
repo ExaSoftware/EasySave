@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace EasySave
 {
-    public class Configuration : INotifyPropertyChanged
+    public class Configuration
     {
         //Attributes for the configuration of the software
         private String _language;
@@ -17,16 +17,12 @@ namespace EasySave
 
         private static Configuration _instance;
         public const String DEFAULT_CONFIG_FILE_PATH = @"C:\EasySave\Configuration.json";
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public string Language
         {
             get => _language;
             set
             {
                 _language = value;
-                OnPropertyChanged("Language");
             }
         }
         public string BusinessSoftware
@@ -35,7 +31,6 @@ namespace EasySave
             set
             {
                _businessSoftware = value;
-                OnPropertyChanged("BusinessSoftware");
             } 
         }
         public string[] Extensions
@@ -44,7 +39,6 @@ namespace EasySave
             set
             { 
                 _extensions = value;
-                OnPropertyChanged("Extensions");
             }  
         }
 
@@ -74,14 +68,6 @@ namespace EasySave
                 _instance = new Configuration();
             }
             return _instance;
-        }
-
-        private void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
         }
     }
 }

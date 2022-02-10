@@ -18,7 +18,7 @@ namespace EasySave
         private String _destinationDirectory;
         private Boolean _isDifferential;
         private int _id;
-        private List<String> _extensionList = new List<string> { "pdf", "xlsx" };
+        private List<String> _extensionList = new List<string> { "pdf", "xlsx", "docx" };
         private bool _disposedValue;
 
         // Properties
