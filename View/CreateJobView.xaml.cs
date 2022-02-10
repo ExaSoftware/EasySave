@@ -57,13 +57,20 @@ namespace EasySave
 
         private void btnValid_Click(object sender, RoutedEventArgs e)
         {
+            int id = -1;
+            //Check if job Bacjyo is created
+            if (_createJobViewModel.JobBackup != null)
+            {
+                id = _createJobViewModel.JobBackup.Id;
+
+            }
             string name = label.Text;
             string sourceDirectory = txtBoxSourcePath.Text;
             string destinationDirectory = txtBoxDestinationPath.Text;
             bool isDifferential = false;
             if (type.SelectedIndex == 0) isDifferential = false;
             if (type.SelectedIndex == 1) isDifferential = true;
-            _createJobViewModel.JobCreation(name, sourceDirectory, destinationDirectory, isDifferential);
+            _createJobViewModel.JobCreation(id, name, sourceDirectory, destinationDirectory, isDifferential);
             this.NavigationService.Navigate(new MainView());
         }
     }
