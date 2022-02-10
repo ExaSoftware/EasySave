@@ -103,7 +103,7 @@ namespace EasySave
             this.TargetFile = targetFile;
             this.FileSize = (ulong)fileSize;
             this.TransferTime = transfertTime;
-            this.Error = error;
+            this.ErrorTitle = error;
             this.EncryptionTime = encryptionTime;
             this.SaveLog();
         }
