@@ -18,7 +18,7 @@ namespace EasySave
         private String _destinationDirectory;
         private Boolean _isDifferential;
         private int _id;
-        private List<String> _extensionList = new List<string> { "pdf", "xlsx", "docx" };
+        private List<String> _extensionList = new List<string> { ".pdf", ".xlsx", ".docx" };
         private bool _disposedValue;
 
         // Properties
@@ -114,10 +114,9 @@ namespace EasySave
         private bool SaveAllFiles()
         {
             bool error = false;
+            int encryptionTime = 0;
 
             Directory.Delete(_destinationDirectory, true);
-
-            int encryptionTimeResult = 0;
 
             //Creation of all sub directories
             foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
@@ -142,7 +141,6 @@ namespace EasySave
                 {
                     FileInfo fileInfo = new FileInfo(file);
                     string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
-                    int encryptionTime = 0;
 
                     historyStopwatch.Reset();
 
@@ -160,16 +158,14 @@ namespace EasySave
 
                     //Write logs
                     progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (100 * fileTransfered / fileToTranfer), _id);
-
-                    historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTimeResult);
+                    historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
                 }
-                
                 catch (Exception e)
                 {
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                    historyLog.Fill(file, destFile, 0, -1, e.ToString(), encryptionTimeResult);
+                    historyLog.Fill(file, destFile, 0, -1, e.ToString(), encryptionTime);
                     historyLog.Error = e.StackTrace;
                     error = true;
                     break;
