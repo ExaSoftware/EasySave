@@ -53,7 +53,7 @@ namespace EasySave
             id = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Id;
             label.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Label;
             labelSourceDirectory.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].SourceDirectory;
-            destinationDirectory.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].SourceDirectory;
+            destinationDirectory.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].DestinationDirectory;
             ResourceManager rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
             if (_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].IsDifferential)
             {
@@ -63,6 +63,16 @@ namespace EasySave
             {
                 type.Text = rm.GetString("total");
             }
+        }
+
+        private void btnExecuteSequentially_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnPlay_Click(object sender, RoutedEventArgs e)
+        {
+            _mainViewModel.ExecuteOne((JobBackup)listViewBackups.SelectedItem);
         }
     }
 }
