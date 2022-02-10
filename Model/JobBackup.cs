@@ -163,21 +163,24 @@ namespace EasySave
 
                     historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTimeResult);
                 }
-                
+
                 catch (Exception e)
                 {
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                    historyLog.Fill(file, destFile, 0, -1, e.ToString(), encryptionTimeResult);
                     historyLog.Error = e.StackTrace;
+                    historyLog.Fill(file, destFile, 0, -1, e.ToString(), encryptionTimeResult);
+                    historyLog.Dispose();
+                    progressLog.Dispose();
                     error = true;
                     break;
                 }
             }
 
-            //Reset progressLog
-            progressLog.Reset(_id);
+            //dispose history and progress log
+            historyLog.Dispose();
+            progressLog.Dispose();
             return error;
         }
 
@@ -250,21 +253,24 @@ namespace EasySave
 
                     historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
                 }
-                
+
                 catch (Exception e)
                 {
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
-                    historyLog.Fill(file, destFile, 0, -1, e.ToString(), -1);
                     historyLog.Error = e.StackTrace;
+                    historyLog.Fill(file, destFile, 0, -1, e.ToString(), -1);
+                    historyLog.Dispose();
+                    progressLog.Dispose();
                     error = true;
                     break;
                 }
             }
             //Reset progressLog
             progressLog.Reset(_id);
-
+            historyLog.Dispose();
+            progressLog.Dispose();
             return error;
         }
 
@@ -343,6 +349,10 @@ namespace EasySave
                 if (disposing)
                 {
                     // TODO: supprimer l'état managé (objets managés)
+                    _label = String.Empty;
+                    _sourceDirectory = String.Empty;
+                    _destinationDirectory = String.Empty;
+                    _extensionList = null;
                 }
 
                 // TODO: libérer les ressources non managées (objets non managés) et substituer le finaliseur
@@ -351,12 +361,12 @@ namespace EasySave
             }
         }
 
-        // // TODO: substituer le finaliseur uniquement si 'Dispose(bool disposing)' a du code pour libérer les ressources non managées
-        // ~JobBackup()
-        // {
-        //     // Ne changez pas ce code. Placez le code de nettoyage dans la méthode 'Dispose(bool disposing)'
-        //     Dispose(disposing: false);
-        // }
+        // TODO: substituer le finaliseur uniquement si 'Dispose(bool disposing)' a du code pour libérer les ressources non managées
+        ~JobBackup()
+        {
+            // Ne changez pas ce code. Placez le code de nettoyage dans la méthode 'Dispose(bool disposing)'
+            Dispose(disposing: false);
+        }
 
         public void Dispose()
         {
