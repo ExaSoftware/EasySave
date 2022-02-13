@@ -143,8 +143,11 @@ namespace EasySave
             }
         }
 
-        ///  <summary>Save all files from _sourceDirectory to _destDirectory.</summary>
-        ///  <remarks>This method ignores deleted files.</remarks>
+        ///  <summary>
+        ///  Save all files from _sourceDirectory to _destDirectory.
+        ///  </summary>
+        ///  <remarks>This method delete all the destination directory before saving files</remarks>
+        /// <returns>True if an error occured during the process</returns>
         private bool SaveAllFiles()
         {
             bool error = false;
@@ -219,14 +222,17 @@ namespace EasySave
         }
 
 
-        /// <summary> Save all differents files between _sourceDirectory and _destDirectory to _destDirectory.</summary>
+        /// <summary> 
+        /// Save all differents files between _sourceDirectory and _destDirectory to _destDirectory.
+        /// </summary>
         /// <remarks>This method ignores deleted files.</remarks>
+        /// <returns>True if an error occured during the process</returns>
         private bool DoDifferentialSave()
         {
             bool error = false;
             int encryptionTime = 0;
 
-            String[] files = FindFilesForDifferentialSave(_sourceDirectory);
+            String[] files = FindFilesForDifferentialSave();
 
             //Creation of all sub directories
             foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
@@ -315,6 +321,11 @@ namespace EasySave
             return error;
         }
 
+        /// <summary>
+        /// Return the sum of the size of each files.
+        /// </summary>
+        /// <param name="files">A list of files. Must be a Path format</param>
+        /// <returns>The total size un octet</returns>
         private long TotalFileSize(String[] files)
         {
             long totalSize = 0;
@@ -328,10 +339,15 @@ namespace EasySave
             return totalSize;
         }
 
-        private String[] FindFilesForDifferentialSave(String directory)
+        /// <summary>
+        /// Compare all files between the source and the dest directories. 
+        /// Use the default hashCode to compare.
+        /// </summary>
+        /// <returns>A list of diferent files between source and dest directories.</returns>
+        private String[] FindFilesForDifferentialSave()
         {
             List<String> filesToSave = new List<string>();
-            String[] filesInDirectory = Directory.GetFiles(directory, "*", SearchOption.AllDirectories);
+            String[] filesInDirectory = Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories);
 
             foreach (String file in filesInDirectory)
             {
@@ -357,6 +373,16 @@ namespace EasySave
             }
             return filesToSave.ToArray();
         }
+
+        /// <summary>
+        /// This method use CryptoSoft to encode or decode and copy a file.
+        /// The key is auto generated and store at C:\EasySave\CryptoSoft\config
+        /// 
+        /// You can use it in both ways.
+        /// </summary>
+        /// <param name="sourceFile">The file to encode. Must be a Path format.</param>
+        /// <param name="destFile">The destination file. Must be a Path format.</param>
+        /// <returns></returns>
         private int CypherFile(String sourceFile, String destFile)
         {
             Process process = new Process();
@@ -364,7 +390,10 @@ namespace EasySave
 
             process.StartInfo.FileName = @"C:\EasySave\CryptoSoft\bin\Debug\netcoreapp3.1\CryptoSoft.exe";
             process.StartInfo.Arguments = sourceFile + " " + destFile;
+            process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.CreateNoWindow = false;
             process.Start();
 
             if (process.HasExited)
@@ -380,6 +409,12 @@ namespace EasySave
             process.Close();
             return time;
         }
+
+        /// <summary>
+        /// Inherited from iDisposable.
+        /// Used to kill this object.
+        /// </summary>
+        /// <param name="disposing">Avoid double execution with GC</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)
@@ -399,6 +434,9 @@ namespace EasySave
             }
         }
 
+        /// <summary>
+        /// Finalizer override for the GarbageCollector.
+        /// </summary>
         // TODO: substituer le finaliseur uniquement si 'Dispose(bool disposing)' a du code pour libérer les ressources non managées
         ~JobBackup()
         {
@@ -406,6 +444,11 @@ namespace EasySave
             Dispose(disposing: false);
         }
 
+        /// <summary>
+        /// Inherited from iDisposable. Use this method to kill this object.
+        /// This method will free as memory as possible and tag this object.
+        /// The GarbageCollector is not called. 
+        /// </summary>
         public void Dispose()
         {
             // Ne changez pas ce code. Placez le code de nettoyage dans la méthode 'Dispose(bool disposing)'
