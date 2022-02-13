@@ -23,12 +23,21 @@ namespace EasySave
     {
         private MainViewModel _mainViewModel;
         private int id;
+        /// <summary>
+        /// Constructor of the view
+        /// </summary>
         public MainView()
         {
             _mainViewModel = new MainViewModel();
             this.DataContext = _mainViewModel;
             InitializeComponent();
         }
+
+        /// <summary>
+        /// Method which was executed when a user click on delete button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnDeleteJob_Click(object sender, RoutedEventArgs e)
         {
             if (listViewBackups.SelectedItems.Count != 0)
@@ -45,6 +54,11 @@ namespace EasySave
             this.NavigationService.Navigate(addJobView);
         }
 
+        /// <summary>
+        /// A user click two time on a job backup to show details
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             //Prevent click on the empty list to avoid an exception
@@ -55,6 +69,11 @@ namespace EasySave
             }
         }
 
+        /// <summary>
+        /// Method which was excuted when user select a job backup in the list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void listViewBackups_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             //Prevent click on the empty list to avoid an exception
@@ -76,6 +95,11 @@ namespace EasySave
             }
         }
 
+        /// <summary>
+        /// Method which was execute when user click on the button to execute the job backups sequentially
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnExecuteSequentially_Click(object sender, RoutedEventArgs e)
         {
             _mainViewModel.ExecuteAll();
