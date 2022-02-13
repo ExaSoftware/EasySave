@@ -81,9 +81,19 @@ namespace EasySave
             _mainViewModel.ExecuteAll();
         }
 
+        /// <summary>
+        /// Method which was executed when user click a the play button to launch a job backup
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnPlay_Click(object sender, RoutedEventArgs e)
         {
-            _mainViewModel.ExecuteOne((JobBackup)listViewBackups.SelectedItem);
+            //If there is a job backup selected
+            if (listViewBackups.SelectedItems.Count != 0)
+            {
+                _mainViewModel.ExecuteOne((JobBackup)listViewBackups.SelectedItem);
+            }
+            
         }
     }
 }
