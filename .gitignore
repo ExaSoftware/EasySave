@@ -4,3 +4,4 @@ CryptoSoft/config
 Job-Backup/
 Logs/
 obj/
+/Properties/launchSettings.json
