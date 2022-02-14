@@ -124,15 +124,6 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Logiciel métier.
-        /// </summary>
-        public static string businessSofware {
-            get {
-                return ResourceManager.GetString("businessSofware", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Annuler.
         /// </summary>
         public static string cancel {
@@ -160,11 +151,47 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Le répertoire de destination doit être différent du répertoire source..
+        /// </summary>
+        public static string destinationPathEqualsSourcePath {
+            get {
+                return ResourceManager.GetString("destinationPathEqualsSourcePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Différentielle.
         /// </summary>
         public static string differential {
             get {
                 return ResourceManager.GetString("differential", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Le répertoire de destination est obligatoire..
+        /// </summary>
+        public static string emptyDestinationDirectoryError {
+            get {
+                return ResourceManager.GetString("emptyDestinationDirectoryError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Le label est obligatoire.
+        /// </summary>
+        public static string emptyLabelError {
+            get {
+                return ResourceManager.GetString("emptyLabelError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Le répertoire source est obligatoire..
+        /// </summary>
+        public static string emptySourceDirectoryError {
+            get {
+                return ResourceManager.GetString("emptySourceDirectoryError", resourceCulture);
             }
         }
         
@@ -223,7 +250,7 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Répertoire de destination.
+        ///   Recherche une chaîne localisée semblable à Répertoire de destination *.
         /// </summary>
         public static string jobCreateDestinationDirectory {
             get {
@@ -232,7 +259,7 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Répertoire source.
+        ///   Recherche une chaîne localisée semblable à Répertoire source *.
         /// </summary>
         public static string jobCreateSourceDirectory {
             get {
@@ -250,7 +277,7 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Label.
+        ///   Recherche une chaîne localisée semblable à Label *.
         /// </summary>
         public static string label {
             get {
@@ -282,6 +309,15 @@ namespace EasySave.Resources {
         public static string sourceDirectory {
             get {
                 return ResourceManager.GetString("sourceDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Le répertoire source n&apos;existe pas..
+        /// </summary>
+        public static string sourceDirectoryNotExistsError {
+            get {
+                return ResourceManager.GetString("sourceDirectoryNotExistsError", resourceCulture);
             }
         }
         
