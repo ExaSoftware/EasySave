@@ -74,19 +74,30 @@ namespace EasySave.ViewModel
         //Instanciate the delegate
         readonly Del Execute = delegate (JobBackup jobBackup)
         {
-            jobBackup.Execute(App.Configuration.BusinessSoftware);
-            Trace.WriteLine(App.Configuration.BusinessSoftware);
+            if (App.Configuration.BusinessSoftware != "" || App.Configuration.BusinessSoftware != null)
+            {
+                Process[] procName = Process.GetProcessesByName(App.Configuration.BusinessSoftware);
+                if (procName.Length == 0)
+                {  
+                    jobBackup.Execute();
+                    Trace.WriteLine(App.Configuration.BusinessSoftware);
+                }
+            }
+            else
+            {
+                jobBackup.Execute();
+                Trace.WriteLine(App.Configuration.BusinessSoftware);
+            }
         };
 
         /// <summary>
         /// Instanciate a thread and execute the jobBackup in this thread.
         /// </summary>
-        /// <param name="jobBackup"></param>
+        /// <param name="jobBackup">The JobBackup to execute.</param>
         public void ExecuteOne(JobBackup jobBackup)
         {
             Thread thread = new Thread(() => Execute(jobBackup));
             thread.Start();
-
         }
 
         /// <summary>
