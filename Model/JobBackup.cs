@@ -226,9 +226,8 @@ namespace EasySave
             int encryptionTime = 0;
 
             string[] files = FindFilesForDifferentialSave(_sourceDirectory);
-            string[] sourcePathDirectory = Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories);
 
-            foreach (string path in sourcePathDirectory)
+            foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
             {
                 Directory.CreateDirectory(path.Replace(_sourceDirectory, _destinationDirectory));
             }
@@ -292,12 +291,11 @@ namespace EasySave
 
             foreach (string path in Directory.GetDirectories(_destinationDirectory, "*", SearchOption.AllDirectories))
             {
-                if (!File.Exists(path.Replace(_destinationDirectory, _sourceDirectory)) && File.Exists(path))
+                if (!File.Exists(path.Replace(_destinationDirectory, _sourceDirectory)) && Directory.Exists(path))
                 {
                     try
                     {
                         Directory.Delete(path, true);
-
                     }
                     catch { }
                 }
