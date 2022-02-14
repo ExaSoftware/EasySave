@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace EasySave
 {
     /// <summary>
-    ///  JobBackup is a Picasso class. It allows you to save files from a directory to an other with differents methods.
+    ///  JobBackup is a class. It allows you to save files from a directory to an other with differents methods.
     ///  Few constructors are available.
     /// </summary>
     public class JobBackup : IDisposable
@@ -70,7 +70,6 @@ namespace EasySave
         public bool Execute(string buisnessSoftwareName)
         {
             bool error = false;
-            Console.WriteLine(buisnessSoftwareName);
 
             if (buisnessSoftwareName != "" || buisnessSoftwareName != null)
             {
@@ -208,7 +207,7 @@ namespace EasySave
                     historyLog.Dispose();
                     progressLog.Dispose();
                     error = true;
-                    break;
+
                 }
             }
 
@@ -226,31 +225,17 @@ namespace EasySave
             bool error = false;
             int encryptionTime = 0;
 
-            String[] files = FindFilesForDifferentialSave(_sourceDirectory);
+            string[] files = FindFilesForDifferentialSave(_sourceDirectory);
+            string[] sourcePathDirectory = Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories);
 
-            //Creation of all sub directories
-            foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
+            foreach (string path in sourcePathDirectory)
             {
                 Directory.CreateDirectory(path.Replace(_sourceDirectory, _destinationDirectory));
-                /*TODO : work in progress 
-                 * 
-                    //if the file exist in the destinationFile it stil exist in the sourcefile i create the sub directory
-                if ((Directory.Exists(_destinationDirectory) && Directory.Exists(_sourceDirectory)) || (!Directory.Exists(_destinationDirectory) && Directory.Exists(_sourceDirectory)))
-                {
-                    Directory.CreateDirectory(path.Replace(_sourceDirectory, _destinationDirectory));
-                }
-
-                //file doesn't exist in sourceFile then i delete it from destinationFile
-                else
-                {
-                    Directory.Delete(path.Replace(_sourceDirectory, _destinationDirectory), true);
-                }*/
             }
 
             int fileTransfered = 0;                 //Incease each file transfered
             int fileToTranfer = files.Length;       //Ammount of file to transfer
             long sizeTotal = TotalFileSize(files);
-            Console.WriteLine(fileToTranfer);
 
             Stopwatch historyStopwatch = new Stopwatch();
             ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered);
@@ -274,22 +259,11 @@ namespace EasySave
                         historyStopwatch.Start();
 
                         File.Copy(file, destFile, true);
-                        /* TODO Work in progress
-                      if ((File.Exists(_destinationDirectory) && File.Exists(_sourceDirectory)) || (!File.Exists(_destinationDirectory) && File.Exists(_sourceDirectory)))
-                        {
-
-                            File.Copy(file, destFile, true);
-                        }
-                        else
-                        {
-                            File.Delete(file);
-                        }*/
 
                         historyStopwatch.Stop();
                     }
 
                     fileTransfered++;
-                    Console.WriteLine(file);
                     progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, 100 * fileTransfered / fileToTranfer, _id);
 
                     historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
@@ -305,9 +279,30 @@ namespace EasySave
                     historyLog.Dispose();
                     progressLog.Dispose();
                     error = true;
-                    break;
                 }
             }
+
+            foreach (string path in Directory.GetFiles(_destinationDirectory, "*", SearchOption.AllDirectories))
+            {
+                if (!File.Exists(path.Replace(_destinationDirectory, _sourceDirectory)) && File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+            }
+
+            foreach (string path in Directory.GetDirectories(_destinationDirectory, "*", SearchOption.AllDirectories))
+            {
+                if (!File.Exists(path.Replace(_destinationDirectory, _sourceDirectory)) && File.Exists(path))
+                {
+                    try
+                    {
+                        Directory.Delete(path, true);
+
+                    }
+                    catch { }
+                }
+            }
+
             //Reset progressLog
             progressLog.Reset(_id);
             historyLog.Dispose();
