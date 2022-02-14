@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace EasySave
 {
     /// <summary>
-    ///  JobBackup is a Picasso class. It allows you to save files from a directory to an other with differents methods.
+    ///  JobBackup is a class. It allows you to save files from a directory to an other with differents methods.
     ///  Few constructors are available.
     /// </summary>
     public class JobBackup : IDisposable
@@ -154,6 +154,7 @@ namespace EasySave
                     if (!(_extensionList is null) && new List<String>(_extensionList).Contains(fileInfo.Extension))
                     {
                         encryptionTime = CypherFile(file, destFile);
+                        string b = fileInfo.Extension;
                     }
                     else
                     {
@@ -220,10 +221,10 @@ namespace EasySave
             {
                 try
                 {
+                    FileInfo fileInfo = new FileInfo(file);
                     // Creation of the destFile
                     string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
 
-                    FileInfo fileInfo = new FileInfo(file);
                     if (!(_extensionList is null) && new List<String>(_extensionList).Contains(fileInfo.Extension))
                     {
                         encryptionTime = CypherFile(file, destFile);
@@ -239,7 +240,6 @@ namespace EasySave
                     }
 
                     fileTransfered++;
-                    Console.WriteLine(file);
                     progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, 100 * fileTransfered / fileToTranfer, _id);
                     historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
                 }
@@ -254,6 +254,30 @@ namespace EasySave
                     progressLog.Dispose();
                 }
             }
+
+
+            //Delete excess directories
+            foreach (string path in Directory.GetDirectories(_destinationDirectory, "*", SearchOption.AllDirectories))
+            {
+                if (!File.Exists(path.Replace(_destinationDirectory, _sourceDirectory)) && Directory.Exists(path))
+                {
+                    try
+                    {
+                        Directory.Delete(path, true);
+                    }
+                    catch { }
+                }
+            }
+
+            //Delete excess files
+            foreach (string path in Directory.GetFiles(_destinationDirectory, "*", SearchOption.AllDirectories))
+            {
+                if (!File.Exists(path.Replace(_destinationDirectory, _sourceDirectory)) && File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+            }
+
             //Reset progressLog
             progressLog.Reset(_id);
             historyLog.Dispose();

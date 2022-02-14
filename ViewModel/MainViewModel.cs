@@ -107,7 +107,9 @@ namespace EasySave.ViewModel
         {
             foreach (JobBackup item in _listOfJobBackup)
             {
-                ExecuteOne(item);
+                Thread thread = new Thread(() => Execute(item));
+                thread.Start();
+                thread.Join();
             }
         }
 
