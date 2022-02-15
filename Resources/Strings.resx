@@ -162,6 +162,9 @@
   <data name="english" xml:space="preserve">
     <value>Anglais</value>
   </data>
+  <data name="extensionFormatError" xml:space="preserve">
+    <value>Le format de la liste des extensions n'est pas respectée. Merci d'utiliser ce format : .png;.pdf;.xlsx</value>
+  </data>
   <data name="filesLeftToCopy" xml:space="preserve">
     <value>Nombre de fichiers restants</value>
   </data>

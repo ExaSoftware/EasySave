@@ -205,6 +205,15 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Le format de la liste des extensions n&apos;est pas respectée. Merci d&apos;utiliser ce format : .png;.pdf;.xlsx.
+        /// </summary>
+        public static string extensionFormatError {
+            get {
+                return ResourceManager.GetString("extensionFormatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Nombre de fichiers restants.
         /// </summary>
         public static string filesLeftToCopy {
