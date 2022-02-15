@@ -120,5 +120,20 @@ namespace EasySave
                 _settingsViewModel.Errors.Remove("sourceDirectoryError");
             }
         }
+
+        private void txtBoxExtensionsList_LostFocus(object sender, RoutedEventArgs e)
+        {
+            //Check and show the error if necessary
+            _settingsViewModel.CheckExtension(txtBoxExtensionsList.Text);
+            if (_settingsViewModel.Errors.ContainsKey("extensionError"))
+            {
+                extensionError.Text = _settingsViewModel.Errors["extensionError"]; extensionError.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                extensionError.Text = ""; extensionError.Visibility = Visibility.Collapsed;
+            }
+            _settingsViewModel.Errors.Remove("extensionError");
+        }
     }
 }

@@ -54,7 +54,7 @@ namespace EasySave.ViewModel
             Match result = Regex.Match(extensions, RegEx);
             if (result.Success)
             {
-                _errors.Add("destinationDirectoryError", _rm.GetString("emptyDestinationDirectoryError"));
+                _errors.Add("extensionError", _rm.GetString("extensionFormatError"));
             }
         }
         public int SelectedLanguage { get => _selectedLanguage; set => _selectedLanguage = value; }
