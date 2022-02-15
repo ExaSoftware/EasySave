@@ -48,13 +48,22 @@ namespace EasySave.ViewModel
         }
         public void CheckExtension(string extensions)
         {
+            //Check if the list doesnt have multiple ;;
+            //Create a list without the ;
             String[] ext = extensions.Split(";");
-            string RegEx = @"[^\w^;^.]+";
-            string RegEx2 = @"(\.[a-zA-Z1-9]{0,20};*)";
-            Match result = Regex.Match(extensions, RegEx);
-            if (result.Success)
+            string RegEx = @"(\.[a-zA-Z1-9]{0,20})";
+            //Verify for each element separeted with a ; if it fits the regex
+            foreach (string i in ext)
             {
-                _errors.Add("destinationDirectoryError", _rm.GetString("emptyDestinationDirectoryError"));
+                Match result = Regex.Match(i, RegEx);
+
+                if (!result.Success)
+                {
+                    MessageBox.Show(result.Success.ToString());
+                    MessageBox.Show(i.ToString());
+                    _errors.Add("extensionError", _rm.GetString("extensionError"));
+                    break;
+                }
             }
         }
         public int SelectedLanguage { get => _selectedLanguage; set => _selectedLanguage = value; }
