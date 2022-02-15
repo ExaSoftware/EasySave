@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using System.Windows;
 
 namespace EasySave.ViewModel
 {
@@ -11,6 +12,8 @@ namespace EasySave.ViewModel
         //Attributes
         private List<JobBackup> _listOfJobBackup;
         private JsonReadWriteModel _jsonReadWriteModel;
+        private Thread _thread;
+        private Thread _sequentialThread;
 
         //Define getter / setter
         public List<JobBackup> ListOfJobBackup { get => _listOfJobBackup; set => _listOfJobBackup = value; }
@@ -33,7 +36,8 @@ namespace EasySave.ViewModel
         {
             JsonReadWriteModel JSonReaderWriter = new JsonReadWriteModel();
             int count = 0;
-            if (_listOfJobBackup.Count !=0) { 
+            if (_listOfJobBackup.Count != 0)
+            {
                 //Search in the list if there's an id similar to the selected one
                 foreach (JobBackup item in _listOfJobBackup)
                 {
@@ -78,15 +82,13 @@ namespace EasySave.ViewModel
             {
                 Process[] procName = Process.GetProcessesByName(App.Configuration.BusinessSoftware);
                 if (procName.Length == 0)
-                {  
+                {
                     jobBackup.Execute();
-                    Trace.WriteLine(App.Configuration.BusinessSoftware);
                 }
             }
             else
             {
                 jobBackup.Execute();
-                Trace.WriteLine(App.Configuration.BusinessSoftware);
             }
         };
 
@@ -96,21 +98,26 @@ namespace EasySave.ViewModel
         /// <param name="jobBackup">The JobBackup to execute.</param>
         public void ExecuteOne(JobBackup jobBackup)
         {
-            Thread thread = new Thread(() => Execute(jobBackup));
-            thread.Start();
+            _thread = new Thread(() => Execute(jobBackup));
+            _thread.Start();
         }
 
         /// <summary>
-        /// Execute all the list with ExecuteOne method.
+        /// Execute all the list of JobBackup with the ExecuteOne method.
         /// </summary>
+        /// <remarks>Threads are executed one by one, in the order of the list.</remarks>
         public void ExecuteAll()
         {
-            foreach (JobBackup item in _listOfJobBackup)
+            _sequentialThread = new Thread(() =>
             {
-                Thread thread = new Thread(() => Execute(item));
-                thread.Start();
-                thread.Join();
-            }
+                foreach (JobBackup item in _listOfJobBackup)
+                {
+                    ExecuteOne(item);
+                    _thread.Join();
+                }
+            });
+            _sequentialThread.Start();
+
         }
 
     }

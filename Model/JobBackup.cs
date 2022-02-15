@@ -34,15 +34,14 @@ namespace EasySave
         public JobBackup() { }
 
         /// <summary>
-        /// 
+        /// Create a JobBackup with default parameters.
         /// </summary>
-        /// <remarks> The Id still unchanged.</remarks>
         /// <param name="id">This parameter is the index of this JobBackup in the JobBackup list.</param>
         public JobBackup(int id)
         {
-            _label = "";
-            _sourceDirectory = "";
-            _destinationDirectory = "";
+            _label = string.Empty;
+            _sourceDirectory = string.Empty;
+            _destinationDirectory = string.Empty;
             _isDifferential = false;
             _id = id;
         }
@@ -54,12 +53,12 @@ namespace EasySave
         ///  <param name="SourceDirectory"> the source directory.</param>
         ///  <param name="DestinationDirectory"> the destination directory.</param>
         ///  <param name="IsDifferential"> Define if the save is differential or not.</param>
-        public JobBackup(String label, String sourceDirectory, String destinationDirectory, Boolean isDifferential)
+        public JobBackup(string label, string sourceDirectory, string destinationDirectory, bool isDifferential)
         {
-            this._label = label;
-            this._sourceDirectory = sourceDirectory;
-            this._destinationDirectory = destinationDirectory;
-            this._isDifferential = isDifferential;
+            _label = label;
+            _sourceDirectory = sourceDirectory;
+            _destinationDirectory = destinationDirectory;
+            _isDifferential = isDifferential;
         }
 
         ///  <summary>
@@ -109,13 +108,10 @@ namespace EasySave
             }
         }
 
-
-
         ///  <summary>
         ///  Save all files from _sourceDirectory to _destDirectory.
         ///  </summary>
         ///  <remarks>This method delete all the destination directory before saving files</remarks>
-        /// <returns>True if an error occured during the process</returns>
         private void SaveAllFiles()
         {
             int encryptionTime = 0;
@@ -176,7 +172,7 @@ namespace EasySave
                     historyLog.Error = e.StackTrace;
                     historyLog.Fill(file, destFile, 0, -1, e.GetType().Name, -1);
                     historyLog.Dispose();
-                    progressLog.Dispose();;
+                    progressLog.Dispose(); ;
                 }
                 finally
                 {
@@ -191,12 +187,10 @@ namespace EasySave
             progressLog.Dispose();
         }
 
-
         /// <summary> 
         /// Save all differents files between _sourceDirectory and _destDirectory to _destDirectory.
         /// </summary>
         /// <remarks>This method ignores deleted files.</remarks>
-        /// <returns>True if an error occured during the process</returns>
         private void DoDifferentialSave()
         {
             int encryptionTime = 0;
@@ -222,6 +216,7 @@ namespace EasySave
                 try
                 {
                     FileInfo fileInfo = new FileInfo(file);
+
                     // Creation of the destFile
                     string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
 
@@ -231,6 +226,7 @@ namespace EasySave
                     }
                     else
                     {
+                        encryptionTime = 0;
                         historyStopwatch.Reset();
                         historyStopwatch.Start();
 
@@ -255,11 +251,10 @@ namespace EasySave
                 }
             }
 
-
             //Delete excess directories
             foreach (string path in Directory.GetDirectories(_destinationDirectory, "*", SearchOption.AllDirectories))
             {
-                if (!File.Exists(path.Replace(_destinationDirectory, _sourceDirectory)) && Directory.Exists(path))
+                if (!Directory.Exists(path.Replace(_destinationDirectory, _sourceDirectory)) && Directory.Exists(path))
                 {
                     try
                     {
@@ -282,6 +277,19 @@ namespace EasySave
             progressLog.Reset(_id);
             historyLog.Dispose();
             progressLog.Dispose();
+        }
+
+        /// <summary>
+        /// Return the sum of the size of each file wich will be transfered.
+        /// </summary>
+        /// <returns>The total size un octet</returns>
+        public long TotalFileSize()
+        {
+            return Directory.Exists(_sourceDirectory)
+                ? _isDifferential
+                    ? TotalFileSize(FindFilesForDifferentialSave())
+                    : TotalFileSize(Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories))
+                : 0;
         }
 
         /// <summary>
@@ -354,11 +362,11 @@ namespace EasySave
             int time;
 
             process.StartInfo.FileName = @"C:\EasySave\CryptoSoft\bin\Debug\netcoreapp3.1\CryptoSoft.exe";
-            process.StartInfo.Arguments = sourceFile + " " + destFile;
+            process.StartInfo.Arguments = String.Format("\"{0}\" \"{1}\"", sourceFile, destFile);
+            Trace.WriteLine(process.StartInfo.Arguments);
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.RedirectStandardError = true;
-            process.StartInfo.CreateNoWindow = false;
+            process.StartInfo.CreateNoWindow = true;
             process.Start();
 
             if (process.HasExited)
