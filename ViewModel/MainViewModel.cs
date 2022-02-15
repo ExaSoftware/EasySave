@@ -1,31 +1,43 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
-using System.Windows.Forms;
+using System.Threading;
+using System.Windows;
 
 namespace EasySave.ViewModel
 {
+    delegate void Del(JobBackup jobBackup);
+
     class MainViewModel
     {
         //Attributes
         private List<JobBackup> _listOfJobBackup;
-        private JobBackup _jobBackup;
         private JsonReadWriteModel _jsonReadWriteModel;
+        private Thread _thread;
+        private Thread _sequentialThread;
 
-        ///  <summary>Constructor of MainViewModel.</summary>
+        //Define getter / setter
+        public List<JobBackup> ListOfJobBackup { get => _listOfJobBackup; set => _listOfJobBackup = value; }
+
+        /// <summary>
+        /// Constructor of MainViewModel.
+        /// </summary>
         public MainViewModel()
         {
             //Read the list in the json
             _jsonReadWriteModel = new JsonReadWriteModel();
             _listOfJobBackup = _jsonReadWriteModel.ReadJobBackup();
-
-
         }
+
+        /// <summary>
+        /// Delete the selected save in the list of JobBackup
+        /// </summary>
+        /// <param name="id"></param>
         public void DeleteSave(int id)
         {
             JsonReadWriteModel JSonReaderWriter = new JsonReadWriteModel();
             int count = 0;
-            if (_listOfJobBackup.Count !=0) { 
+            if (_listOfJobBackup.Count != 0)
+            {
                 //Search in the list if there's an id similar to the selected one
                 foreach (JobBackup item in _listOfJobBackup)
                 {
@@ -63,18 +75,50 @@ namespace EasySave.ViewModel
             JSonReaderWriter.SaveJobBackup(_listOfJobBackup);
         }
 
+        //Instanciate the delegate
+        readonly Del Execute = delegate (JobBackup jobBackup)
+        {
+            if (App.Configuration.BusinessSoftware != "" || App.Configuration.BusinessSoftware != null)
+            {
+                Process[] procName = Process.GetProcessesByName(App.Configuration.BusinessSoftware);
+                if (procName.Length == 0)
+                {
+                    jobBackup.Execute();
+                }
+            }
+            else
+            {
+                jobBackup.Execute();
+            }
+        };
+
+        /// <summary>
+        /// Instanciate a thread and execute the jobBackup in this thread.
+        /// </summary>
+        /// <param name="jobBackup">The JobBackup to execute.</param>
         public void ExecuteOne(JobBackup jobBackup)
         {
-            jobBackup.Execute(App.Configuration.BusinessSoftware);
-            Trace.WriteLine(App.Configuration.BusinessSoftware);
+            _thread = new Thread(() => Execute(jobBackup));
+            _thread.Start();
         }
+
+        /// <summary>
+        /// Execute all the list of JobBackup with the ExecuteOne method.
+        /// </summary>
+        /// <remarks>Threads are executed one by one, in the order of the list.</remarks>
         public void ExecuteAll()
         {
-            foreach (JobBackup item in _listOfJobBackup)
+            _sequentialThread = new Thread(() =>
             {
-                item.Execute(Configuration.GetInstance().BusinessSoftware);
-            }
+                foreach (JobBackup item in _listOfJobBackup)
+                {
+                    ExecuteOne(item);
+                    _thread.Join();
+                }
+            });
+            _sequentialThread.Start();
+
         }
-        public List<JobBackup> ListOfJobBackup { get => _listOfJobBackup; set => _listOfJobBackup = value; }
+
     }
 }
