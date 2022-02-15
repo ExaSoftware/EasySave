@@ -82,19 +82,37 @@
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
+            
+            <!-- Field title -->
             <TextBlock Text="{x:Static language:Strings.label}" Grid.Row="0" VerticalAlignment="Center"/>
             <TextBlock Text="{x:Static language:Strings.jobCreateSourceDirectory}" Grid.Row="1" VerticalAlignment="Center"/>
             <TextBlock Text="{x:Static language:Strings.jobCreateDestinationDirectory}" Grid.Row="2" VerticalAlignment="Center" Margin="0,0,5,0"/>
             <TextBlock Text="{x:Static language:Strings.jobCreateBackupType}" Grid.Row="3" VerticalAlignment="Center"/>
-            <TextBox Name="label" Height="20" Grid.Row="0" Grid.Column="1" Text="{Binding JobBackup.Label}"/>
-            <DockPanel Grid.Column="1" Grid.Row="1" Height="20">
-                <Button Name="btnSelectSourcePath" Margin="0" Padding="0" DockPanel.Dock="Right" Width="Auto" Content="{iconPacks:FontAwesome Kind=FolderPlusSolid, Height=16, Width=16}" Style="{StaticResource selectFolderButton}" Click="btnSelectSourcePath_Click"/>
-                <TextBox Name="txtBoxSourcePath" Height="Auto" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Text="{Binding JobBackup.SourceDirectory}" />
-            </DockPanel>
-            <DockPanel Grid.Column="1" Grid.Row="2" Height="20">
-                <Button Name="btnSelectDestinationPath" Margin="0" Padding="0" DockPanel.Dock="Right" Width="Auto" Content="{iconPacks:FontAwesome Kind=FolderPlusSolid, Height=16, Width=16}" Style="{StaticResource selectFolderButton}" Click="btnSelectDestinationPath_Click"/>
-                <TextBox Name="txtBoxDestinationPath" Height="Auto" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Text="{Binding JobBackup.DestinationDirectory}" />
-            </DockPanel>
+            
+            <!-- Field inputs -->
+            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center">
+                <TextBox Name="label" Height="20" Text="{Binding JobBackup.Label}" VerticalAlignment="Center" LostFocus="LabelLostFocus"/>
+                <TextBlock Name="labelError" Visibility="Collapsed" Foreground="Red"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" VerticalAlignment="Center">
+                <DockPanel>
+                    <Button Name="btnSelectSource" Margin="0" Padding="0" DockPanel.Dock="Right" Width="Auto" Content="{iconPacks:FontAwesome Kind=FolderPlusSolid, Height=16, Width=16}" Style="{StaticResource selectFolderButton}" Click="BtnSelectSourceClick"/>
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" DockPanel.Dock="Right">
+                        <TextBox Name="txtBoxSource" Height="20" Text="{Binding JobBackup.SourceDirectory}" VerticalAlignment="Center" IsReadOnly="True" TextChanged="TxtBoxSourceTextChanged"/>
+                    </StackPanel>
+                </DockPanel>
+                <TextBlock Name="sourceDirectoryError" Visibility="Collapsed" Foreground="Red"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Vertical" VerticalAlignment="Center">
+                <DockPanel>
+                    <Button Name="btnSelectDestination" Margin="0" Padding="0" DockPanel.Dock="Right" Width="Auto" Content="{iconPacks:FontAwesome Kind=FolderPlusSolid, Height=16, Width=16}" Style="{StaticResource selectFolderButton}" Click="BtnSelectDestinationClick"/>
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" DockPanel.Dock="Right">
+                        <TextBox Name="txtBoxDestination" Height="20" Text="{Binding JobBackup.DestinationDirectory}" VerticalAlignment="Center" IsReadOnly="True" TextChanged="TxtBoxDestinationTextChanged"/>
+                    </StackPanel>
+                </DockPanel>
+                <TextBlock Name="destinationDirectoryError" Visibility="Collapsed" Foreground="Red"/>
+            </StackPanel>
             <ComboBox Name="type" Grid.Row="3" Grid.Column="1" Height="25" SelectedIndex="{Binding SelectedIndex}">
                 <ComboBoxItem Content="{x:Static language:Strings.total}" />
                 <ComboBoxItem Content="{x:Static language:Strings.differential}" />
@@ -103,25 +121,18 @@
         
         <!-- Page button control -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Name="btnCancel" Height="50" Width="Auto" Margin="10,0" Style="{StaticResource controlButtonStyle}" Click="btnCancel_Click">
+            <Button Name="btnCancel" Height="50" Width="Auto" Margin="10,0" Style="{StaticResource controlButtonStyle}" Click="BtnCancelClick">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="{iconPacks:FontAwesome Kind=TimesSolid}" Foreground="Red" VerticalAlignment="Center" Padding="0" Margin="0,0,5,0"/>
                     <TextBlock Text="{x:Static language:Strings.cancel}" VerticalAlignment="Center" Foreground="White"/>
                 </StackPanel>
             </Button>
-            <Button Name="btnValid" Height="50" Width="Auto" Margin="10,0" Style="{StaticResource controlButtonStyle}"  Click="btnValid_Click">
+            <Button Name="btnValid" Height="50" Width="Auto" Margin="10,0" Style="{StaticResource controlButtonStyle}"  Click="BtnValidClick">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="{iconPacks:FontAwesome Kind=CheckSolid}" Foreground="Green" VerticalAlignment="Center"  Padding="0" Margin="0,0,5,0"/>
                     <TextBlock Text="{x:Static language:Strings.valid}" VerticalAlignment="Center" Foreground="White"/>
                 </StackPanel>
             </Button>
         </StackPanel>
-        
-
-
-
-
-        <!--<Label Content="job backupo creation edition" />
-        <Button Name="btnReturn" Content="Return" Height="50" Width="50" Click="btnReturn_Click"/>-->
     </Grid>
 </Page>
