@@ -102,7 +102,7 @@
             <TextBlock Text="Liste des extensions des fichiers à chiffrer (.exe;.pdf;.png)" Grid.Row="2" VerticalAlignment="Center" Margin="0,0,5,0"/>
             <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Vertical" VerticalAlignment="Center">
                 <TextBox Name="txtBoxExtensionsList" Height="20" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Text="{Binding Extensions}" LostFocus="txtBoxExtensionsList_LostFocus" />
-                <TextBlock Name="extensionError" Visibility="Collapsed" Foreground="Red"/>
+                <TextBlock Name="extensionError" Visibility="Collapsed" Foreground="#a30700"/>
             </StackPanel>
 
         </Grid>
@@ -111,7 +111,7 @@
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button Name="btnReturn" Height="50" Width="Auto" Margin="10,0" Style="{StaticResource controlButtonStyle}" Click="btnReturn_Click">
                 <StackPanel Orientation="Horizontal">
-                    <Label Content="{iconPacks:FontAwesome Kind=UndoSolid}" Foreground="Red" VerticalAlignment="Center" Padding="0" Margin="0,0,5,0"/>
+                    <Label Content="{iconPacks:FontAwesome Kind=UndoSolid}" Foreground="#a30700" VerticalAlignment="Center" Padding="0" Margin="0,0,5,0"/>
                     <TextBlock Text="{x:Static language:Strings._return}" VerticalAlignment="Center" Foreground="White"/>
                 </StackPanel>
             </Button>

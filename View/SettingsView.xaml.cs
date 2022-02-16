@@ -55,7 +55,7 @@ namespace EasySave
             //Showing errors if necessary
             if (_settingsViewModel.Errors.Count > 0)
             {
-                ShowErrorsFromSettingsModel();
+                ShowErrorsFromSettingsViewModel();
             }
             else
             {
@@ -77,7 +77,7 @@ namespace EasySave
         /// <summary>
         /// Method which read the errors dictionnary of the Setting Model and show it if necessary. Useful for showing error more dynamically to the user.
         /// </summary>
-        private void ShowErrorsFromSettingsModel()
+        private void ShowErrorsFromSettingsViewModel()
         {
             foreach (KeyValuePair<string, string> entry in _settingsViewModel.Errors)
             {
@@ -107,17 +107,17 @@ namespace EasySave
             //Ensure textbox is property loaded
             if (this.IsLoaded)
             {
-                //Check and show directory source error
+                //Check and show extensions error
                 _settingsViewModel.CheckExtension(txtBoxExtensionsList.Text);
-                if (_settingsViewModel.Errors.ContainsKey("sourceDirectoryError"))
+                if (_settingsViewModel.Errors.ContainsKey("extensionError"))
                 {
-                    extensionError.Text = _settingsViewModel.Errors["sourceDirectoryError"]; extensionError.Visibility = Visibility.Visible;
+                    extensionError.Text = _settingsViewModel.Errors["extensionError"]; extensionError.Visibility = Visibility.Visible;
                 }
                 else
                 {
                     extensionError.Text = ""; extensionError.Visibility = Visibility.Collapsed;
                 }
-                _settingsViewModel.Errors.Remove("sourceDirectoryError");
+                _settingsViewModel.Errors.Remove("extensionError");
             }
         }
 

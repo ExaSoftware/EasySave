@@ -12,8 +12,8 @@ namespace EasySave.ViewModel
     class SettingsViewModel
     {
         private int _selectedLanguage;
-        private String _extensions;
-        private String _businessSoftware;
+        private string _extensions;
+        private string _businessSoftware;
         private ResourceManager _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
         private Dictionary<string, string> _errors = new Dictionary<string, string>();
 
@@ -53,7 +53,7 @@ namespace EasySave.ViewModel
             Match result = Regex.Match(extensions, pattern);
             if (result.Success)
             {
-                _errors.Add("extensionError", _rm.GetString("extensionError"));
+                _errors.Add("extensionError", _rm.GetString("extensionFormatError"));
             }
         }
         public int SelectedLanguage { get => _selectedLanguage; set => _selectedLanguage = value; }
