@@ -49,21 +49,11 @@ namespace EasySave.ViewModel
         public void CheckExtension(string extensions)
         {
             //Check if the list doesnt have multiple ;;
-            //Create a list without the ;
-            String[] ext = extensions.Split(";");
-            string RegEx = @"(\.[a-zA-Z1-9]{0,20})";
-            //Verify for each element separeted with a ; if it fits the regex
-            foreach (string i in ext)
+            string pattern = @"\.[-!$%^&*()_+|~=`\\#{}\[\]:\<>?,\/+\w*\d*\s*àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ]*\.+[\w*\d*\s*àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ]*";
+            Match result = Regex.Match(extensions, pattern);
+            if (result.Success)
             {
-                Match result = Regex.Match(i, RegEx);
-
-                if (!result.Success)
-                {
-                    MessageBox.Show(result.Success.ToString());
-                    MessageBox.Show(i.ToString());
-                    _errors.Add("extensionError", _rm.GetString("extensionError"));
-                    break;
-                }
+                _errors.Add("extensionError", _rm.GetString("extensionError"));
             }
         }
         public int SelectedLanguage { get => _selectedLanguage; set => _selectedLanguage = value; }
