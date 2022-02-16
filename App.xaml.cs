@@ -16,11 +16,23 @@ namespace EasySave
     public partial class App : Application
     {
         public static Configuration _configuration;
-        App()
+
+        protected override void OnStartup(StartupEventArgs e)
         {
-            Init.CreateDataDirectoryIfNotExists();
-            _configuration = Init.LoadConfiguration();
-            //Debug.WriteLine(CultureInfo.CurrentUICulture);
+            base.OnStartup(e);
+
+            //Single instance of EasySave
+            Process easySave = Process.GetCurrentProcess();
+            if (Process.GetProcessesByName(easySave.ProcessName).Length > 1)
+            {
+                MessageBox.Show("An instance of EasySave is already running...", "Instance Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.Current.Shutdown();
+            }
+            else
+            {
+                Init.CreateDataDirectoryIfNotExists();
+                _configuration = Init.LoadConfiguration();
+            }
         }
 
         public static Configuration Configuration { get => _configuration; }

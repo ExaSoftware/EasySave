@@ -201,6 +201,9 @@
   <data name="settings" xml:space="preserve">
     <value>Paramètres</value>
   </data>
+  <data name="singleInstance" xml:space="preserve">
+    <value>Une instance d'EasySave est déjà en cours d'exécution...</value>
+  </data>
   <data name="sourceDirectory" xml:space="preserve">
     <value>Répertoire source :</value>
   </data>
