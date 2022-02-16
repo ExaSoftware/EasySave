@@ -313,6 +313,15 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Une instance d&apos;EasySave est déjà en cours d&apos;exécution....
+        /// </summary>
+        public static string singleInstance {
+            get {
+                return ResourceManager.GetString("singleInstance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Répertoire source :.
         /// </summary>
         public static string sourceDirectory {
