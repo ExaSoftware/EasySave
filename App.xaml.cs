@@ -16,15 +16,12 @@ namespace EasySave
     public partial class App : Application
     {
         public static Configuration _configuration;
-        /*App()
-        {
 
-            //Debug.WriteLine(CultureInfo.CurrentUICulture);
-        }*/
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
+            //Single instance of EasySave
             Process easySave = Process.GetCurrentProcess();
             if (Process.GetProcessesByName(easySave.ProcessName).Length > 1)
             {
