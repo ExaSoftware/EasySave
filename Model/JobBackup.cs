@@ -180,6 +180,7 @@ namespace EasySave
                     //Write logs
                     progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (100 * fileTransfered / fileToTranfer), _id);
                     historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
+                    State = progressLog;
                 }
                 catch (Exception e)
                 {
