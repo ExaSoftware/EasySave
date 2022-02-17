@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
@@ -7,16 +8,26 @@ namespace EasySave.ViewModel
 {
     delegate void Del(JobBackup jobBackup);
 
-    class MainViewModel
+    class MainViewModel : INotifyPropertyChanged
     {
         //Attributes
         private List<JobBackup> _listOfJobBackup;
         private JsonReadWriteModel _jsonReadWriteModel;
         private Thread _thread;
         private Thread _sequentialThread;
+        private JobBackup _job;
 
         //Define getter / setter
         public List<JobBackup> ListOfJobBackup { get => _listOfJobBackup; set => _listOfJobBackup = value; }
+        public JobBackup Job 
+        {
+            get => _job;
+            set
+            {
+                _job = value;
+                OnPropertyChanged("Job");
+            } 
+        }
 
         /// <summary>
         /// Constructor of MainViewModel.
@@ -92,12 +103,19 @@ namespace EasySave.ViewModel
             }
         };
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         /// <summary>
         /// Instanciate a thread and execute the jobBackup in this thread.
         /// </summary>
         /// <param name="jobBackup">The JobBackup to execute.</param>
         public void ExecuteOne(JobBackup jobBackup)
         {
+            Job = jobBackup;
             _thread = new Thread(() => Execute(jobBackup));
             _thread.Start();
         }
