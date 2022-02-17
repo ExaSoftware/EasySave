@@ -3,6 +3,7 @@ using System.IO;
 using System.Diagnostics;
 using EasySave.Object;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace EasySave
 {
@@ -13,13 +14,15 @@ namespace EasySave
     public class JobBackup : IDisposable
     {
         // Attributes
-        private String _label;
-        private String _sourceDirectory;
-        private String _destinationDirectory;
+        private string _label;
+        private string _sourceDirectory;
+        private string _destinationDirectory;
         private Boolean _isDifferential;
         private int _id;
-        private String[] _extensionList;
+        private string[] _encryptionExtensionList;
+        private string[] _priorityExtensionList;
         private bool _disposedValue;
+        private int _priority;
 
         // Properties
         public string SourceDirectory { get => _sourceDirectory; set => _sourceDirectory = value; }
@@ -43,6 +46,7 @@ namespace EasySave
             _sourceDirectory = string.Empty;
             _destinationDirectory = string.Empty;
             _isDifferential = false;
+            _priority = 0;
             _id = id;
         }
 
@@ -95,7 +99,7 @@ namespace EasySave
 
             if (!error)
             {
-                _extensionList = App.Configuration.Extensions;
+                _encryptionExtensionList = App.Configuration.Extensions;
 
                 if (_isDifferential)
                 {
@@ -116,16 +120,28 @@ namespace EasySave
         {
             int encryptionTime = 0;
 
-            //Delete all files
-            Directory.Delete(_destinationDirectory, true);
-            //Restart from zero. 
-            Directory.CreateDirectory(_destinationDirectory);
-
-            //Creation of all sub directories
-            foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
+            try
             {
-                Directory.CreateDirectory(path.Replace(_sourceDirectory, _destinationDirectory));
+                if (Monitor.TryEnter(_destinationDirectory, Timeout.Infinite))
+                {
+                    //Delete all files
+                    Directory.Delete(_destinationDirectory, true);
+                    //Restart from zero. 
+                    Directory.CreateDirectory(_destinationDirectory);
+
+                    //Creation of all sub directories
+                    foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
+                    {
+                        Directory.CreateDirectory(path.Replace(_sourceDirectory, _destinationDirectory));
+                    }
+
+                }
             }
+            finally
+            {
+                Monitor.Exit(_destinationDirectory);
+            }
+
 
             string[] files = Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories);
             int fileTransfered = 0;                 //Incease each file transfered
@@ -147,7 +163,7 @@ namespace EasySave
                 {
                     historyStopwatch.Reset();
 
-                    if (!(_extensionList is null) && new List<String>(_extensionList).Contains(fileInfo.Extension))
+                    if (!(_encryptionExtensionList is null) && new List<string>(_encryptionExtensionList).Contains(fileInfo.Extension))
                     {
                         encryptionTime = CypherFile(file, destFile);
                         string b = fileInfo.Extension;
@@ -179,12 +195,14 @@ namespace EasySave
                     //Free memory
                     fileInfo = null;
                     destFile = string.Empty;
+
+                    //dispose history and progress log
+                    historyLog.Dispose();
+                    progressLog.Dispose();
                 }
             }
 
-            //dispose history and progress log
-            historyLog.Dispose();
-            progressLog.Dispose();
+
         }
 
         /// <summary> 
@@ -193,7 +211,7 @@ namespace EasySave
         /// <remarks>This method ignores deleted files.</remarks>
         private void DoDifferentialSave()
         {
-            int encryptionTime = 0;
+            int encryptionTime;
 
             String[] files = FindFilesForDifferentialSave();
 
@@ -220,7 +238,7 @@ namespace EasySave
                     // Creation of the destFile
                     string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
 
-                    if (!(_extensionList is null) && new List<String>(_extensionList).Contains(fileInfo.Extension))
+                    if (!(_encryptionExtensionList is null) && new List<String>(_encryptionExtensionList).Contains(fileInfo.Extension))
                     {
                         encryptionTime = CypherFile(file, destFile);
                     }
@@ -269,7 +287,11 @@ namespace EasySave
             {
                 if (!File.Exists(path.Replace(_destinationDirectory, _sourceDirectory)) && File.Exists(path))
                 {
-                    File.Delete(path);
+                    try
+                    {
+                        File.Delete(path);
+                    }
+                    catch { }
                 }
             }
 
@@ -317,7 +339,7 @@ namespace EasySave
         /// Use the default hashCode to compare.
         /// </summary>
         /// <returns>A list of diferent files between source and dest directories.</returns>
-        private String[] FindFilesForDifferentialSave()
+        private string[] FindFilesForDifferentialSave()
         {
             List<String> filesToSave = new List<string>();
             String[] filesInDirectory = Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories);
@@ -395,10 +417,10 @@ namespace EasySave
                 if (disposing)
                 {
                     // TODO: supprimer l'état managé (objets managés)
-                    _label = String.Empty;
-                    _sourceDirectory = String.Empty;
-                    _destinationDirectory = String.Empty;
-                    _extensionList = null;
+                    _label = string.Empty;
+                    _sourceDirectory = string.Empty;
+                    _destinationDirectory = string.Empty;
+                    _encryptionExtensionList = null;
                 }
 
                 // TODO: libérer les ressources non managées (objets non managés) et substituer le finaliseur
@@ -417,8 +439,8 @@ namespace EasySave
         /// <summary>
         /// Inherited from iDisposable. Use this method to kill this object.
         /// This method will free as memory as possible and tag this object.
-        /// The GarbageCollector is not called. 
         /// </summary>
+        /// <remarks>The GarbageCollector is not called.</remarks>
         public void Dispose()
         {
             // Ne changez pas ce code. Placez le code de nettoyage dans la méthode 'Dispose(bool disposing)'
