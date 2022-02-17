@@ -214,8 +214,8 @@
                         <ProgressBar Grid.Row="1" Grid.ColumnSpan="3" Height="15" Margin="0,10,10,0" Value="{Binding Job.State.Progression, UpdateSourceTrigger=PropertyChanged}" Maximum="100" Minimum="0"/>
                         <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.Row="1" Margin="0,10,0,0" HorizontalAlignment="Center">
                             <Button Content="{iconPacks:FontAwesome Kind=PlaySolid, Height=24, Width=24}" Margin="10,0" Height="Auto" Style="{StaticResource playButton}" Name="btnPlay" Click="btnPlay_Click"/>
-                            <Button Content="{iconPacks:FontAwesome Kind=PauseSolid, Height=24, Width=24}" Margin="0,0,10,0" Height="Auto" Style="{StaticResource pauseButton}"/>
-                            <Button Content="{iconPacks:FontAwesome Kind=StopSolid, Height=24, Width=24}" Margin="0,0,10,0" Height="Auto" Style="{StaticResource stopButton}" />
+                            <Button Content="{iconPacks:FontAwesome Kind=PauseSolid, Height=24, Width=24}" Margin="0,0,10,0" Height="Auto" Style="{StaticResource pauseButton}" Name="btnPause" Click="btnPause_Click"/>
+                            <Button Content="{iconPacks:FontAwesome Kind=StopSolid, Height=24, Width=24}" Margin="0,0,10,0" Height="Auto" Style="{StaticResource stopButton}" Name="btnStop" Click="btnStop_Click" />
                         </StackPanel>
                     </Grid>
                 </Border>

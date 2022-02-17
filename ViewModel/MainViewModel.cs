@@ -12,11 +12,16 @@ namespace EasySave.ViewModel
     class MainViewModel : INotifyPropertyChanged
     {
         //Attributes
-        private List<JobBackup> _listOfJobBackup;
-        private JsonReadWriteModel _jsonReadWriteModel;
+        private List<JobBackup> _listOfJobBackup = null;
+        private JsonReadWriteModel _jsonReadWriteModel = null;
+        private Thread _thread = null;
+        private Thread _thread1 = null;
+        private Thread _thread2 = null;
+        private Thread _thread3 = null;
+        private Thread _thread4 = null;
+        private Thread _thread5 = null;
+        private Thread _mainThread = null;
         private int _selectedIndex;
-        private Thread _thread;
-        private Thread _sequentialThread;
         private JobBackup _job;
         private double _totalFilesSizeFormatted;
 
@@ -139,16 +144,23 @@ namespace EasySave.ViewModel
         }
 
         /// <summary>
-        /// Instanciate a thread and execute the jobBackup in this thread.
+        /// Resume threads or instanciate a thread and execute the jobBackup in this thread.
         /// </summary>
         /// <param name="jobBackup">The JobBackup to execute.</param>
         public void ExecuteOne(JobBackup jobBackup)
         {
+            _mainThread = new Thread(() =>
+            {
+                _thread = new Thread(() => Execute(jobBackup));
+                _thread.Start();
+            });
+            _mainThread.Start();
             Job = jobBackup;
             SelectedIndex = Job.Id;
             _thread = new Thread(() => Execute(jobBackup));
             _thread.Start();
         }
+
 
         /// <summary>
         /// Execute all the list of JobBackup with the ExecuteOne method.
@@ -156,16 +168,79 @@ namespace EasySave.ViewModel
         /// <remarks>Threads are executed one by one, in the order of the list.</remarks>
         public void ExecuteAll()
         {
-            _sequentialThread = new Thread(() =>
+            if (_mainThread is null || !_mainThread.IsAlive)
             {
-                foreach (JobBackup item in _listOfJobBackup)
+                _mainThread = new Thread(() =>
                 {
-                    ExecuteOne(item);
-                    _thread.Join();
-                }
-            });
-            _sequentialThread.Start();
+                    List<Thread> threadList = new List<Thread>() { _thread1, _thread2, _thread3, _thread4, _thread5 };
+                    double numberOfIteration = Math.Round((double)(_listOfJobBackup.Count / 5));
+                    int i = 0;
 
+                    for (i = 0; i < numberOfIteration * 5; i += 5)
+                    {
+                        _thread1 = new Thread(() => Execute(_listOfJobBackup[i]));
+                        _thread2 = new Thread(() => Execute(_listOfJobBackup[i++]));
+                        _thread3 = new Thread(() => Execute(_listOfJobBackup[i + 2]));
+                        _thread4 = new Thread(() => Execute(_listOfJobBackup[i + 3]));
+                        _thread5 = new Thread(() => Execute(_listOfJobBackup[i + 4]));
+
+                        _thread1.Start();
+                        _thread2.Start();
+                        _thread3.Start();
+                        _thread4.Start();
+                        _thread5.Start();
+
+                        _thread1.Join();
+                        _thread2.Join();
+                        _thread3.Join();
+                        _thread4.Join();
+                        _thread5.Join();
+                    }
+
+                    for (int a = 0; a < 2; a++)
+                    {
+                        int b = a;
+                        threadList[b % 5] = new Thread(() => Execute(_listOfJobBackup[b]));
+                        threadList[b % 5].Start();
+                    }
+
+
+                    foreach (Thread thread in threadList)
+                    {
+                        if (!(thread is null))
+                        {
+                            thread.Join();
+                        }
+                    }
+
+                });
+                _mainThread.Start();
+            }
+        }
+
+
+        /// <summary>
+        /// Pause all JobBackups threads.
+        /// </summary>
+        public void Pause()
+        {
+
+        }
+
+
+        /// <summary>
+        /// Stop all JobBackups threads.
+        /// </summary>
+        public void Stop()
+        {
+            try
+            {
+                _mainThread.Abort();
+            }
+            catch
+            {
+
+            }
         }
 
     }
