@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
@@ -8,7 +9,7 @@ namespace EasySave.ViewModel
 {
     delegate void Del(JobBackup jobBackup);
 
-    class MainViewModel
+    class MainViewModel : INotifyPropertyChanged
     {
         //Attributes
         private List<JobBackup> _listOfJobBackup = null;
@@ -20,9 +21,45 @@ namespace EasySave.ViewModel
         private Thread _thread4 = null;
         private Thread _thread5 = null;
         private Thread _mainThread = null;
+        private int _selectedIndex;
+        private JobBackup _job;
+        private double _totalFilesSizeFormatted;
 
         //Define getter / setter
         public List<JobBackup> ListOfJobBackup { get => _listOfJobBackup; set => _listOfJobBackup = value; }
+        public JobBackup Job 
+        {
+            get => _job;
+            set
+            {
+                _job = value;
+                OnPropertyChanged("Job");
+            } 
+        }
+
+        public double TotalFilesSizeFormatted 
+        {
+            get
+            {
+                //Convert in MO
+                return (double)Math.Round(_totalFilesSizeFormatted / 1048576, 2);
+            } 
+            set
+            {
+                _totalFilesSizeFormatted = value;
+                OnPropertyChanged("TotalFilesSizeFormatted");
+            }
+        }
+
+        public int SelectedIndex 
+        {
+            get => _selectedIndex;
+            set 
+            {
+                _selectedIndex = value;
+                OnPropertyChanged("SelectedIndex");
+            }  
+        }
 
         /// <summary>
         /// Constructor of MainViewModel.
@@ -32,6 +69,8 @@ namespace EasySave.ViewModel
             //Read the list in the json
             _jsonReadWriteModel = new JsonReadWriteModel();
             _listOfJobBackup = _jsonReadWriteModel.ReadJobBackup();
+
+
         }
 
         /// <summary>
@@ -98,6 +137,11 @@ namespace EasySave.ViewModel
             }
         };
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         /// <summary>
         /// Resume threads or instanciate a thread and execute the jobBackup in this thread.
@@ -111,6 +155,10 @@ namespace EasySave.ViewModel
                 _thread.Start();
             });
             _mainThread.Start();
+            Job = jobBackup;
+            SelectedIndex = Job.Id;
+            _thread = new Thread(() => Execute(jobBackup));
+            _thread.Start();
         }
 
 

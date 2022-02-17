@@ -195,6 +195,9 @@
   <data name="language" xml:space="preserve">
     <value>Language</value>
   </data>
+  <data name="megabyteUnit" xml:space="preserve">
+    <value>MB</value>
+  </data>
   <data name="return" xml:space="preserve">
     <value>Return</value>
   </data>
