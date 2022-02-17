@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace EasySave.Object
 {
-    public class ProgressLog : Log
+    public class ProgressLog : Log, INotifyPropertyChanged
     {
         /// <summary>State of the saving job</summary>
         private string _state;
@@ -37,15 +38,60 @@ namespace EasySave.Object
         }
 
         [JsonProperty(Order = 4)]
-        public string State { get => _state; set => _state = value; }
+        public string State
+        {
+            get => _state;
+            set
+            {
+                _state = value;
+                OnPropertyChanged("State");
+            }  
+        }
         [JsonProperty(Order = 5)]
-        public int TotalFilesToCopy { get => _totalFilesToCopy; set => _totalFilesToCopy = value; }
+        public int TotalFilesToCopy
+        {
+            get => _totalFilesToCopy;
+            set
+            {
+                _totalFilesToCopy = value;
+                OnPropertyChanged("TotalFilesToCopy");
+            }
+        }
         [JsonProperty(Order = 6)]
-        public long TotalFilesSize { get => _totalFilesSize; set => _totalFilesSize = value; }
+        public long TotalFilesSize 
+        {
+            get => _totalFilesSize;
+            set
+            {
+                _totalFilesSize = value;
+                OnPropertyChanged("TotalFilesSize");
+            }
+        }
         [JsonProperty(Order = 7)]
-        public int TotalFilesRemaining { get => _totalFilesRemaining; set => _totalFilesRemaining = value; }
+        public int TotalFilesRemaining
+        {
+            get => _totalFilesRemaining;
+            set
+            {
+                _totalFilesRemaining = value;
+                OnPropertyChanged("TotalFilesRemaining");
+            }
+        }
         [JsonProperty(Order = 8)]
-        public int Progression { get => _progression; set => _progression = value; }
+        public int Progression
+        {
+            get => _progression;
+            set
+            {
+                _progression = value;
+                OnPropertyChanged("Progression");
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public void Fill(string file, string destFile, int totalFilesRemaining, int progression, int id)
         {
