@@ -142,9 +142,13 @@ namespace EasySave
 
         private void listViewBackups_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //MessageBox.Show(_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Label);
-            MainViewModel vm = this.DataContext as MainViewModel;
-            vm.Job = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex];
+            if (_mainViewModel.SelectedIndex != -1)
+            {
+                //MessageBox.Show(_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Label);
+                MainViewModel vm = this.DataContext as MainViewModel;
+                vm.Job = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex];
+            }
+
         }
 
     }

@@ -86,6 +86,8 @@ namespace EasySave.ViewModel
             _jsonReadWriteModel = new JsonReadWriteModel();
             _listOfJobBackup = _jsonReadWriteModel.ReadJobBackup();
 
+            //No job backup selected
+            SelectedIndex = -1;
 
         }
 
@@ -110,6 +112,9 @@ namespace EasySave.ViewModel
                             _listOfJobBackup.Remove(item);
                             _listOfJobBackup.Clear();
                             item.Dispose();
+                            Job = null;
+                            TotalFilesSizeFormatted = 0;
+                            JobTypeFormatted = String.Empty;
                         }
                         else
                         {
