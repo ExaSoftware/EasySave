@@ -1,16 +1,22 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Text.Json;
+using System.Xml.Serialization;
 
 namespace EasySave
 {
+    [Serializable]
+    [XmlRoot(ElementName = "Log")]
     ///<summary>Public Log class which models a log file</summary>
     public abstract class Log : IDisposable
     {
+        [XmlElement(ElementName = "label")]
         /// <summary> Job save label </summary>
         protected string _label;
+        [XmlElement(ElementName = "sourceFile")]
         /// <summary> Source file path of the file which have been saved </summary>
         protected string _sourceFile;
+        [XmlElement(ElementName = "targetFile")]
         /// <summary> Target file path of the file which have been saved </summary>
         protected string _targetFile;
 
