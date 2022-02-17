@@ -199,6 +199,7 @@ namespace EasySave
                     progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (100 * fileTransfered / fileToTranfer), _id, sizeRemaining);
                     historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
                     State = progressLog;
+                    State.Log += String.Format("{0} ================> {1}{2}", file, destFile, Environment.NewLine);
                 }
                 catch (Exception e)
                 {
@@ -207,6 +208,7 @@ namespace EasySave
 
                     historyLog.Error = e.StackTrace;
                     historyLog.Fill(file, destFile, 0, -1, e.GetType().Name, -1);
+                    State.Log += String.Format("Error ====> {0}     {1}{2}", e.GetType().Name, destFile, Environment.NewLine);
                     historyLog.Dispose();
                     progressLog.Dispose(); ;
                 }
