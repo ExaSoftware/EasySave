@@ -1,20 +1,25 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace EasySave
 {
+    [Serializable]
+    [XmlRoot(ElementName = "HistoryLog")]
     /// <summary>
     /// This class models an history log of what have been saved for a specific job save
     /// </summary>
     public class HistoryLog : Log
     {
+        [XmlElement(ElementName = "fileSize")]
         /// <summary>The file size of the file which have been saved</summary>
         private ulong _fileSize;
+        [XmlElement(ElementName = "transferTime")]
         /// <summary>Transfer time of the file which have been saved</summary>
         private double _transferTime;
-
+        [XmlElement(ElementName = "error")]
         private string _error;
+        [XmlElement(ElementName = "time")]
         /// <summary> Timestamp when the job have been saved </summary>
         protected string _time;
 
@@ -26,6 +31,8 @@ namespace EasySave
             _time = DateTime.Now.ToString("d/MM/yyyy HH:mm:ss");
             _error = "";
         }
+
+        public HistoryLog() { }
 
         /// <summary>
         /// Getter which returns the file size

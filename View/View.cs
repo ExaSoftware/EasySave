@@ -63,5 +63,23 @@ namespace EasySave
             Console.WriteLine(String.Format("  2  -  {0}", _rm.GetString("menuLanguageFr")));
             Console.WriteLine("");
         }
+
+        public void DisplayOptions()
+        {
+            Console.WriteLine(String.Format(" {0} :",_rm.GetString("optionMenu")));
+            Console.WriteLine("");
+            Console.WriteLine(String.Format("  1  -  {0}",_rm.GetString("optionLanguage")));
+            Console.WriteLine(String.Format("  2  -  {0}", _rm.GetString("optionLogFormat")));
+            Console.WriteLine("");
+        }
+
+        public void DisplayLogFormat()
+        {
+            Console.WriteLine(String.Format(" {0} :",_rm.GetString("logFormatChoice")));
+            Console.WriteLine("");
+            Console.WriteLine(String.Format("  1  -  {0}", _rm.GetString("xml")));
+            Console.WriteLine(String.Format("  2  -  {0}", _rm.GetString("json")));
+            Console.WriteLine("");
+        }
     }
 }

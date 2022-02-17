@@ -116,7 +116,6 @@ namespace EasySave
                                 }
                                 break;
 
-
                             //Execute all jobs backup
                             case 4:
                                 Console.Clear();
@@ -149,26 +148,57 @@ namespace EasySave
                         break;
                     //Option
                     case 2:
-                        _view.DisplayChooseLanguage();
+                        _view.DisplayOptions();
                         input = CheckInput();
-                        switch (input)
+                        switch(input)
                         {
-                            //Change language to English
                             case 1:
                                 Console.Clear();
-                                LanguageManager.ChangeLanguage("en-US", _configuration);
-                                _view.Display(String.Format(_rm.GetString("languageChangedSuccess"), "en-US") + Environment.NewLine);
+                                _view.DisplayChooseLanguage();
+                                input = CheckInput();
+                                switch (input)
+                                {
+                                    //Change language to English
+                                    case 1:
+                                        Console.Clear();
+                                        LanguageManager.ChangeLanguage("en-US", _configuration);
+                                        _view.Display(String.Format(_rm.GetString("languageChangedSuccess"), "en-US") + Environment.NewLine);
+                                        break;
+                                    //Change language to French
+                                    case 2:
+                                        Console.Clear();
+                                        LanguageManager.ChangeLanguage("fr-FR", _configuration);
+                                        _view.Display(String.Format(_rm.GetString("languageChangedSuccess"), "fr-FR") + Environment.NewLine);
+                                        break;
+                                    //Warning
+                                    default:
+                                        _view.Display(String.Format("  {0}", _rm.GetString("menuWarn12")));
+                                        input = CheckInput();
+                                        break;
+                                }
                                 break;
-                            //Change language to French
                             case 2:
                                 Console.Clear();
-                                LanguageManager.ChangeLanguage("fr-FR", _configuration);
-                                _view.Display(String.Format(_rm.GetString("languageChangedSuccess"), "fr-FR") + Environment.NewLine);
-                                break;
-                            //Warning
-                            default:
-                                _view.Display(String.Format("  {0}", _rm.GetString("menuWarn12")));
+                                _view.DisplayLogFormat();
                                 input = CheckInput();
+                                switch (input)
+                                {
+                                    case 1:
+                                        Console.Clear();
+                                        _configuration.LogFormat = "xml";
+                                        _configuration.Save();
+                                        break;
+                                    case 2:
+                                        Console.Clear();
+                                        _configuration.LogFormat = "json";
+                                        _configuration.Save();
+                                        break;
+                                    //Warning
+                                    default:
+                                        _view.Display(String.Format("  {0}", _rm.GetString("menuWarn12")));
+                                        input = CheckInput();
+                                        break;
+                                }
                                 break;
                         }
                         break;
@@ -178,7 +208,6 @@ namespace EasySave
                     //Warning
                     default:
                         _view.Display(String.Format("  {0}", _rm.GetString("menuWarn14")));
-                        input = CheckInput();
                         break;
                 }
             }

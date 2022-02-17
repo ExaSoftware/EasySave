@@ -100,8 +100,6 @@ namespace EasySave
             return error;
         }
 
-
-
         ///  <summary>Save all files from _sourceDirectory to _destDirectory.</summary>
         ///  <remarks>This method ignores deleted files.</remarks>
         private bool SaveAllFiles()
@@ -171,6 +169,7 @@ namespace EasySave
                 }
                 catch (Exception e)
                 {
+                    Console.WriteLine(e);
                     string fileName = Path.GetFileName(file);
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
