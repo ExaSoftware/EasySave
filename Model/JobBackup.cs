@@ -3,6 +3,7 @@ using System.IO;
 using System.Diagnostics;
 using EasySave.Object;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace EasySave
 {
@@ -10,7 +11,7 @@ namespace EasySave
     ///  JobBackup is a class. It allows you to save files from a directory to an other with differents methods.
     ///  Few constructors are available.
     /// </summary>
-    public class JobBackup : IDisposable
+    public class JobBackup : IDisposable, INotifyPropertyChanged
     {
         // Attributes
         private String _label;
@@ -20,6 +21,13 @@ namespace EasySave
         private int _id;
         private String[] _extensionList;
         private bool _disposedValue;
+        private ProgressLog _state;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         // Properties
         public string SourceDirectory { get => _sourceDirectory; set => _sourceDirectory = value; }
@@ -27,6 +35,15 @@ namespace EasySave
         public bool IsDifferential { get => _isDifferential; set => _isDifferential = value; }
         public string Label { get => _label; set => _label = value; }
         public int Id { get => _id; set => _id = value; }
+        public ProgressLog State 
+        {
+            get => _state;
+            set
+            {
+                _state = value;
+                OnPropertyChanged("State");
+            } 
+        }
 
         ///  <summary> 
         ///  Default constructor to use in serialization.
