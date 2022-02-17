@@ -153,7 +153,7 @@
                         <TextBlock Text="{x:Static language:Strings.totalFilesSize}" Grid.Row="3" Grid.Column="0" />
                         <TextBlock Text="{Binding Job.SourceDirectory}" Grid.Row="0" Grid.Column="1"  Margin="5,0,0,0" Name="labelSourceDirectory"/>
                         <TextBlock Text="{Binding Job.DestinationDirectory}" Grid.Row="1" Grid.Column="1" Margin="5,0,0,0" Name="destinationDirectory"/>
-                        <TextBlock Text="" Grid.Row="2" Grid.Column="1" Margin="5,0,0,0" Name="type"/>
+                        <TextBlock Text="{Binding JobTypeFormatted}" Grid.Row="2" Grid.Column="1" Margin="5,0,0,0" Name="type"/>
                         <TextBlock Grid.Row="3" Grid.Column="1" Margin="5,0,0,0" Name="totalFileSize">
                             <TextBlock.Text>
                                 <MultiBinding StringFormat="{}{0} {1}">

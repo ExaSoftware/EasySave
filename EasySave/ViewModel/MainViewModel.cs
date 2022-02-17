@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
+using System.Resources;
 using System.Threading;
 using System.Windows;
 
@@ -24,6 +26,7 @@ namespace EasySave.ViewModel
         private int _selectedIndex;
         private JobBackup _job;
         private double _totalFilesSizeFormatted;
+        private string _jobTypeFormatted;
 
         //Define getter / setter
         public List<JobBackup> ListOfJobBackup { get => _listOfJobBackup; set => _listOfJobBackup = value; }
@@ -59,6 +62,19 @@ namespace EasySave.ViewModel
                 _selectedIndex = value;
                 OnPropertyChanged("SelectedIndex");
             }  
+        }
+
+        public string JobTypeFormatted
+        {
+            get
+            {
+                return _jobTypeFormatted;
+            } 
+            set
+            {
+                _jobTypeFormatted = value;
+                OnPropertyChanged("JobTypeFormatted");
+            }
         }
 
         /// <summary>
