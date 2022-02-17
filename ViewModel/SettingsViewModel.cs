@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
+using System.Resources;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows;
 
 namespace EasySave.ViewModel
 {
     class SettingsViewModel
     {
         private int _selectedLanguage;
-        private String _extensions;
-        private String _businessSoftware;
+        private string _extensions;
+        private string _businessSoftware;
+        private ResourceManager _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
+        private Dictionary<string, string> _errors = new Dictionary<string, string>();
 
         public SettingsViewModel()
         {
@@ -40,8 +46,20 @@ namespace EasySave.ViewModel
             App.Configuration.Extensions = extensions;
             App.Configuration.Save();
         }
+        public void CheckExtension(string extensions)
+        {
+            //Check if the list doesnt have multiple ;;
+            string pattern = @"\.[-!$%^&*()_+|~=`\\#{}\[\]:\<>?,\/+\w*\d*\s*àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ]*\.+[\w*\d*\s*àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ]*";
+            Match result = Regex.Match(extensions, pattern);
+            if (result.Success)
+            {
+                _errors.Add("extensionError", _rm.GetString("extensionFormatError"));
+            }
+        }
         public int SelectedLanguage { get => _selectedLanguage; set => _selectedLanguage = value; }
         public String Extensions { get => _extensions; set => _extensions = value; }
         public string BusinessSoftware { get => _businessSoftware; set => _businessSoftware = value; }
+        public Dictionary<string, string> Errors { get => _errors; set => _errors = value; }
+
     }
 }

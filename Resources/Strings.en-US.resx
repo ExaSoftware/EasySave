@@ -144,11 +144,26 @@
   <data name="destinationDirectory" xml:space="preserve">
     <value>Destination directory:</value>
   </data>
+  <data name="destinationPathEqualsSourcePath" xml:space="preserve">
+    <value>Destination directory must be different of the source directory.</value>
+  </data>
   <data name="differential" xml:space="preserve">
     <value>Differential</value>
   </data>
+  <data name="emptyDestinationDirectoryError" xml:space="preserve">
+    <value>Destination directory is required.</value>
+  </data>
+  <data name="emptyLabelError" xml:space="preserve">
+    <value>Label is required.</value>
+  </data>
+  <data name="emptySourceDirectoryError" xml:space="preserve">
+    <value>Source directory is required.</value>
+  </data>
   <data name="english" xml:space="preserve">
     <value>English</value>
+  </data>
+  <data name="extensionFormatError" xml:space="preserve">
+    <value>The extension list format is not respected. Please use this format: .png;.pdf;.xlsx</value>
   </data>
   <data name="filesLeftToCopy" xml:space="preserve">
     <value>Number of files remaining</value>
@@ -166,16 +181,16 @@
     <value>Backup type</value>
   </data>
   <data name="jobCreateDestinationDirectory" xml:space="preserve">
-    <value>Destination Directory</value>
+    <value>Destination Directory *</value>
   </data>
   <data name="jobCreateSourceDirectory" xml:space="preserve">
-    <value>Source Directory</value>
+    <value>Source Directory *</value>
   </data>
   <data name="jobType" xml:space="preserve">
     <value>Backup type:</value>
   </data>
   <data name="label" xml:space="preserve">
-    <value>Label</value>
+    <value>Label *</value>
   </data>
   <data name="language" xml:space="preserve">
     <value>Language</value>
@@ -186,8 +201,14 @@
   <data name="settings" xml:space="preserve">
     <value>Settings</value>
   </data>
+  <data name="singleInstance" xml:space="preserve">
+    <value>An instance of EasySave is already running...</value>
+  </data>
   <data name="sourceDirectory" xml:space="preserve">
     <value>Source directory:</value>
+  </data>
+  <data name="sourceDirectoryNotExistsError" xml:space="preserve">
+    <value>Source directory doesn't exist.</value>
   </data>
   <data name="state" xml:space="preserve">
     <value>State</value>

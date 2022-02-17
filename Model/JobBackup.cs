@@ -28,33 +28,42 @@ namespace EasySave
         public string Label { get => _label; set => _label = value; }
         public int Id { get => _id; set => _id = value; }
 
-        ///  <summary> Default constructor to use in serialization.</summary>
+        ///  <summary> 
+        ///  Default constructor to use in serialization.
+        ///  </summary>
         public JobBackup() { }
 
+        /// <summary>
+        /// Create a JobBackup with default parameters.
+        /// </summary>
+        /// <param name="id">This parameter is the index of this JobBackup in the JobBackup list.</param>
         public JobBackup(int id)
         {
-            _label = "";
-            _sourceDirectory = "";
-            _destinationDirectory = "";
+            _label = string.Empty;
+            _sourceDirectory = string.Empty;
+            _destinationDirectory = string.Empty;
             _isDifferential = false;
-            this._id = id;
+            _id = id;
         }
 
-        ///  <summary>Constructors of JobBackup.</summary>
+        ///  <summary>
+        ///  Constructors of JobBackup.
+        ///  </summary>
         ///  <param name="Label"> the name of the save.</param>
         ///  <param name="SourceDirectory"> the source directory.</param>
         ///  <param name="DestinationDirectory"> the destination directory.</param>
         ///  <param name="IsDifferential"> Define if the save is differential or not.</param>
-        public JobBackup(String label, String sourceDirectory, String destinationDirectory, Boolean isDifferential)
+        public JobBackup(string label, string sourceDirectory, string destinationDirectory, bool isDifferential)
         {
-            this._label = label;
-            this._sourceDirectory = sourceDirectory;
-            this._destinationDirectory = destinationDirectory;
-            this._isDifferential = isDifferential;
+            _label = label;
+            _sourceDirectory = sourceDirectory;
+            _destinationDirectory = destinationDirectory;
+            _isDifferential = isDifferential;
         }
 
-        ///  <summary>Change parameters to the default one.</summary>
-        ///  <returns>The jobBackup edited</returns> 
+        ///  <summary>
+        ///  Change parameters to the default one.
+        ///  </summary>
         ///  <remarks>The Id still unchanged.</remarks>
         public void Fill(string label, string sourceDirectory, string destinationDirectory, bool isDifferential)
         {
@@ -62,91 +71,49 @@ namespace EasySave
             _sourceDirectory = sourceDirectory;
             _destinationDirectory = destinationDirectory;
             _isDifferential = isDifferential;
-
         }
 
-        ///  <summary>Execute the save according to attributes.</summary>
+        ///  <summary>
+        ///  Execute the save according to attributes.
+        ///  </summary>
         ///  <remarks>Use it whether differential or not.</remarks>
-        public bool Execute(string buisnessSoftwareName)
+        public void Execute()
         {
             bool error = false;
 
-            if (buisnessSoftwareName != "" || buisnessSoftwareName != null)
+            if (!Directory.Exists(_destinationDirectory))
             {
-                Process[] procName = Process.GetProcessesByName(buisnessSoftwareName);
-                if (procName.Length != 0)
+                try
+                {
+                    Directory.CreateDirectory(_destinationDirectory);
+                }
+                catch (Exception)
                 {
                     error = true;
-                    return error;
+                }
+            }
+
+            if (!error)
+            {
+                _extensionList = App.Configuration.Extensions;
+
+                if (_isDifferential)
+                {
+                    DoDifferentialSave();
                 }
                 else
                 {
-                    if (!Directory.Exists(_destinationDirectory))
-                    {
-                        try
-                        {
-                            Directory.CreateDirectory(_destinationDirectory);
-                        }
-                        catch (Exception)
-                        {
-                            error = true;
-                            return error;
-                        }
-                    }
-
-                    if (!error)
-                    {
-                        _extensionList = App.Configuration.Extensions;
-
-                        if (_isDifferential)
-                        {
-                            error = DoDifferentialSave();
-                        }
-                        else
-                        {
-                            error = SaveAllFiles();
-                        }
-                    }
-                    return error;
+                    SaveAllFiles();
                 }
-            }
-            else
-            {
-                if (!Directory.Exists(_destinationDirectory))
-                {
-                    try
-                    {
-                        Directory.CreateDirectory(_destinationDirectory);
-                    }
-                    catch (Exception)
-                    {
-                        error = true;
-                        return error;
-                    }
-                }
-
-                if (!error)
-                {
-                    _extensionList = App.Configuration.Extensions;
-
-                    if (_isDifferential)
-                    {
-                        error = DoDifferentialSave();
-                    }
-                    else
-                    {
-                        error = SaveAllFiles();
-                    }
-                }
-                return error;
             }
         }
 
-        ///  <summary>Save all files from _sourceDirectory to _destDirectory.</summary>
-        ///  <remarks>This method ignores deleted files.</remarks>
-        private bool SaveAllFiles()
+        ///  <summary>
+        ///  Save all files from _sourceDirectory to _destDirectory.
+        ///  </summary>
+        ///  <remarks>This method delete all the destination directory before saving files</remarks>
+        private void SaveAllFiles()
         {
-            bool error = false;
             int encryptionTime = 0;
 
             //Delete all files
@@ -173,16 +140,17 @@ namespace EasySave
             // Copy the files and overwrite destination files if they already exist.
             foreach (string file in files)
             {
+                FileInfo fileInfo = new FileInfo(file);
+                string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
+
                 try
                 {
-                    FileInfo fileInfo = new FileInfo(file);
-                    string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
-
                     historyStopwatch.Reset();
 
                     if (!(_extensionList is null) && new List<String>(_extensionList).Contains(fileInfo.Extension))
                     {
                         encryptionTime = CypherFile(file, destFile);
+                        string b = fileInfo.Extension;
                     }
                     else
                     {
@@ -196,45 +164,48 @@ namespace EasySave
                     progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (100 * fileTransfered / fileToTranfer), _id);
                     historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
                 }
-
                 catch (Exception e)
                 {
                     string fileName = Path.GetFileName(file);
-                    string destFile = Path.Combine(_destinationDirectory, fileName);
+                    destFile = Path.Combine(_destinationDirectory, fileName);
 
                     historyLog.Error = e.StackTrace;
                     historyLog.Fill(file, destFile, 0, -1, e.GetType().Name, -1);
                     historyLog.Dispose();
-                    progressLog.Dispose();
-                    error = true;
-
+                    progressLog.Dispose(); ;
+                }
+                finally
+                {
+                    //Free memory
+                    fileInfo = null;
+                    destFile = string.Empty;
                 }
             }
 
             //dispose history and progress log
             historyLog.Dispose();
             progressLog.Dispose();
-            return error;
         }
 
-
-        /// <summary> Save all differents files between _sourceDirectory and _destDirectory to _destDirectory.</summary>
+        /// <summary> 
+        /// Save all differents files between _sourceDirectory and _destDirectory to _destDirectory.
+        /// </summary>
         /// <remarks>This method ignores deleted files.</remarks>
-        private bool DoDifferentialSave()
+        private void DoDifferentialSave()
         {
-            bool error = false;
             int encryptionTime = 0;
 
-            string[] files = FindFilesForDifferentialSave(_sourceDirectory);
+            String[] files = FindFilesForDifferentialSave();
 
+            //Creation of all sub directories
             foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
             {
                 Directory.CreateDirectory(path.Replace(_sourceDirectory, _destinationDirectory));
             }
 
-            int fileTransfered = 0;                 //Incease each file transfered
+            int fileTransfered = 0;                 //Ammount of file transfered
             int fileToTranfer = files.Length;       //Ammount of file to transfer
-            long sizeTotal = TotalFileSize(files);
+            long sizeTotal = TotalFileSize(files);  //Total file size in octet
 
             Stopwatch historyStopwatch = new Stopwatch();
             ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered);
@@ -244,16 +215,18 @@ namespace EasySave
             {
                 try
                 {
+                    FileInfo fileInfo = new FileInfo(file);
+
                     // Creation of the destFile
                     string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
 
-                    FileInfo fileInfo = new FileInfo(file);
                     if (!(_extensionList is null) && new List<String>(_extensionList).Contains(fileInfo.Extension))
                     {
                         encryptionTime = CypherFile(file, destFile);
                     }
                     else
                     {
+                        encryptionTime = 0;
                         historyStopwatch.Reset();
                         historyStopwatch.Start();
 
@@ -264,10 +237,8 @@ namespace EasySave
 
                     fileTransfered++;
                     progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, 100 * fileTransfered / fileToTranfer, _id);
-
                     historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
                 }
-
                 catch (Exception e)
                 {
                     string fileName = Path.GetFileName(file);
@@ -277,21 +248,13 @@ namespace EasySave
                     historyLog.Fill(file, destFile, 0, -1, file, -1);
                     historyLog.Dispose();
                     progressLog.Dispose();
-                    error = true;
                 }
             }
 
-            foreach (string path in Directory.GetFiles(_destinationDirectory, "*", SearchOption.AllDirectories))
-            {
-                if (!File.Exists(path.Replace(_destinationDirectory, _sourceDirectory)) && File.Exists(path))
-                {
-                    File.Delete(path);
-                }
-            }
-
+            //Delete excess directories
             foreach (string path in Directory.GetDirectories(_destinationDirectory, "*", SearchOption.AllDirectories))
             {
-                if (!File.Exists(path.Replace(_destinationDirectory, _sourceDirectory)) && Directory.Exists(path))
+                if (!Directory.Exists(path.Replace(_destinationDirectory, _sourceDirectory)) && Directory.Exists(path))
                 {
                     try
                     {
@@ -301,13 +264,40 @@ namespace EasySave
                 }
             }
 
+            //Delete excess files
+            foreach (string path in Directory.GetFiles(_destinationDirectory, "*", SearchOption.AllDirectories))
+            {
+                if (!File.Exists(path.Replace(_destinationDirectory, _sourceDirectory)) && File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+            }
+
             //Reset progressLog
             progressLog.Reset(_id);
             historyLog.Dispose();
             progressLog.Dispose();
-            return error;
         }
 
+        /// <summary>
+        /// Return the sum of the size of each file wich will be transfered.
+        /// </summary>
+        /// <returns>The total size un octet</returns>
+        public long TotalFileSize()
+        {
+            return Directory.Exists(_sourceDirectory)
+                ? _isDifferential
+                    ? TotalFileSize(FindFilesForDifferentialSave())
+                    : TotalFileSize(Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories))
+                : 0;
+        }
+
+        /// <summary>
+        /// Return the sum of the size of each files.
+        /// </summary>
+        /// <param name="files">A list of files. Must be a Path format</param>
+        /// <remarks>Invoke the Garbage Collector at the end.</remarks>
+        /// <returns>The total size un octet</returns>
         private long TotalFileSize(String[] files)
         {
             long totalSize = 0;
@@ -318,13 +308,19 @@ namespace EasySave
                 totalSize += fileInfo.Length;
             }
 
+            GC.Collect();
             return totalSize;
         }
 
-        private String[] FindFilesForDifferentialSave(String directory)
+        /// <summary>
+        /// Compare all files between the source and the dest directories. 
+        /// Use the default hashCode to compare.
+        /// </summary>
+        /// <returns>A list of diferent files between source and dest directories.</returns>
+        private String[] FindFilesForDifferentialSave()
         {
             List<String> filesToSave = new List<string>();
-            String[] filesInDirectory = Directory.GetFiles(directory, "*", SearchOption.AllDirectories);
+            String[] filesInDirectory = Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories);
 
             foreach (String file in filesInDirectory)
             {
@@ -348,16 +344,29 @@ namespace EasySave
                     filesToSave.Add(file);
                 }
             }
+
             return filesToSave.ToArray();
         }
+
+        /// <summary>
+        /// This method use CryptoSoft to encode or decode and copy a file.
+        /// The key is auto generated and store at C:\EasySave\CryptoSoft\config
+        /// </summary>
+        /// <remarks>You can use it in both ways.</remarks>
+        /// <param name="sourceFile">The file to encode. Must be a Path format.</param>
+        /// <param name="destFile">The destination file. Must be a Path format.</param>
+        /// <returns>The encryption time.</returns>
         private int CypherFile(String sourceFile, String destFile)
         {
             Process process = new Process();
             int time;
 
             process.StartInfo.FileName = @"C:\EasySave\CryptoSoft\bin\Debug\netcoreapp3.1\CryptoSoft.exe";
-            process.StartInfo.Arguments = sourceFile + " " + destFile;
+            process.StartInfo.Arguments = String.Format("\"{0}\" \"{1}\"", sourceFile, destFile);
+            Trace.WriteLine(process.StartInfo.Arguments);
+            process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.CreateNoWindow = true;
             process.Start();
 
             if (process.HasExited)
@@ -373,6 +382,12 @@ namespace EasySave
             process.Close();
             return time;
         }
+
+        /// <summary>
+        /// Inherited from iDisposable.
+        /// Used to kill this object.
+        /// </summary>
+        /// <param name="disposing">Avoid double execution with GC.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)
@@ -393,12 +408,17 @@ namespace EasySave
         }
 
         // TODO: substituer le finaliseur uniquement si 'Dispose(bool disposing)' a du code pour libérer les ressources non managées
-        ~JobBackup()
+        /*~JobBackup()
         {
             // Ne changez pas ce code. Placez le code de nettoyage dans la méthode 'Dispose(bool disposing)'
             Dispose(disposing: false);
-        }
+        }*/
 
+        /// <summary>
+        /// Inherited from iDisposable. Use this method to kill this object.
+        /// This method will free as memory as possible and tag this object.
+        /// The GarbageCollector is not called. 
+        /// </summary>
         public void Dispose()
         {
             // Ne changez pas ce code. Placez le code de nettoyage dans la méthode 'Dispose(bool disposing)'
