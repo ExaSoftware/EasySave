@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
@@ -13,9 +14,11 @@ namespace EasySave.ViewModel
         //Attributes
         private List<JobBackup> _listOfJobBackup;
         private JsonReadWriteModel _jsonReadWriteModel;
+        private int _selectedIndex;
         private Thread _thread;
         private Thread _sequentialThread;
         private JobBackup _job;
+        private double _totalFilesSizeFormatted;
 
         //Define getter / setter
         public List<JobBackup> ListOfJobBackup { get => _listOfJobBackup; set => _listOfJobBackup = value; }
@@ -29,6 +32,30 @@ namespace EasySave.ViewModel
             } 
         }
 
+        public double TotalFilesSizeFormatted 
+        {
+            get
+            {
+                //Convert in MO
+                return (double)Math.Round(_totalFilesSizeFormatted / 1048576, 2);
+            } 
+            set
+            {
+                _totalFilesSizeFormatted = value;
+                OnPropertyChanged("TotalFilesSizeFormatted");
+            }
+        }
+
+        public int SelectedIndex 
+        {
+            get => _selectedIndex;
+            set 
+            {
+                _selectedIndex = value;
+                OnPropertyChanged("SelectedIndex");
+            }  
+        }
+
         /// <summary>
         /// Constructor of MainViewModel.
         /// </summary>
@@ -37,6 +64,8 @@ namespace EasySave.ViewModel
             //Read the list in the json
             _jsonReadWriteModel = new JsonReadWriteModel();
             _listOfJobBackup = _jsonReadWriteModel.ReadJobBackup();
+
+
         }
 
         /// <summary>
@@ -116,6 +145,7 @@ namespace EasySave.ViewModel
         public void ExecuteOne(JobBackup jobBackup)
         {
             Job = jobBackup;
+            SelectedIndex = Job.Id;
             _thread = new Thread(() => Execute(jobBackup));
             _thread.Start();
         }

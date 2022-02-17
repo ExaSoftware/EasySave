@@ -14,6 +14,8 @@ namespace EasySave.Object
         private int _totalFilesToCopy;
         /// <summary>The total amount size of the job which is being saved</summary>
         private long _totalFilesSize;
+        /// <summary>The size remaining to copy</summary>
+        private long _sizeRemaining;
         /// <summary>The number of files which is remaining to copy </summary>
         private int _totalFilesRemaining;
         /// <summary>The current progression of the job saving</summary>
@@ -29,12 +31,13 @@ namespace EasySave.Object
         /// <param name="totalFilesToCopy"></param>
         /// <param name="totalFilesSize"></param>
         /// <param name="totalFilesRemaining"></param>
-        public ProgressLog(string savedName, string sourceFile, string targetFile, string state, int totalFilesToCopy, long totalFilesSize, int totalFilesRemaining) : base(savedName, sourceFile, targetFile)
+        public ProgressLog(string savedName, string sourceFile, string targetFile, string state, int totalFilesToCopy, long totalFilesSize, int totalFilesRemaining, long sizeRemaining) : base(savedName, sourceFile, targetFile)
         {
             _state = state;
             _totalFilesToCopy = totalFilesToCopy;
             _totalFilesSize = totalFilesSize;
             _totalFilesRemaining = totalFilesRemaining;
+            _sizeRemaining = sizeRemaining;
         }
 
         [JsonProperty(Order = 4)]
@@ -77,7 +80,19 @@ namespace EasySave.Object
                 OnPropertyChanged("TotalFilesRemaining");
             }
         }
+
         [JsonProperty(Order = 8)]
+        public long SizeRemaining 
+        {
+            get => _sizeRemaining;
+            set
+            {
+                _sizeRemaining = value;
+                OnPropertyChanged("SizeRemaining");
+            }  
+        }
+
+        [JsonProperty(Order = 9)]
         public int Progression
         {
             get => _progression;
@@ -87,18 +102,31 @@ namespace EasySave.Object
                 OnPropertyChanged("Progression");
             }
         }
+
+        public double SizeRemainingFormatted
+        {
+            get
+            {
+                return Math.Round((double)_sizeRemaining / 1048576, 2);
+            }
+
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected void OnPropertyChanged(string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public void Fill(string file, string destFile, int totalFilesRemaining, int progression, int id)
+
+        public void Fill(string file, string destFile, int totalFilesRemaining, int progression, int id, long sizeRemaining)
         {
             this._sourceFile = file;
             this._targetFile = destFile;
             this._totalFilesRemaining = totalFilesRemaining;
             this._progression = progression;
+            this._sizeRemaining = sizeRemaining;
             this.SaveLog(id);
         }
 
@@ -110,6 +138,7 @@ namespace EasySave.Object
             this._totalFilesRemaining = 0;
             this._totalFilesToCopy = 0;
             this._totalFilesSize = 0;
+            this._sizeRemaining = 0;
             this._progression = 0;
             this.SaveLog(id);
         }

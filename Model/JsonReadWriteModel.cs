@@ -87,7 +87,7 @@ namespace EasySave
             {
                 for (int i = 0; i < 5; i++)
                 {
-                    ProgressLog progressLog = new ProgressLog("", "", "", "END", 0, 0, 0);
+                    ProgressLog progressLog = new ProgressLog("", "", "", "END", 0, 0, 0, 0);
                     _myProgressLogList.Add(progressLog);
                 }
 
