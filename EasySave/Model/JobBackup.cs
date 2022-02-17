@@ -3,6 +3,7 @@ using System.IO;
 using System.Diagnostics;
 using EasySave.Object;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading;
 
 namespace EasySave
@@ -11,7 +12,7 @@ namespace EasySave
     ///  JobBackup is a class. It allows you to save files from a directory to an other with differents methods.
     ///  Few constructors are available.
     /// </summary>
-    public class JobBackup : IDisposable
+    public class JobBackup : IDisposable, INotifyPropertyChanged
     {
         // Attributes
         private string _label;
@@ -22,7 +23,14 @@ namespace EasySave
         private string[] _encryptionExtensionList;
         private string[] _priorityExtensionList;
         private bool _disposedValue;
+        private ProgressLog _state;
         private int _priority;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         // Properties
         public string SourceDirectory { get => _sourceDirectory; set => _sourceDirectory = value; }
@@ -30,6 +38,15 @@ namespace EasySave
         public bool IsDifferential { get => _isDifferential; set => _isDifferential = value; }
         public string Label { get => _label; set => _label = value; }
         public int Id { get => _id; set => _id = value; }
+        public ProgressLog State 
+        {
+            get => _state;
+            set
+            {
+                _state = value;
+                OnPropertyChanged("State");
+            } 
+        }
 
         ///  <summary> 
         ///  Default constructor to use in serialization.
@@ -147,10 +164,11 @@ namespace EasySave
             int fileTransfered = 0;                 //Incease each file transfered
             int fileToTranfer = files.Length;       //Ammount of file to transfer
             long sizeTotal = TotalFileSize(files);
+            long sizeRemaining = sizeTotal;
 
             // Setup objects
             Stopwatch historyStopwatch = new Stopwatch();
-            ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered);
+            ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered, sizeTotal);
             HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0, 0);
 
             // Copy the files and overwrite destination files if they already exist.
@@ -175,10 +193,12 @@ namespace EasySave
                         historyStopwatch.Stop();
                     }
                     fileTransfered++;
+                    sizeRemaining -= fileInfo.Length;
 
                     //Write logs
-                    progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (100 * fileTransfered / fileToTranfer), _id);
+                    progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (100 * fileTransfered / fileToTranfer), _id, sizeRemaining);
                     historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
+                    State = progressLog;
                 }
                 catch (Exception e)
                 {
@@ -224,9 +244,10 @@ namespace EasySave
             int fileTransfered = 0;                 //Ammount of file transfered
             int fileToTranfer = files.Length;       //Ammount of file to transfer
             long sizeTotal = TotalFileSize(files);  //Total file size in octet
+            long sizeRemaining = sizeTotal;
 
             Stopwatch historyStopwatch = new Stopwatch();
-            ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered);
+            ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered, sizeRemaining);
             HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0, 0);
 
             foreach (String file in files)
@@ -254,7 +275,9 @@ namespace EasySave
                     }
 
                     fileTransfered++;
-                    progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, 100 * fileTransfered / fileToTranfer, _id);
+                    sizeRemaining -= fileInfo.Length;
+
+                    progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, 100 * fileTransfered / fileToTranfer, _id, sizeRemaining);
                     historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
                 }
                 catch (Exception e)

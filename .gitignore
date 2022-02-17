@@ -1,6 +1,5 @@
 .vs/
 bin/
-CryptoSoft/config
-Job-Backup/
-Logs/
-obj/
+EasySave/obj/
+EasySave/bin/
+EasySave/.vs/
