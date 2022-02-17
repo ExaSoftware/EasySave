@@ -93,21 +93,25 @@
 
             <!-- Business Software -->
             <TextBlock Text="{x:Static language:Strings.businessSoftware}" Grid.Row="1" VerticalAlignment="Center" Margin="0,0,5,0"/>
-            <DockPanel Grid.Column="1" Grid.Row="1" Height="20">
+            <DockPanel Grid.Column="2" Grid.Row="1" Height="20">
                 <Button Name="btnSelectBusinessSoftwarePath" Margin="0" Padding="0" DockPanel.Dock="Right" Width="22" Content="{iconPacks:FontAwesome Kind=FolderPlusSolid, Height=16, Width=16}" Style="{StaticResource selectFolderButton}" Click="btnSelectSourcePath_Click"/>
                 <TextBox Name="txtBoxBusinessSoftwarePath" Height="Auto" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Text="{Binding BusinessSoftware}" />
             </DockPanel>
             
             <!-- Extensions List -->
             <TextBlock Text="Liste des extensions des fichiers à chiffrer (.exe;.pdf;.png)" Grid.Row="2" VerticalAlignment="Center" Margin="0,0,5,0"/>
-            <TextBox Name="txtBoxExtensionsList" Height="20" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Text="{Binding Extensions}" Grid.Row="2" Grid.Column="1"/>
+            <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Vertical" VerticalAlignment="Center">
+                <TextBox Name="txtBoxExtensionsList" Height="20" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Text="{Binding Extensions}" LostFocus="txtBoxExtensionsList_LostFocus" />
+                <TextBlock Name="extensionError" Visibility="Collapsed" Foreground="#a30700"/>
+            </StackPanel>
+
         </Grid>
 
         <!-- Page button control -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button Name="btnReturn" Height="50" Width="Auto" Margin="10,0" Style="{StaticResource controlButtonStyle}" Click="btnReturn_Click">
                 <StackPanel Orientation="Horizontal">
-                    <Label Content="{iconPacks:FontAwesome Kind=UndoSolid}" Foreground="Red" VerticalAlignment="Center" Padding="0" Margin="0,0,5,0"/>
+                    <Label Content="{iconPacks:FontAwesome Kind=UndoSolid}" Foreground="#a30700" VerticalAlignment="Center" Padding="0" Margin="0,0,5,0"/>
                     <TextBlock Text="{x:Static language:Strings._return}" VerticalAlignment="Center" Foreground="White"/>
                 </StackPanel>
             </Button>

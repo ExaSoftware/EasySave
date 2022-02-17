@@ -205,6 +205,15 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Le format de la liste des extensions n&apos;est pas respectée. Merci d&apos;utiliser ce format : .png;.pdf;.xlsx.
+        /// </summary>
+        public static string extensionFormatError {
+            get {
+                return ResourceManager.GetString("extensionFormatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Nombre de fichiers restants.
         /// </summary>
         public static string filesLeftToCopy {
@@ -300,6 +309,15 @@ namespace EasySave.Resources {
         public static string settings {
             get {
                 return ResourceManager.GetString("settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Une instance d&apos;EasySave est déjà en cours d&apos;exécution....
+        /// </summary>
+        public static string singleInstance {
+            get {
+                return ResourceManager.GetString("singleInstance", resourceCulture);
             }
         }
         

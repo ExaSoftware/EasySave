@@ -92,7 +92,7 @@
             <!-- Field inputs -->
             <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center">
                 <TextBox Name="label" Height="20" Text="{Binding JobBackup.Label}" VerticalAlignment="Center" LostFocus="LabelLostFocus"/>
-                <TextBlock Name="labelError" Visibility="Collapsed" Foreground="Red"/>
+                <TextBlock Name="labelError" Visibility="Collapsed" Foreground="#a30700"/>
             </StackPanel>
             <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" VerticalAlignment="Center">
                 <DockPanel>
@@ -101,7 +101,7 @@
                         <TextBox Name="txtBoxSource" Height="20" Text="{Binding JobBackup.SourceDirectory}" VerticalAlignment="Center" IsReadOnly="True" TextChanged="TxtBoxSourceTextChanged"/>
                     </StackPanel>
                 </DockPanel>
-                <TextBlock Name="sourceDirectoryError" Visibility="Collapsed" Foreground="Red"/>
+                <TextBlock Name="sourceDirectoryError" Visibility="Collapsed" Foreground="#a30700"/>
             </StackPanel>
 
             <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Vertical" VerticalAlignment="Center">
@@ -111,7 +111,7 @@
                         <TextBox Name="txtBoxDestination" Height="20" Text="{Binding JobBackup.DestinationDirectory}" VerticalAlignment="Center" IsReadOnly="True" TextChanged="TxtBoxDestinationTextChanged"/>
                     </StackPanel>
                 </DockPanel>
-                <TextBlock Name="destinationDirectoryError" Visibility="Collapsed" Foreground="Red"/>
+                <TextBlock Name="destinationDirectoryError" Visibility="Collapsed" Foreground="#a30700"/>
             </StackPanel>
             <ComboBox Name="type" Grid.Row="3" Grid.Column="1" Height="25" SelectedIndex="{Binding SelectedIndex}">
                 <ComboBoxItem Content="{x:Static language:Strings.total}" />
@@ -123,7 +123,7 @@
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button Name="btnCancel" Height="50" Width="Auto" Margin="10,0" Style="{StaticResource controlButtonStyle}" Click="BtnCancelClick">
                 <StackPanel Orientation="Horizontal">
-                    <Label Content="{iconPacks:FontAwesome Kind=TimesSolid}" Foreground="Red" VerticalAlignment="Center" Padding="0" Margin="0,0,5,0"/>
+                    <Label Content="{iconPacks:FontAwesome Kind=TimesSolid}" Foreground="#a30700" VerticalAlignment="Center" Padding="0" Margin="0,0,5,0"/>
                     <TextBlock Text="{x:Static language:Strings.cancel}" VerticalAlignment="Center" Foreground="White"/>
                 </StackPanel>
             </Button>
