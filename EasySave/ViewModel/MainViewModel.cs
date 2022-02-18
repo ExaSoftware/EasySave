@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
+using System.Resources;
 using System.Threading;
 using System.Windows;
 
@@ -24,7 +26,7 @@ namespace EasySave.ViewModel
         private int _selectedIndex;
         private JobBackup _job;
         private double _totalFilesSizeFormatted;
-
+        private string _jobTypeFormatted;
         //Define getter / setter
         public List<JobBackup> ListOfJobBackup { get => _listOfJobBackup; set => _listOfJobBackup = value; }
         public JobBackup Job 
@@ -61,6 +63,19 @@ namespace EasySave.ViewModel
             }  
         }
 
+        public string JobTypeFormatted
+        {
+            get
+            {
+                return _jobTypeFormatted;
+            } 
+            set
+            {
+                _jobTypeFormatted = value;
+                OnPropertyChanged("JobTypeFormatted");
+            }
+        }
+
         /// <summary>
         /// Constructor of MainViewModel.
         /// </summary>
@@ -70,6 +85,8 @@ namespace EasySave.ViewModel
             _jsonReadWriteModel = new JsonReadWriteModel();
             _listOfJobBackup = _jsonReadWriteModel.ReadJobBackup();
 
+            //No job backup selected
+            SelectedIndex = -1;
 
         }
 
@@ -94,6 +111,9 @@ namespace EasySave.ViewModel
                             _listOfJobBackup.Remove(item);
                             _listOfJobBackup.Clear();
                             item.Dispose();
+                            Job = null;
+                            TotalFilesSizeFormatted = 0;
+                            JobTypeFormatted = String.Empty;
                         }
                         else
                         {
@@ -149,16 +169,15 @@ namespace EasySave.ViewModel
         /// <param name="jobBackup">The JobBackup to execute.</param>
         public void ExecuteOne(JobBackup jobBackup)
         {
+
+            Job = jobBackup;
+            SelectedIndex = Job.Id;
             _mainThread = new Thread(() =>
             {
                 _thread = new Thread(() => Execute(jobBackup));
                 _thread.Start();
             });
             _mainThread.Start();
-            Job = jobBackup;
-            SelectedIndex = Job.Id;
-            _thread = new Thread(() => Execute(jobBackup));
-            _thread.Start();
         }
 
 

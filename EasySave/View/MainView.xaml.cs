@@ -62,7 +62,7 @@ namespace EasySave
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             //Prevent click on the empty list to avoid an exception
-            if (listViewBackups.SelectedItems.Count != 0)
+            if (listViewBackups.SelectedItems.Count != 0 && !_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].IsRunning)
             {
                 CreateJobView editJobView = new CreateJobView(new CreateJobViewModel((JobBackup)listViewBackups.SelectedItem));
                 this.NavigationService.Navigate(editJobView);
@@ -82,23 +82,12 @@ namespace EasySave
 
                 //Update the first block
                 id = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Id;
-                //label.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Label;
-                //labelSourceDirectory.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].SourceDirectory;
-                //destinationDirectory.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].DestinationDirectory;
 
                 //Get the totalFileSize from the VM
                 _mainViewModel.TotalFilesSizeFormatted = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].TotalFileSize();
 
-
                 ResourceManager rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
-                if (_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].IsDifferential)
-                {
-                    type.Text = rm.GetString("differential");
-                }
-                else
-                {
-                    type.Text = rm.GetString("total");
-                }
+                _mainViewModel.JobTypeFormatted = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].IsDifferential ? rm.GetString("differential") : rm.GetString("total");
             }
         }
 
@@ -146,17 +135,20 @@ namespace EasySave
             //If there is a job backup selected
             if (listViewBackups.SelectedItems.Count != 0)
             {
-                _mainViewModel.ExecuteOne((JobBackup)listViewBackups.SelectedItem);
+                _mainViewModel.Stop();
             }
             
         }
 
         private void listViewBackups_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //MessageBox.Show(_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Label);
-            MainViewModel vm = this.DataContext as MainViewModel;
-            vm.Job = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex];
-        }
+            if (_mainViewModel.SelectedIndex != -1)
+            {
+                //MessageBox.Show(_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Label);
+                MainViewModel vm = this.DataContext as MainViewModel;
+                vm.Job = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex];
+            }
 
+        }
     }
 }
