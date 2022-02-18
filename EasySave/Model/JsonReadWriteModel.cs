@@ -95,23 +95,31 @@ namespace EasySave
         /// <param name="path"></param>
         public static void SaveXmlIfFileExists(HistoryLog historyLog, string path)
         {
-            XDocument doc = XDocument.Load(path);
-            XElement newHistoryLog =
-            new XElement("HistoryLog",
-            new XElement("Name", historyLog.Name),
-            new XElement("SourceFile", historyLog.SourceFile),
-            new XElement("TargetFile", historyLog.TargetFile),
-            new XElement("FileSize", historyLog.FileSize.ToString()),
-            new XElement("TransferTime", historyLog.TransferTime.ToString()),
-            new XElement("Time", historyLog.Time.ToString()),
-            new XElement("EncryptionTime", historyLog.EncryptionTime.ToString()),
-            new XElement("Error", historyLog.Error),
-            new XElement("ErrorTitle", historyLog.ErrorTitle)
-            );
-            doc.Root.Add(newHistoryLog);
-            doc.Save(path);
-
-
+            if (Monitor.TryEnter(path, 2000))
+            {
+                try
+                {
+                    XDocument doc = XDocument.Load(path);
+                    XElement newHistoryLog =
+                    new XElement("HistoryLog",
+                    new XElement("Name", historyLog.Name),
+                    new XElement("SourceFile", historyLog.SourceFile),
+                    new XElement("TargetFile", historyLog.TargetFile),
+                    new XElement("FileSize", historyLog.FileSize.ToString()),
+                    new XElement("TransferTime", historyLog.TransferTime.ToString()),
+                    new XElement("Time", historyLog.Time.ToString()),
+                    new XElement("EncryptionTime", historyLog.EncryptionTime.ToString()),
+                    new XElement("Error", historyLog.Error),
+                    new XElement("ErrorTitle", historyLog.ErrorTitle)
+                    );
+                    doc.Root.Add(newHistoryLog);
+                    doc.Save(path);
+                }
+                finally
+                {
+                    Monitor.Exit(path);
+                }
+            }
         }
 
         /// <summary>
@@ -164,43 +172,51 @@ namespace EasySave
         /// <param name="path"></param>
         public static void SaveinJsonIfFileExist(this HistoryLog hs, string path)
         {
+            if (Monitor.TryEnter(path, 2000))
+            {
+                try
+                {
+                    using StringWriter swHistoryLog = new StringWriter();
+                    using JsonTextWriter writer = new JsonTextWriter(swHistoryLog);
+                    writer.Formatting = Formatting.Indented;
+                    // {
+                    writer.WriteStartObject();
+                    // "name" : "Save"
+                    writer.WritePropertyName("Name");
+                    writer.WriteValue(hs.Name);
+                    writer.WritePropertyName("SourceFile");
+                    writer.WriteValue(hs.SourceFile);
+                    writer.WritePropertyName("TargetFile");
+                    writer.WriteValue(hs.TargetFile);
+                    writer.WritePropertyName("FileSize");
+                    writer.WriteValue(hs.FileSize);
+                    writer.WritePropertyName("TransferTime");
+                    writer.WriteValue(hs.TransferTime);
+                    writer.WritePropertyName("Time");
+                    writer.WriteValue(hs.Time);
+                    writer.WritePropertyName("EncryptionTime");
+                    writer.WriteValue(hs.EncryptionTime);
+                    writer.WritePropertyName("Error");
+                    writer.WriteValue(hs.Error);
+                    writer.WritePropertyName("ErrorTitle");
+                    writer.WriteValue(hs.ErrorTitle);
 
+                    // }
+                    writer.WriteEndObject();
+                    writer.Close();
 
-            using StringWriter swHistoryLog = new StringWriter();
-            using JsonTextWriter writer = new JsonTextWriter(swHistoryLog);
-            writer.Formatting = Formatting.Indented;
-            // {
-            writer.WriteStartObject();
-            // "name" : "Save"
-            writer.WritePropertyName("Name");
-            writer.WriteValue(hs.Name);
-            writer.WritePropertyName("SourceFile");
-            writer.WriteValue(hs.SourceFile);
-            writer.WritePropertyName("TargetFile");
-            writer.WriteValue(hs.TargetFile);
-            writer.WritePropertyName("FileSize");
-            writer.WriteValue(hs.FileSize);
-            writer.WritePropertyName("TransferTime");
-            writer.WriteValue(hs.TransferTime);
-            writer.WritePropertyName("Time");
-            writer.WriteValue(hs.Time);
-            writer.WritePropertyName("EncryptionTime");
-            writer.WriteValue(hs.EncryptionTime);
-            writer.WritePropertyName("Error");
-            writer.WriteValue(hs.Error);
-            writer.WritePropertyName("ErrorTitle");
-            writer.WriteValue(hs.ErrorTitle);
+                    string jsonHistoryLog = swHistoryLog.ToString();
+                    using FileStream fs = new FileStream(path, FileMode.Append, FileAccess.Write);
+                    using StreamWriter sw = new StreamWriter(fs);
+                    sw.Write(",");
+                    sw.WriteLine(jsonHistoryLog);
+                }
 
-            // }
-            writer.WriteEndObject();
-            writer.Close();
-
-            string jsonHistoryLog = swHistoryLog.ToString();
-            using FileStream fs = new FileStream(path, FileMode.Append, FileAccess.Write);
-            using StreamWriter sw = new StreamWriter(fs);
-            sw.Write(",");
-            sw.WriteLine(jsonHistoryLog);
-
+                finally
+                {
+                    Monitor.Exit(path);
+                }
+            }
         }
         /// <summary>
         /// Save progress log in json if the file doesn't exists
