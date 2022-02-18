@@ -11,7 +11,9 @@ namespace EasySave
     /// </summary>
     public class JsonReadWriteModel
     {
-        /// <summary>The default directory path for saving logs</summary>
+        /// <summary>
+        /// The default directory path for saving logs
+        /// </summary>
         private const string _DEFAULT_LOG_FILE_PATH = @"C:\EasySave\Logs";
 
         private const string _DEFAULT_JOB_BACKUP_FILE_PATH = @"C:\EasySave\Job-Backup";

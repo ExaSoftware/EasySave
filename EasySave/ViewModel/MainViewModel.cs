@@ -149,16 +149,15 @@ namespace EasySave.ViewModel
         /// <param name="jobBackup">The JobBackup to execute.</param>
         public void ExecuteOne(JobBackup jobBackup)
         {
+            Job = jobBackup;
+            SelectedIndex = Job.Id;
+
             _mainThread = new Thread(() =>
             {
                 _thread = new Thread(() => Execute(jobBackup));
                 _thread.Start();
             });
             _mainThread.Start();
-            Job = jobBackup;
-            SelectedIndex = Job.Id;
-            _thread = new Thread(() => Execute(jobBackup));
-            _thread.Start();
         }
 
 
@@ -197,7 +196,7 @@ namespace EasySave.ViewModel
                         _thread5.Join();
                     }
 
-                    for (int a = 0; a < 2; a++)
+                    for (int a = 0; a < _listOfJobBackup.Count; a++)
                     {
                         int b = a;
                         threadList[b % 5] = new Thread(() => Execute(_listOfJobBackup[b]));

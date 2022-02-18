@@ -5,6 +5,7 @@ using EasySave.Object;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
+using System.Windows;
 
 namespace EasySave
 {
@@ -38,14 +39,14 @@ namespace EasySave
         public bool IsDifferential { get => _isDifferential; set => _isDifferential = value; }
         public string Label { get => _label; set => _label = value; }
         public int Id { get => _id; set => _id = value; }
-        public ProgressLog State 
+        public ProgressLog State
         {
             get => _state;
             set
             {
                 _state = value;
                 OnPropertyChanged("State");
-            } 
+            }
         }
 
         ///  <summary> 
@@ -151,8 +152,11 @@ namespace EasySave
                     {
                         Directory.CreateDirectory(path.Replace(_sourceDirectory, _destinationDirectory));
                     }
-
                 }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.StackTrace);
             }
             finally
             {
@@ -181,24 +185,34 @@ namespace EasySave
                 {
                     historyStopwatch.Reset();
 
-                    if (!(_encryptionExtensionList is null) && new List<string>(_encryptionExtensionList).Contains(fileInfo.Extension))
+                    if (Monitor.TryEnter(file, 2000))
                     {
-                        encryptionTime = CypherFile(file, destFile);
-                        string b = fileInfo.Extension;
+                        if (!(_encryptionExtensionList is null) && new List<string>(_encryptionExtensionList).Contains(fileInfo.Extension))
+                        {
+                            encryptionTime = CypherFile(file, destFile);
+                            string b = fileInfo.Extension;
+                        }
+                        else
+                        {
+                            historyStopwatch.Start();
+                            File.Copy(file, destFile, true);
+                            historyStopwatch.Stop();
+                        }
+
+                        fileTransfered++;
+                        sizeRemaining -= fileInfo.Length;
+
+                        //Write logs
+                        progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (100 * fileTransfered / fileToTranfer), _id, sizeRemaining);
+                        historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
+                        State = progressLog;
                     }
                     else
                     {
-                        historyStopwatch.Start();
-                        File.Copy(file, destFile, true);
-                        historyStopwatch.Stop();
+                        historyLog.Error = "";
+                        historyLog.Fill(file, destFile, 0, -1, "Systeme.IoException", -1);
                     }
-                    fileTransfered++;
-                    sizeRemaining -= fileInfo.Length;
 
-                    //Write logs
-                    progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (100 * fileTransfered / fileToTranfer), _id, sizeRemaining);
-                    historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
-                    State = progressLog;
                 }
                 catch (Exception e)
                 {
@@ -212,6 +226,8 @@ namespace EasySave
                 }
                 finally
                 {
+                    Monitor.Exit(file);
+
                     //Free memory
                     fileInfo = null;
                     destFile = string.Empty;
@@ -327,6 +343,7 @@ namespace EasySave
         /// <summary>
         /// Return the sum of the size of each file wich will be transfered.
         /// </summary>
+        /// <remarks>Invoke the Garbage Collector at the end.</remarks>
         /// <returns>The total size un octet</returns>
         public long TotalFileSize()
         {
@@ -349,8 +366,7 @@ namespace EasySave
 
             foreach (String file in files)
             {
-                FileInfo fileInfo = new FileInfo(file);
-                totalSize += fileInfo.Length;
+                totalSize += new FileInfo(file).Length;
             }
 
             GC.Collect();
