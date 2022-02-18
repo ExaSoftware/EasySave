@@ -20,9 +20,6 @@ namespace EasySave
 
         private const string _DEFAULT_JOB_BACKUP_FILE_PATH = @"C:\EasySave\Job-Backup";
 
-        /// <summary>A list of Progress log objects which contains all saving action files</summary>
-        private static List<ProgressLog> _myProgressLogList = new List<ProgressLog>();
-
         /// <summary>
         /// Method which check if the directory exist and create the file if it doesn't exist, 
         /// then deserialized the file if it exists for appends the new save job or create a new log file
