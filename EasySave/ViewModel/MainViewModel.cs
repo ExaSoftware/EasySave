@@ -27,7 +27,6 @@ namespace EasySave.ViewModel
         private JobBackup _job;
         private double _totalFilesSizeFormatted;
         private string _jobTypeFormatted;
-
         //Define getter / setter
         public List<JobBackup> ListOfJobBackup { get => _listOfJobBackup; set => _listOfJobBackup = value; }
         public JobBackup Job 
@@ -170,6 +169,7 @@ namespace EasySave.ViewModel
         /// <param name="jobBackup">The JobBackup to execute.</param>
         public void ExecuteOne(JobBackup jobBackup)
         {
+
             Job = jobBackup;
             SelectedIndex = Job.Id;
             _mainThread = new Thread(() =>

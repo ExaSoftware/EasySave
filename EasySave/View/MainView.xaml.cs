@@ -62,7 +62,7 @@ namespace EasySave
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             //Prevent click on the empty list to avoid an exception
-            if (listViewBackups.SelectedItems.Count != 0)
+            if (listViewBackups.SelectedItems.Count != 0 && !_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].IsRunning)
             {
                 CreateJobView editJobView = new CreateJobView(new CreateJobViewModel((JobBackup)listViewBackups.SelectedItem));
                 this.NavigationService.Navigate(editJobView);
@@ -150,6 +150,5 @@ namespace EasySave
             }
 
         }
-
     }
 }
