@@ -10,13 +10,13 @@ namespace EasySave
         public MainWindow()
         {
             InitializeComponent();
-
+            
             frame.Navigate(new MainView());
         }
 
         private void btnSettings_Click(object sender, RoutedEventArgs e)
         {
-            frame.Navigate(new SettingsView());
+            frame.Navigate(SettingsView.GetInstance());
         }
     }
 }

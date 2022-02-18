@@ -21,6 +21,8 @@ namespace EasySave.Object
         /// <summary>The current progression of the job saving</summary>
         private int _progression = 0;
 
+        private string _log = String.Empty;
+
         /// <summary>
         /// Progress log builder
         /// </summary>
@@ -110,6 +112,16 @@ namespace EasySave.Object
                 return Math.Round((double)_sizeRemaining / 1048576, 2);
             }
 
+        }
+
+        public string Log
+        { 
+            get => _log;
+            set
+            {
+                _log = value;
+                OnPropertyChanged("Log");
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

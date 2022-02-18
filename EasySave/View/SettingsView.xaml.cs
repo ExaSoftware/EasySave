@@ -14,6 +14,7 @@ namespace EasySave
     public partial class SettingsView : Page
     {
         private SettingsViewModel _settingsViewModel;
+        private static SettingsView _instance;
 
         //settings view model
         public SettingsView()
@@ -25,7 +26,7 @@ namespace EasySave
 
         private void btnReturn_Click(object sender, RoutedEventArgs e)
         {
-            this.NavigationService.Navigate(new MainView());
+            this.NavigationService.GoBack();
         }
 
         private void btnSelectSourcePath_Click(object sender, RoutedEventArgs e)
@@ -61,6 +62,8 @@ namespace EasySave
                 if (comboBoxLanguages.SelectedIndex == 1) language = "en-US";
                 _settingsViewModel.SaveSettings(language, businessSoftware, extensions, logFormat);
                 this.NavigationService.Navigate(new MainView());
+                _settingsViewModel.SaveSettings(language, businessSoftware, extensions);
+                this.NavigationService.GoBack();
             }
         }
 
@@ -129,6 +132,16 @@ namespace EasySave
                 extensionError.Text = ""; extensionError.Visibility = Visibility.Collapsed;
             }
             _settingsViewModel.Errors.Remove("extensionError");
+        }
+
+        //prevent spam click when using of goback()
+        public static SettingsView GetInstance()
+        {
+            if (_instance == null)
+            {
+                _instance = new SettingsView();
+            }
+            return _instance;
         }
     }
 }

@@ -162,6 +162,15 @@
   <data name="english" xml:space="preserve">
     <value>English</value>
   </data>
+  <data name="errorFile" xml:space="preserve">
+    <value>An occured with this file</value>
+  </data>
+  <data name="executionFinished" xml:space="preserve">
+    <value>Execution finished</value>
+  </data>
+  <data name="executionOf" xml:space="preserve">
+    <value>Execution of</value>
+  </data>
   <data name="extensionFormat" xml:space="preserve">
     <value>Extension list of files to cypher (ex : .pdf, .docx,...)</value>
   </data>

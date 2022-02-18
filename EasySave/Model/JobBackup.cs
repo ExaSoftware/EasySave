@@ -8,6 +8,9 @@ using EasySave.Object;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
+using System.Text;
+using System.Resources;
+using System.Reflection;
 
 namespace EasySave
 {
@@ -27,7 +30,9 @@ namespace EasySave
         private string[] _priorityExtensionList;
         private bool _disposedValue;
         private ProgressLog _state;
+        private bool _isRunning;
         private int _priority;
+        private ResourceManager _rm;
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName = null)
@@ -50,6 +55,8 @@ namespace EasySave
                 OnPropertyChanged("State");
             } 
         }
+
+        public bool IsRunning { get => _isRunning; set => _isRunning = value; }
 
         ///  <summary> 
         ///  Default constructor to use in serialization.
@@ -138,8 +145,12 @@ namespace EasySave
         ///  <remarks>This method delete all the destination directory before saving files</remarks>
         private void SaveAllFiles()
         {
-            int encryptionTime = 0;
+            _isRunning = true;
+            _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
+            StringBuilder logSb = new StringBuilder();
+            logSb.AppendLine(String.Format("{0} {1}", _rm.GetString("executionOf"), this.Label));
 
+            int encryptionTime = 0;
             try
             {
                 if (Monitor.TryEnter(_destinationDirectory, Timeout.Infinite))
@@ -173,6 +184,8 @@ namespace EasySave
             Stopwatch historyStopwatch = new Stopwatch();
             ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered, sizeTotal);
             HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0, 0);
+            State = progressLog;
+            State.Log = logSb.ToString();
 
             // Copy the files and overwrite destination files if they already exist.
             foreach (string file in files)
@@ -184,7 +197,7 @@ namespace EasySave
                 {
                     historyStopwatch.Reset();
 
-                    if (!(_encryptionExtensionList is null) && new List<string>(_encryptionExtensionList).Contains(fileInfo.Extension))
+                    if (!(_encryptionExtensionList is null) && new List<string>(_encryptionExtensionList).Contains(fileInfo.Extension) && _encryptionExtensionList[0] != "")
                     {
                         encryptionTime = CypherFile(file, destFile);
                         string b = fileInfo.Extension;
@@ -199,7 +212,7 @@ namespace EasySave
                     sizeRemaining -= fileInfo.Length;
 
                     //Write logs
-                    progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (100 * fileTransfered / fileToTranfer), _id, sizeRemaining);
+                    progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), _id, sizeRemaining);
                     historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
                     State = progressLog;
                 }
@@ -207,9 +220,13 @@ namespace EasySave
                 {
                     string fileName = Path.GetFileName(file);
                     destFile = Path.Combine(_destinationDirectory, fileName);
-
                     historyLog.Error = e.StackTrace;
                     historyLog.Fill(file, destFile, 0, -1, e.GetType().Name, -1);
+
+                    //Show errors on file to the view
+                    logSb.AppendLine(String.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
+                    State.Log = logSb.ToString();
+
                     historyLog.Dispose();
                     progressLog.Dispose(); ;
                 }
@@ -222,9 +239,14 @@ namespace EasySave
                     //dispose history and progress log
                     historyLog.Dispose();
                     progressLog.Dispose();
+                    
+
                 }
             }
-
+            logSb.AppendLine(_rm.GetString("executionFinished"));
+            State.Log = logSb.ToString();
+            logSb = null;
+            _isRunning = false;
 
         }
 
@@ -234,6 +256,12 @@ namespace EasySave
         /// <remarks>This method ignores deleted files.</remarks>
         private void DoDifferentialSave()
         {
+            _isRunning = true;
+            _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
+
+            StringBuilder logSb = new StringBuilder();
+            logSb.AppendLine(String.Format("{0} {1}", _rm.GetString("executionOf"), this.Label));
+
             int encryptionTime;
 
             String[] files = FindFilesForDifferentialSave();
@@ -253,6 +281,10 @@ namespace EasySave
             ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered, sizeRemaining);
             HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0, 0);
 
+            //Affect progressLog to state attribute of JobBackup and update log string
+            State = progressLog;
+            State.Log = logSb.ToString();
+
             foreach (String file in files)
             {
                 try
@@ -262,7 +294,7 @@ namespace EasySave
                     // Creation of the destFile
                     string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
 
-                    if (!(_encryptionExtensionList is null) && new List<String>(_encryptionExtensionList).Contains(fileInfo.Extension))
+                    if (!(_encryptionExtensionList is null) && new List<String>(_encryptionExtensionList).Contains(fileInfo.Extension) && _encryptionExtensionList[0] != "")
                     {
                         encryptionTime = CypherFile(file, destFile);
                     }
@@ -280,7 +312,7 @@ namespace EasySave
                     fileTransfered++;
                     sizeRemaining -= fileInfo.Length;
 
-                    progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, 100 * fileTransfered / fileToTranfer, _id, sizeRemaining);
+                    progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), _id, sizeRemaining);
                     historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
                 }
                 catch (Exception e)
@@ -290,6 +322,10 @@ namespace EasySave
 
                     historyLog.Error = e.StackTrace;
                     historyLog.Fill(file, destFile, 0, -1, file, -1);
+
+                    logSb.AppendLine(String.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
+                    State.Log = logSb.ToString();
+
                     historyLog.Dispose();
                     progressLog.Dispose();
                 }
@@ -320,6 +356,12 @@ namespace EasySave
                     catch { }
                 }
             }
+
+            //Show logs
+            logSb.AppendLine(_rm.GetString("executionFinished"));
+            State.Log = logSb.ToString();
+            logSb = null;
+            _isRunning = false;
 
             //Reset progressLog
             progressLog.Reset(_id);

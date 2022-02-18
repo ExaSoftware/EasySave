@@ -162,6 +162,15 @@
   <data name="english" xml:space="preserve">
     <value>Anglais</value>
   </data>
+  <data name="errorFile" xml:space="preserve">
+    <value>Une erreur est survenue sur ce fichier</value>
+  </data>
+  <data name="executionFinished" xml:space="preserve">
+    <value>Exécution terminée</value>
+  </data>
+  <data name="executionOf" xml:space="preserve">
+    <value>Exécution de</value>
+  </data>
   <data name="extensionFormat" xml:space="preserve">
     <value>Liste des extensions des fichiers à chiffrer (ex : .pdf, .docx,...)</value>
   </data>
