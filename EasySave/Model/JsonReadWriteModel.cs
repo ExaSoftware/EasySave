@@ -23,7 +23,8 @@ namespace EasySave
         /// <summary>A list of Progress log objects which contains all saving action files</summary>
         private static List<ProgressLog> _myProgressLogList = new List<ProgressLog>();
 
-        /// <summary>Method which check if the directory exist and create the file if it doesn't exist, 
+        /// <summary>
+        /// Method which check if the directory exist and create the file if it doesn't exist, 
         /// then deserialized the file if it exists for appends the new save job or create a new log file
         /// </summary>
         ///<param name=myHistoryLog>An object HistoryLog</param>
@@ -323,7 +324,9 @@ namespace EasySave
             }
         }
 
-        /// <summary>Method which read a json file and convert it into a list of list of JobBackup</summary>
+        /// <summary>
+        /// Method which read a json file and convert it into a list of list of JobBackup
+        /// </summary>
         /// <returns>The list of JobBackup associate to the json file</returns>
         public static List<JobBackup> ReadJobBackup()
         {
@@ -342,7 +345,9 @@ namespace EasySave
             }
         }
 
-        /// <summary>Method which save a list of jobBackup into a json file</summary>
+        /// <summary>
+        /// Method which save a list of jobBackup into a json file
+        /// </summary>
         /// <param name="jobBackupList"></param>
         public static void SaveJobBackup(List<JobBackup> jobBackupList)
         {
@@ -352,7 +357,9 @@ namespace EasySave
             File.WriteAllTextAsync(String.Format(@"{0}\SavedJobBackup.json", _DEFAULT_JOB_BACKUP_FILE_PATH), jsonStringJobBackup);
         }
 
-        /// <summary>Method which save a list of progressLog into a json file</summary>
+        /// <summary>
+        /// Method which save a list of progressLog into a json file
+        /// </summary>
         /// <param name="progressLogList"></param>
         public static void SaveProgressLog(ProgressLog myProgressLog)
         {

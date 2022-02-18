@@ -118,79 +118,79 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="active" xml:space="preserve">
-    <value>Actif</value>
+    <value>Active</value>
   </data>
   <data name="appTitle" xml:space="preserve">
     <value>EasySave</value>
   </data>
   <data name="boxDetailTitle" xml:space="preserve">
-    <value>Détails</value>
+    <value>Detail</value>
   </data>
   <data name="boxExecutionTitle" xml:space="preserve">
-    <value>Exécution</value>
+    <value>Execution</value>
   </data>
   <data name="boxLogTitle" xml:space="preserve">
-    <value>Journal</value>
+    <value>Logs</value>
   </data>
   <data name="businessSoftware" xml:space="preserve">
-    <value>Logiciel métier</value>
+    <value>Business software</value>
   </data>
   <data name="cancel" xml:space="preserve">
-    <value>Annuler</value>
+    <value>Cancel</value>
   </data>
   <data name="createJobViewTitle" xml:space="preserve">
-    <value>Créer ou modifier un travail de sauvegarde</value>
+    <value>Create or update a job backup</value>
   </data>
   <data name="destinationDirectory" xml:space="preserve">
-    <value>Répertoire de destination :</value>
+    <value>Destination directory:</value>
   </data>
   <data name="destinationPathEqualsSourcePath" xml:space="preserve">
-    <value>Le répertoire de destination doit être différent du répertoire source.</value>
+    <value>Destination directory must be different of the source directory.</value>
   </data>
   <data name="differential" xml:space="preserve">
-    <value>Différentielle</value>
+    <value>Differential</value>
   </data>
   <data name="emptyDestinationDirectoryError" xml:space="preserve">
-    <value>Le répertoire de destination est obligatoire.</value>
+    <value>Destination directory is required.</value>
   </data>
   <data name="emptyLabelError" xml:space="preserve">
-    <value>Le label est obligatoire</value>
+    <value>Label is required.</value>
   </data>
   <data name="emptySourceDirectoryError" xml:space="preserve">
-    <value>Le répertoire source est obligatoire.</value>
+    <value>Source directory is required.</value>
   </data>
   <data name="english" xml:space="preserve">
-    <value>Anglais</value>
+    <value>English</value>
   </data>
   <data name="extensionFormat" xml:space="preserve">
-    <value>Liste des extensions des fichiers à chiffrer (ex : .pdf, .docx,...)</value>
+    <value>Extension list of files to cypher (ex : .pdf, .docx,...)</value>
   </data>
   <data name="extensionFormatError" xml:space="preserve">
-    <value>Le format de la liste des extensions n'est pas respectée. Merci d'utiliser ce format : .png;.pdf;.xlsx</value>
+    <value>The extension list format is not respected. Please use this format: .png;.pdf;.xlsx</value>
   </data>
   <data name="filesLeftToCopy" xml:space="preserve">
-    <value>Nombre de fichiers restants</value>
+    <value>Number of files remaining</value>
   </data>
   <data name="finish" xml:space="preserve">
-    <value>Terminé</value>
+    <value>End</value>
   </data>
   <data name="french" xml:space="preserve">
-    <value>Français</value>
+    <value>French</value>
   </data>
   <data name="jobBackupList" xml:space="preserve">
-    <value>Travaux de sauvegarde</value>
+    <value>Job Backups</value>
   </data>
   <data name="jobCreateBackupType" xml:space="preserve">
-    <value>Type de sauvegarde</value>
+    <value>Backup type</value>
   </data>
   <data name="jobCreateDestinationDirectory" xml:space="preserve">
-    <value>Répertoire de destination *</value>
+    <value>Destination Directory *</value>
   </data>
   <data name="jobCreateSourceDirectory" xml:space="preserve">
-    <value>Répertoire source *</value>
+    <value>Source Directory *</value>
   </data>
   <data name="jobType" xml:space="preserve">
-    <value>Type de sauvegarde :</value>
+    <value>Backup type:</value>
   </data>
   <data name="json" xml:space="preserve">
     <value>JSON</value>
@@ -199,43 +199,46 @@
     <value>Label *</value>
   </data>
   <data name="language" xml:space="preserve">
-    <value>Langue</value>
+    <value>Language</value>
+  </data>
+  <data name="megabyteUnit" xml:space="preserve">
+    <value>MB</value>
   </data>
   <data name="return" xml:space="preserve">
-    <value>Retour</value>
+    <value>Return</value>
   </data>
   <data name="SaveLogFormat" xml:space="preserve">
-    <value>Format de sauvegarde du fichier de log quotidien</value>
+    <value>Save format of daily log</value>
   </data>
   <data name="settings" xml:space="preserve">
-    <value>Paramètres</value>
+    <value>Settings</value>
   </data>
   <data name="singleInstance" xml:space="preserve">
-    <value>Une instance d'EasySave est déjà en cours d'exécution...</value>
+    <value>An instance of EasySave is already running...</value>
   </data>
   <data name="sourceDirectory" xml:space="preserve">
-    <value>Répertoire source :</value>
+    <value>Source directory:</value>
   </data>
   <data name="sourceDirectoryNotExistsError" xml:space="preserve">
-    <value>Le répertoire source n'existe pas.</value>
+    <value>Source directory doesn't exist.</value>
   </data>
   <data name="state" xml:space="preserve">
-    <value>État</value>
+    <value>State</value>
   </data>
   <data name="total" xml:space="preserve">
-    <value>Totale</value>
+    <value>Total</value>
   </data>
   <data name="totalFilesSize" xml:space="preserve">
-    <value>Taille total des fichiers :</value>
+    <value>Total files size:</value>
   </data>
   <data name="totalFilesToCopy" xml:space="preserve">
-    <value>Nombre total de fichiers à copier</value>
+    <value>Number of total files to copy</value>
   </data>
   <data name="totalSizeRemaining" xml:space="preserve">
-    <value>Taille restante</value>
+    <value>Size remaining</value>
   </data>
   <data name="valid" xml:space="preserve">
-    <value>Valider</value>
+    <value>Validate</value>
   </data>
   <data name="xml" xml:space="preserve">
     <value>XML</value>

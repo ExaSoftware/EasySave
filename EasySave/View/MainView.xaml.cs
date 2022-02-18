@@ -70,10 +70,17 @@ namespace EasySave
             //Prevent click on the empty list to avoid an exception
             if (listViewBackups.SelectedItems.Count != 0)
             {
+
+                //Update the first block
                 id = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Id;
-                label.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Label;
-                labelSourceDirectory.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].SourceDirectory;
-                destinationDirectory.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].DestinationDirectory;
+                //label.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Label;
+                //labelSourceDirectory.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].SourceDirectory;
+                //destinationDirectory.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].DestinationDirectory;
+
+                //Get the totalFileSize from the VM
+                _mainViewModel.TotalFilesSizeFormatted = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].TotalFileSize();
+
+
                 ResourceManager rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
                 if (_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].IsDifferential)
                 {
@@ -87,7 +94,7 @@ namespace EasySave
         }
 
         /// <summary>
-        /// Method which was execute when user click on the button to execute the job backups sequentially
+        /// Method which start the all job backup
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -97,7 +104,7 @@ namespace EasySave
         }
 
         /// <summary>
-        /// Method which was executed when user click a the play button to launch a job backup
+        /// Method which start the selected job backup when user click on the play button
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -108,7 +115,39 @@ namespace EasySave
             {
                 _mainViewModel.ExecuteOne((JobBackup)listViewBackups.SelectedItem);
             }
-
         }
+
+        /// <summary>
+        /// Turns all running JobBackup in pause state.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnPause_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        /// <summary>
+        /// Stop all running JobBackup.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnStop_Click(object sender, RoutedEventArgs e)
+        {
+            //If there is a job backup selected
+            if (listViewBackups.SelectedItems.Count != 0)
+            {
+                _mainViewModel.ExecuteOne((JobBackup)listViewBackups.SelectedItem);
+            }
+            
+        }
+
+        private void listViewBackups_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //MessageBox.Show(_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Label);
+            MainViewModel vm = this.DataContext as MainViewModel;
+            vm.Job = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex];
+        }
+
     }
 }

@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS1717: Assignation effectuée à la même variable
+dotnet_diagnostic.CS1717.severity = suggestion

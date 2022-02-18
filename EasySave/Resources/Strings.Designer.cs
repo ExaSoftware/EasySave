@@ -322,6 +322,15 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Mo.
+        /// </summary>
+        public static string megabyteUnit {
+            get {
+                return ResourceManager.GetString("megabyteUnit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Format de sauvegarde du fichier de log quotidien.
         /// </summary>
         public static string SaveLogFormat {

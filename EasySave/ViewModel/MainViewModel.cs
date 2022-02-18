@@ -1,0 +1,247 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Threading;
+using System.Windows;
+
+namespace EasySave.ViewModel
+{
+    delegate void Del(JobBackup jobBackup);
+
+    class MainViewModel : INotifyPropertyChanged
+    {
+        //Attributes
+        private List<JobBackup> _listOfJobBackup = null;
+        private JsonReadWriteModel _jsonReadWriteModel = null;
+        private Thread _thread = null;
+        private Thread _thread1 = null;
+        private Thread _thread2 = null;
+        private Thread _thread3 = null;
+        private Thread _thread4 = null;
+        private Thread _thread5 = null;
+        private Thread _mainThread = null;
+        private int _selectedIndex;
+        private JobBackup _job;
+        private double _totalFilesSizeFormatted;
+
+        //Define getter / setter
+        public List<JobBackup> ListOfJobBackup { get => _listOfJobBackup; set => _listOfJobBackup = value; }
+        public JobBackup Job 
+        {
+            get => _job;
+            set
+            {
+                _job = value;
+                OnPropertyChanged("Job");
+            } 
+        }
+
+        public double TotalFilesSizeFormatted 
+        {
+            get
+            {
+                //Convert in MO
+                return (double)Math.Round(_totalFilesSizeFormatted / 1048576, 2);
+            } 
+            set
+            {
+                _totalFilesSizeFormatted = value;
+                OnPropertyChanged("TotalFilesSizeFormatted");
+            }
+        }
+
+        public int SelectedIndex 
+        {
+            get => _selectedIndex;
+            set 
+            {
+                _selectedIndex = value;
+                OnPropertyChanged("SelectedIndex");
+            }  
+        }
+
+        /// <summary>
+        /// Constructor of MainViewModel.
+        /// </summary>
+        public MainViewModel()
+        {
+            //Read the list in the json
+            _jsonReadWriteModel = new JsonReadWriteModel();
+            _listOfJobBackup = _jsonReadWriteModel.ReadJobBackup();
+
+
+        }
+
+        /// <summary>
+        /// Delete the selected save in the list of JobBackup
+        /// </summary>
+        /// <param name="id"></param>
+        public void DeleteSave(int id)
+        {
+            JsonReadWriteModel JSonReaderWriter = new JsonReadWriteModel();
+            int count = 0;
+            if (_listOfJobBackup.Count != 0)
+            {
+                //Search in the list if there's an id similar to the selected one
+                foreach (JobBackup item in _listOfJobBackup)
+                {
+                    if (count == id)
+                    {
+                        //check if the list isn't empty
+                        if (_listOfJobBackup.Count == 1)
+                        {
+                            _listOfJobBackup.Remove(item);
+                            _listOfJobBackup.Clear();
+                            item.Dispose();
+                        }
+                        else
+                        {
+                            //Remove the Job Backup from the list
+                            _listOfJobBackup.Remove(item);
+                            item.Dispose();
+                            //Update the index of the elements in the list
+                        }
+                        break;
+
+                    }
+                    count++;
+                }
+                if (_listOfJobBackup.Count != 0)
+                {
+                    for (count = 0; count < _listOfJobBackup.Count; count++)
+                    {
+                        _listOfJobBackup[count].Id = count;
+                    }
+                }
+
+            }
+            //Save the list in json
+            JSonReaderWriter.SaveJobBackup(_listOfJobBackup);
+        }
+
+        //Instanciate the delegate
+        readonly Del Execute = delegate (JobBackup jobBackup)
+        {
+            if (App.Configuration.BusinessSoftware != "" || App.Configuration.BusinessSoftware != null)
+            {
+                Process[] procName = Process.GetProcessesByName(App.Configuration.BusinessSoftware);
+                if (procName.Length == 0)
+                {
+                    jobBackup.Execute();
+                }
+            }
+            else
+            {
+                jobBackup.Execute();
+            }
+        };
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        /// <summary>
+        /// Resume threads or instanciate a thread and execute the jobBackup in this thread.
+        /// </summary>
+        /// <param name="jobBackup">The JobBackup to execute.</param>
+        public void ExecuteOne(JobBackup jobBackup)
+        {
+            _mainThread = new Thread(() =>
+            {
+                _thread = new Thread(() => Execute(jobBackup));
+                _thread.Start();
+            });
+            _mainThread.Start();
+            Job = jobBackup;
+            SelectedIndex = Job.Id;
+            _thread = new Thread(() => Execute(jobBackup));
+            _thread.Start();
+        }
+
+
+        /// <summary>
+        /// Execute all the list of JobBackup with the ExecuteOne method.
+        /// </summary>
+        /// <remarks>Threads are executed one by one, in the order of the list.</remarks>
+        public void ExecuteAll()
+        {
+            if (_mainThread is null || !_mainThread.IsAlive)
+            {
+                _mainThread = new Thread(() =>
+                {
+                    List<Thread> threadList = new List<Thread>() { _thread1, _thread2, _thread3, _thread4, _thread5 };
+                    double numberOfIteration = Math.Round((double)(_listOfJobBackup.Count / 5));
+                    int i = 0;
+
+                    for (i = 0; i < numberOfIteration * 5; i += 5)
+                    {
+                        _thread1 = new Thread(() => Execute(_listOfJobBackup[i]));
+                        _thread2 = new Thread(() => Execute(_listOfJobBackup[i++]));
+                        _thread3 = new Thread(() => Execute(_listOfJobBackup[i + 2]));
+                        _thread4 = new Thread(() => Execute(_listOfJobBackup[i + 3]));
+                        _thread5 = new Thread(() => Execute(_listOfJobBackup[i + 4]));
+
+                        _thread1.Start();
+                        _thread2.Start();
+                        _thread3.Start();
+                        _thread4.Start();
+                        _thread5.Start();
+
+                        _thread1.Join();
+                        _thread2.Join();
+                        _thread3.Join();
+                        _thread4.Join();
+                        _thread5.Join();
+                    }
+
+                    for (int a = 0; a < 2; a++)
+                    {
+                        int b = a;
+                        threadList[b % 5] = new Thread(() => Execute(_listOfJobBackup[b]));
+                        threadList[b % 5].Start();
+                    }
+
+
+                    foreach (Thread thread in threadList)
+                    {
+                        if (!(thread is null))
+                        {
+                            thread.Join();
+                        }
+                    }
+
+                });
+                _mainThread.Start();
+            }
+        }
+
+
+        /// <summary>
+        /// Pause all JobBackups threads.
+        /// </summary>
+        public void Pause()
+        {
+
+        }
+
+
+        /// <summary>
+        /// Stop all JobBackups threads.
+        /// </summary>
+        public void Stop()
+        {
+            try
+            {
+                _mainThread.Abort();
+            }
+            catch
+            {
+
+            }
+        }
+
+    }
+}
