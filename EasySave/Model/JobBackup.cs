@@ -279,7 +279,7 @@ namespace EasySave
                     fileTransfered++;
                     sizeRemaining -= fileInfo.Length;
 
-                    progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, 100 * fileTransfered / fileToTranfer, _id, sizeRemaining);
+                    progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), _id, sizeRemaining);
                     historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
                 }
                 catch (Exception e)
