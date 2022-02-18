@@ -60,9 +60,7 @@ namespace EasySave
                 if (comboBoxLogFormat.SelectedIndex == 1) logFormat = "xml";
                 if (comboBoxLanguages.SelectedIndex == 0) language = "fr-FR";
                 if (comboBoxLanguages.SelectedIndex == 1) language = "en-US";
-                _settingsViewModel.SaveSettings(language, businessSoftware, extensions, logFormat);
-                this.NavigationService.Navigate(new MainView());
-                _settingsViewModel.SaveSettings(language, businessSoftware, extensions);
+                _settingsViewModel.SaveSettings(language, businessSoftware, extensions,logFormat);
                 this.NavigationService.GoBack();
             }
         }

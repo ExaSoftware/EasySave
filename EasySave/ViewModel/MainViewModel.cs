@@ -214,13 +214,12 @@ namespace EasySave.ViewModel
                         _thread5.Join();
                     }
 
-                    for (int a = 0; a < 2; a++)
+                    for (int a = 0; a < _listOfJobBackup.Count; a++)
                     {
                         int b = a;
                         threadList[b % 5] = new Thread(() => Execute(_listOfJobBackup[b]));
                         threadList[b % 5].Start();
                     }
-
 
                     foreach (Thread thread in threadList)
                     {
