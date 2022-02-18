@@ -171,6 +171,9 @@
   <data name="executionOf" xml:space="preserve">
     <value>Execution of</value>
   </data>
+  <data name="extensionFormat" xml:space="preserve">
+    <value>Extension list of files to cypher (ex : .pdf, .docx,...)</value>
+  </data>
   <data name="extensionFormatError" xml:space="preserve">
     <value>The extension list format is not respected. Please use this format: .png;.pdf;.xlsx</value>
   </data>
@@ -198,6 +201,9 @@
   <data name="jobType" xml:space="preserve">
     <value>Backup type:</value>
   </data>
+  <data name="json" xml:space="preserve">
+    <value>JSON</value>
+  </data>
   <data name="label" xml:space="preserve">
     <value>Label *</value>
   </data>
@@ -209,6 +215,9 @@
   </data>
   <data name="return" xml:space="preserve">
     <value>Return</value>
+  </data>
+  <data name="SaveLogFormat" xml:space="preserve">
+    <value>Save format of daily log</value>
   </data>
   <data name="settings" xml:space="preserve">
     <value>Settings</value>
@@ -239,5 +248,8 @@
   </data>
   <data name="valid" xml:space="preserve">
     <value>Validate</value>
+  </data>
+  <data name="xml" xml:space="preserve">
+    <value>XML</value>
   </data>
 </root>

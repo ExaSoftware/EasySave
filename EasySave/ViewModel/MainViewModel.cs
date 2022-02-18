@@ -15,7 +15,6 @@ namespace EasySave.ViewModel
     {
         //Attributes
         private List<JobBackup> _listOfJobBackup = null;
-        private JsonReadWriteModel _jsonReadWriteModel = null;
         private Thread _thread = null;
         private Thread _thread1 = null;
         private Thread _thread2 = null;
@@ -82,8 +81,8 @@ namespace EasySave.ViewModel
         public MainViewModel()
         {
             //Read the list in the json
-            _jsonReadWriteModel = new JsonReadWriteModel();
-            _listOfJobBackup = _jsonReadWriteModel.ReadJobBackup();
+            
+            _listOfJobBackup = JsonReadWriteModel.ReadJobBackup();
 
             //No job backup selected
             SelectedIndex = -1;
@@ -96,7 +95,6 @@ namespace EasySave.ViewModel
         /// <param name="id"></param>
         public void DeleteSave(int id)
         {
-            JsonReadWriteModel JSonReaderWriter = new JsonReadWriteModel();
             int count = 0;
             if (_listOfJobBackup.Count != 0)
             {
@@ -137,7 +135,7 @@ namespace EasySave.ViewModel
 
             }
             //Save the list in json
-            JSonReaderWriter.SaveJobBackup(_listOfJobBackup);
+            JsonReadWriteModel.SaveJobBackup(_listOfJobBackup);
         }
 
         //Instanciate the delegate
@@ -216,13 +214,12 @@ namespace EasySave.ViewModel
                         _thread5.Join();
                     }
 
-                    for (int a = 0; a < 2; a++)
+                    for (int a = 0; a < _listOfJobBackup.Count; a++)
                     {
                         int b = a;
                         threadList[b % 5] = new Thread(() => Execute(_listOfJobBackup[b]));
                         threadList[b % 5].Start();
                     }
-
 
                     foreach (Thread thread in threadList)
                     {

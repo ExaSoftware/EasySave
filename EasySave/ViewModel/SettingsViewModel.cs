@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Resources;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows;
 
 namespace EasySave.ViewModel
 {
     class SettingsViewModel
     {
         private int _selectedLanguage;
+        private int _selectedLogFormat;
         private string _extensions;
         private string _businessSoftware;
         private ResourceManager _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
@@ -31,6 +30,15 @@ namespace EasySave.ViewModel
                 _selectedLanguage = 1;
             }
 
+            if (String.Equals(App.Configuration.LogFormat, "json"))
+            {
+                _selectedLogFormat = 0;
+            }
+            if (String.Equals(App.Configuration.LogFormat, "xml"))
+            {
+                _selectedLogFormat = 1;
+            }
+
             //Set the attributes to the convert the list into a string fot the display in the field in view
             if (App.Configuration.Extensions != null)
             {
@@ -38,12 +46,13 @@ namespace EasySave.ViewModel
             }
         }
 
-        public void SaveSettings(String language, String businessSoftware, String[] extensions)
+        public void SaveSettings(String language, String businessSoftware, String[] extensions, string logFormat)
         {
             CultureInfo.CurrentUICulture = new CultureInfo(language, false);
             App.Configuration.Language = language;
             App.Configuration.BusinessSoftware = businessSoftware;
             App.Configuration.Extensions = extensions;
+            App.Configuration.LogFormat = logFormat;
             App.Configuration.Save();
         }
         public void CheckExtension(string extensions)
@@ -60,6 +69,6 @@ namespace EasySave.ViewModel
         public String Extensions { get => _extensions; set => _extensions = value; }
         public string BusinessSoftware { get => _businessSoftware; set => _businessSoftware = value; }
         public Dictionary<string, string> Errors { get => _errors; set => _errors = value; }
-
+        public int SelectedLogFormat { get => _selectedLogFormat; set => _selectedLogFormat = value; }
     }
 }

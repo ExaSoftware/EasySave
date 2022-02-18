@@ -1,5 +1,10 @@
 .vs/
 bin/
+CryptoSoft/config
+Job-Backup/
+Logs/
+obj/
+/Properties/launchSettings.json
 EasySave/obj/
 EasySave/bin/
 EasySave/.vs/

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Resources;
-using System.Text;
-using System.Windows;
 
 namespace EasySave.ViewModel
 {
@@ -48,7 +46,6 @@ namespace EasySave.ViewModel
         {
             MainViewModel main = new MainViewModel();
             List<JobBackup> list = main.ListOfJobBackup;
-            JsonReadWriteModel JSonReaderWriter = new JsonReadWriteModel();
 
             //Modify a list
             if (id != -1)
@@ -60,14 +57,14 @@ namespace EasySave.ViewModel
             else
             {
                 //Ajoute un élément dans la liste
-                
+
                 JobBackup newJobBackup = new JobBackup();
                 newJobBackup.Fill(label, sourceDirectory, destinationDirectory, isDifferential);
                 newJobBackup.Id = list.Count;
                 list.Add(newJobBackup);
             }
             //Save the JobBackup list in JSON file
-            JSonReaderWriter.SaveJobBackup(list);
+            JsonReadWriteModel.SaveJobBackup(list);
         }
 
         /// <summary>
@@ -101,7 +98,7 @@ namespace EasySave.ViewModel
                     _errors.Add("sourceDirectoryError", _rm.GetString("sourceDirectoryNotExistsError"));
                 }
             }
-            
+
         }
 
         /// <summary>

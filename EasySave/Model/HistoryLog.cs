@@ -1,28 +1,37 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace EasySave
 {
+    [JsonConverter(typeof(HistoryLog))]
+    [Serializable]
+    [XmlRoot(ElementName = "HistoryLog")]
     /// <summary>
     /// This class models an history log of what have been saved for a specific job save
     /// </summary>
     public class HistoryLog : Log
     {
+        [XmlElement(ElementName = "fileSize")]
         /// <summary>The file size of the file which have been saved</summary>
         private ulong _fileSize;
+        [XmlElement(ElementName = "transferTime")]
         /// <summary>Transfer time of the file which have been saved</summary>
         private double _transferTime;
-
+        [XmlElement(ElementName = "error")]
+        ///<summary> Error from the stackTrace </summary>
         private string _error;
+        [XmlElement(ElementName = "time")]
         /// <summary> Timestamp when the job have been saved </summary>
         protected string _time;
-
+        [XmlElement(ElementName = "encryptionTime")]
         ///<sumary>Necessary time to encrypt the file</summary>
         protected double _encryptionTime;
-
+        [XmlElement(ElementName = "errorTitle")]
         /// <summary>Code error needed in the View to notify the user</summary>
         protected string _errorTitle;
+
+        public HistoryLog() { }
 
         /// <summary>History log builder</summary>
         public HistoryLog(string label, string sourceFile, string targetFile, ulong fileSize, double transferTime, double encryptionTime) : base(label, sourceFile, targetFile)
@@ -94,7 +103,7 @@ namespace EasySave
         /// <returns>True if the history log file have been created False in the opposite case</returns>
         public override void SaveLog()
         {
-            _myLogModel.SaveHistoryLog(this);
+            JsonReadWriteModel.SaveHistoryLog(this);
         }
 
         public void Fill(string sourceFile, string targetFile, long fileSize, double transfertTime, string error, int encryptionTime)
