@@ -135,7 +135,7 @@ namespace EasySave
             //If there is a job backup selected
             if (listViewBackups.SelectedItems.Count != 0)
             {
-                _mainViewModel.ExecuteOne((JobBackup)listViewBackups.SelectedItem);
+                _mainViewModel.Stop();
             }
             
         }
