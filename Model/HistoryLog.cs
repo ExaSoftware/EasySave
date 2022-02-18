@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace EasySave
 {
+    [JsonConverter(typeof(HistoryLog))]
     [Serializable]
     [XmlRoot(ElementName = "HistoryLog")]
     /// <summary>
@@ -103,7 +103,7 @@ namespace EasySave
         /// <returns>True if the history log file have been created False in the opposite case</returns>
         public override void SaveLog()
         {
-            _myLogModel.SaveHistoryLog(this);
+            JsonReadWriteModel.SaveHistoryLog(this);
         }
 
         public void Fill(string sourceFile, string targetFile, long fileSize, double transfertTime, string error, int encryptionTime)

@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EasySave.Object
 {
@@ -53,7 +51,7 @@ namespace EasySave.Object
             this._targetFile = destFile;
             this._totalFilesRemaining = totalFilesRemaining;
             this._progression = progression;
-            this.SaveLog(id);
+            this.SaveLog();
         }
 
         public void Reset(int id)
@@ -65,15 +63,15 @@ namespace EasySave.Object
             this._totalFilesToCopy = 0;
             this._totalFilesSize = 0;
             this._progression = 0;
-            this.SaveLog(id);
+            this.SaveLog();
         }
 
         /// <summary>
         /// Method which call SaveProgressLog() from LogModel for created a progress log file in C:\EasySave\Logs repository
         /// </summary>
-        public override void SaveLog(int index)
+        public override void SaveLog()
         {
-            _myLogModel.SaveProgressLog(this, index);
+            JsonReadWriteModel.SaveProgressLog(this);
         }
 
         protected override void Dispose(bool disposing)

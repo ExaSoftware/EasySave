@@ -2,17 +2,9 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 
 namespace EasySave
 {
@@ -62,9 +54,12 @@ namespace EasySave
                 String language = String.Empty;
                 String businessSoftware = txtBoxBusinessSoftwarePath.Text;
                 String[] extensions = txtBoxExtensionsList.Text.Split(";");
+                string logFormat = String.Empty;
+                if (comboBoxLogFormat.SelectedIndex == 0) logFormat = "json";
+                if (comboBoxLogFormat.SelectedIndex == 1) logFormat = "xml";
                 if (comboBoxLanguages.SelectedIndex == 0) language = "fr-FR";
                 if (comboBoxLanguages.SelectedIndex == 1) language = "en-US";
-                _settingsViewModel.SaveSettings(language, businessSoftware, extensions);
+                _settingsViewModel.SaveSettings(language, businessSoftware, extensions, logFormat);
                 this.NavigationService.Navigate(new MainView());
             }
         }

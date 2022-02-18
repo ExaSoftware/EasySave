@@ -205,6 +205,15 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Liste des extensions des fichiers à chiffrer (ex : .pdf, .docx,...).
+        /// </summary>
+        public static string extensionFormat {
+            get {
+                return ResourceManager.GetString("extensionFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Le format de la liste des extensions n&apos;est pas respectée. Merci d&apos;utiliser ce format : .png;.pdf;.xlsx.
         /// </summary>
         public static string extensionFormatError {
@@ -286,6 +295,15 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à JSON.
+        /// </summary>
+        public static string json {
+            get {
+                return ResourceManager.GetString("json", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Label *.
         /// </summary>
         public static string label {
@@ -300,6 +318,15 @@ namespace EasySave.Resources {
         public static string language {
             get {
                 return ResourceManager.GetString("language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Format de sauvegarde du fichier de log quotidien.
+        /// </summary>
+        public static string SaveLogFormat {
+            get {
+                return ResourceManager.GetString("SaveLogFormat", resourceCulture);
             }
         }
         
@@ -390,6 +417,15 @@ namespace EasySave.Resources {
         public static string valid {
             get {
                 return ResourceManager.GetString("valid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à XML.
+        /// </summary>
+        public static string xml {
+            get {
+                return ResourceManager.GetString("xml", resourceCulture);
             }
         }
     }

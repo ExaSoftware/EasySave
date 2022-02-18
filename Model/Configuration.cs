@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
-using System.Text;
 using System.Text.Json;
-using System.Threading;
 
 namespace EasySave
 {
@@ -14,6 +10,7 @@ namespace EasySave
         private String _language;
         private String _businessSoftware;
         private String[] _extensions;
+        private string _logFormat;
 
         private static Configuration _instance;
         public const String DEFAULT_CONFIG_FILE_PATH = @"C:\EasySave\Configuration.json";
@@ -30,17 +27,19 @@ namespace EasySave
             get => _businessSoftware;
             set
             {
-               _businessSoftware = value;
-            } 
+                _businessSoftware = value;
+            }
         }
         public string[] Extensions
         {
             get => _extensions;
             set
-            { 
+            {
                 _extensions = value;
-            }  
+            }
         }
+
+        public string LogFormat { get => _logFormat; set => _logFormat = value; }
 
         /// <summary>
         /// Serialize and save Configuration object in json file
@@ -50,7 +49,7 @@ namespace EasySave
             JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
             String json = JsonSerializer.Serialize(this, options);
             File.WriteAllText(DEFAULT_CONFIG_FILE_PATH, json);
-        } 
+        }
 
         public void CreateConfigurationFile()
         {

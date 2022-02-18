@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-using System.Windows;
 
 namespace EasySave.ViewModel
 {
@@ -11,7 +10,6 @@ namespace EasySave.ViewModel
     {
         //Attributes
         private List<JobBackup> _listOfJobBackup;
-        private JsonReadWriteModel _jsonReadWriteModel;
         private Thread _thread;
         private Thread _sequentialThread;
 
@@ -24,8 +22,7 @@ namespace EasySave.ViewModel
         public MainViewModel()
         {
             //Read the list in the json
-            _jsonReadWriteModel = new JsonReadWriteModel();
-            _listOfJobBackup = _jsonReadWriteModel.ReadJobBackup();
+            _listOfJobBackup = JsonReadWriteModel.ReadJobBackup();
         }
 
         /// <summary>
@@ -34,7 +31,6 @@ namespace EasySave.ViewModel
         /// <param name="id"></param>
         public void DeleteSave(int id)
         {
-            JsonReadWriteModel JSonReaderWriter = new JsonReadWriteModel();
             int count = 0;
             if (_listOfJobBackup.Count != 0)
             {
@@ -72,7 +68,7 @@ namespace EasySave.ViewModel
 
             }
             //Save the list in json
-            JSonReaderWriter.SaveJobBackup(_listOfJobBackup);
+            JsonReadWriteModel.SaveJobBackup(_listOfJobBackup);
         }
 
         //Instanciate the delegate

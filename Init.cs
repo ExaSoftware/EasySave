@@ -1,5 +1,4 @@
-﻿using EasySave.Object;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -45,22 +44,21 @@ namespace EasySave
 
         public static List<JobBackup> CreateJobBackupList()
         {
-            JsonReadWriteModel reader = new JsonReadWriteModel();
             List<JobBackup> parts = new List<JobBackup>();
 
-            if (reader.ReadJobBackup() == null)
+            if (JsonReadWriteModel.ReadJobBackup() == null)
             {
                 for (int i = 0; i < 5; i++)
                 {
                     parts.Add(new JobBackup(i));
                 }
-                reader.SaveJobBackup(parts);
+                JsonReadWriteModel.SaveJobBackup(parts);
                 return parts;
             }
             else
             {
-                parts = reader.ReadJobBackup();
-                reader.SaveJobBackup(parts);
+                parts = JsonReadWriteModel.ReadJobBackup();
+                JsonReadWriteModel.SaveJobBackup(parts);
                 return parts;
             }
 

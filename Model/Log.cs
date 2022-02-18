@@ -20,7 +20,6 @@ namespace EasySave
         /// <summary> Target file path of the file which have been saved </summary>
         protected string _targetFile;
 
-        protected JsonReadWriteModel _myLogModel;
         protected bool disposedValue;
 
         ///<summary>Log class builder</summary>
@@ -38,18 +37,12 @@ namespace EasySave
             _label = label;
             _sourceFile = sourceFile;
             _targetFile = targetFile;
-            _myLogModel = new JsonReadWriteModel();
         }
 
         /// <summary>
         /// Method which doing nothing but is useful for polymorphism
         /// </summary>
         public virtual void SaveLog()
-        {
-
-        }
-
-        public virtual void SaveLog(int index)
         {
 
         }
@@ -100,7 +93,6 @@ namespace EasySave
 
                 // TODO: libérer les ressources non managées (objets non managés) et substituer le finaliseur
                 // TODO: affecter aux grands champs une valeur null
-                _myLogModel = null;
                 disposedValue = true;
             }
         }

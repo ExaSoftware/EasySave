@@ -162,6 +162,9 @@
   <data name="english" xml:space="preserve">
     <value>Anglais</value>
   </data>
+  <data name="extensionFormat" xml:space="preserve">
+    <value>Liste des extensions des fichiers à chiffrer (ex : .pdf, .docx,...)</value>
+  </data>
   <data name="extensionFormatError" xml:space="preserve">
     <value>Le format de la liste des extensions n'est pas respectée. Merci d'utiliser ce format : .png;.pdf;.xlsx</value>
   </data>
@@ -189,6 +192,9 @@
   <data name="jobType" xml:space="preserve">
     <value>Type de sauvegarde :</value>
   </data>
+  <data name="json" xml:space="preserve">
+    <value>JSON</value>
+  </data>
   <data name="label" xml:space="preserve">
     <value>Label *</value>
   </data>
@@ -197,6 +203,9 @@
   </data>
   <data name="return" xml:space="preserve">
     <value>Retour</value>
+  </data>
+  <data name="SaveLogFormat" xml:space="preserve">
+    <value>Format de sauvegarde du fichier de log quotidien</value>
   </data>
   <data name="settings" xml:space="preserve">
     <value>Paramètres</value>
@@ -227,5 +236,8 @@
   </data>
   <data name="valid" xml:space="preserve">
     <value>Valider</value>
+  </data>
+  <data name="xml" xml:space="preserve">
+    <value>XML</value>
   </data>
 </root>
