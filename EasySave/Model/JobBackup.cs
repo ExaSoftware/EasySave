@@ -43,14 +43,14 @@ namespace EasySave
         public bool IsDifferential { get => _isDifferential; set => _isDifferential = value; }
         public string Label { get => _label; set => _label = value; }
         public int Id { get => _id; set => _id = value; }
-        public ProgressLog State 
+        public ProgressLog State
         {
             get => _state;
             set
             {
                 _state = value;
                 OnPropertyChanged("State");
-            } 
+            }
         }
 
         public bool IsRunning { get => _isRunning; set => _isRunning = value; }
@@ -58,7 +58,11 @@ namespace EasySave
         ///  <summary> 
         ///  Default constructor to use in serialization.
         ///  </summary>
-        public JobBackup() { }
+        public JobBackup()
+        {
+            _priority = 0;
+            _isRunning = false;
+        }
 
         /// <summary>
         /// Create a JobBackup with default parameters.
@@ -72,6 +76,7 @@ namespace EasySave
             _isDifferential = false;
             _priority = 0;
             _id = id;
+            _isRunning = false;
         }
 
         ///  <summary>
@@ -87,6 +92,8 @@ namespace EasySave
             _sourceDirectory = sourceDirectory;
             _destinationDirectory = destinationDirectory;
             _isDifferential = isDifferential;
+            _isRunning = false;
+            _priority = 0;
         }
 
         ///  <summary>
@@ -123,6 +130,7 @@ namespace EasySave
 
             if (!error)
             {
+                _isRunning = true;
                 _encryptionExtensionList = App.Configuration.Extensions;
 
                 if (_isDifferential)
@@ -133,6 +141,7 @@ namespace EasySave
                 {
                     SaveAllFiles();
                 }
+                _isRunning = false;
             }
         }
 
@@ -148,28 +157,32 @@ namespace EasySave
             logSb.AppendLine(String.Format("{0} {1}", _rm.GetString("executionOf"), this.Label));
 
             int encryptionTime = 0;
+            string realDest = Path.Combine(_destinationDirectory, Path.GetFileName(_sourceDirectory));
+
             try
             {
                 if (Monitor.TryEnter(_destinationDirectory, Timeout.Infinite))
                 {
                     //Delete all files
-                    Directory.Delete(_destinationDirectory, true);
+                    if (Directory.Exists(realDest))
+                    {
+                        Directory.Delete(realDest, true);
+                    }
+
                     //Restart from zero. 
-                    Directory.CreateDirectory(_destinationDirectory);
+                    Directory.CreateDirectory(realDest);
 
                     //Creation of all sub directories
                     foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
                     {
-                        Directory.CreateDirectory(path.Replace(_sourceDirectory, _destinationDirectory));
+                        Directory.CreateDirectory(path.Replace(_sourceDirectory, realDest));
                     }
-
                 }
             }
             finally
             {
                 Monitor.Exit(_destinationDirectory);
             }
-
 
             string[] files = Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories);
             int fileTransfered = 0;                 //Incease each file transfered
@@ -188,30 +201,37 @@ namespace EasySave
             foreach (string file in files)
             {
                 FileInfo fileInfo = new FileInfo(file);
-                string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
+                string destFile = file.Replace(_sourceDirectory, realDest);
 
                 try
                 {
                     historyStopwatch.Reset();
 
-                    if (!(_encryptionExtensionList is null) && new List<string>(_encryptionExtensionList).Contains(fileInfo.Extension) && _encryptionExtensionList[0] != "")
+                    if (Monitor.TryEnter(file, 5000))
                     {
-                        encryptionTime = CypherFile(file, destFile);
-                        string b = fileInfo.Extension;
+                        if (!(_encryptionExtensionList is null) && new List<string>(_encryptionExtensionList).Contains(fileInfo.Extension) && _encryptionExtensionList[0] != "")
+                        {
+                            encryptionTime = CypherFile(file, destFile);
+                            string b = fileInfo.Extension;
+                        }
+                        else
+                        {
+                            historyStopwatch.Start();
+                            File.Copy(file, destFile, true);
+                            historyStopwatch.Stop();
+                        }
+                        fileTransfered++;
+                        sizeRemaining -= fileInfo.Length;
+
+                        //Write logs
+                        progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), _id, sizeRemaining);
+                        historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
+                        State = progressLog;
                     }
                     else
                     {
-                        historyStopwatch.Start();
-                        File.Copy(file, destFile, true);
-                        historyStopwatch.Stop();
+                        throw (new IOException());
                     }
-                    fileTransfered++;
-                    sizeRemaining -= fileInfo.Length;
-
-                    //Write logs
-                    progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), _id, sizeRemaining);
-                    historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
-                    State = progressLog;
                 }
                 catch (Exception e)
                 {
@@ -223,12 +243,11 @@ namespace EasySave
                     //Show errors on file to the view
                     logSb.AppendLine(String.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
                     State.Log = logSb.ToString();
-
-                    historyLog.Dispose();
-                    progressLog.Dispose(); ;
                 }
                 finally
                 {
+                    Monitor.Exit(file);
+
                     //Free memory
                     fileInfo = null;
                     destFile = string.Empty;
@@ -236,15 +255,13 @@ namespace EasySave
                     //dispose history and progress log
                     historyLog.Dispose();
                     progressLog.Dispose();
-                    
 
                 }
             }
+
             logSb.AppendLine(_rm.GetString("executionFinished"));
             State.Log = logSb.ToString();
             logSb = null;
-            _isRunning = false;
-
         }
 
         /// <summary> 
@@ -259,14 +276,15 @@ namespace EasySave
             StringBuilder logSb = new StringBuilder();
             logSb.AppendLine(String.Format("{0} {1}", _rm.GetString("executionOf"), this.Label));
 
-            int encryptionTime;
+            int encryptionTime = 0;
+            string realDest = Path.Combine(_destinationDirectory, Path.GetFileName(_sourceDirectory));
 
             String[] files = FindFilesForDifferentialSave();
 
             //Creation of all sub directories
             foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
             {
-                Directory.CreateDirectory(path.Replace(_sourceDirectory, _destinationDirectory));
+                Directory.CreateDirectory(path.Replace(_sourceDirectory, realDest));
             }
 
             int fileTransfered = 0;                 //Ammount of file transfered
@@ -289,7 +307,7 @@ namespace EasySave
                     FileInfo fileInfo = new FileInfo(file);
 
                     // Creation of the destFile
-                    string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
+                    string destFile = file.Replace(_sourceDirectory, realDest);
 
                     if (!(_encryptionExtensionList is null) && new List<String>(_encryptionExtensionList).Contains(fileInfo.Extension) && _encryptionExtensionList[0] != "")
                     {

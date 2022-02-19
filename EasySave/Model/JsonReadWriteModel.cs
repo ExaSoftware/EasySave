@@ -228,7 +228,7 @@ namespace EasySave
                     continue;
                 }
 
-                catch (Exception e)
+                catch (Exception)
                 {
                     break;
                 }
