@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
@@ -106,6 +107,8 @@ namespace EasySave.ViewModel
                         //check if the list isn't empty
                         if (_listOfJobBackup.Count == 1)
                         {
+                            //Remove the progressLog in json link to this jobBackup
+                            File.Delete(@"C:\EasySave\Logs\ProgressLog.json");
                             _listOfJobBackup.Remove(item);
                             _listOfJobBackup.Clear();
                             item.Dispose();
@@ -115,6 +118,9 @@ namespace EasySave.ViewModel
                         }
                         else
                         {
+                            //Remove the progressLog in json link to this jobBackup
+                            JsonReadWriteModel.DeleteProgressLogInJson(item.Label);
+
                             //Remove the Job Backup from the list
                             _listOfJobBackup.Remove(item);
                             item.Dispose();
@@ -136,6 +142,7 @@ namespace EasySave.ViewModel
             }
             //Save the list in json
             JsonReadWriteModel.SaveJobBackup(_listOfJobBackup);
+            
         }
 
         //Instanciate the delegate
