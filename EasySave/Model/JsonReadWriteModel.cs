@@ -31,61 +31,24 @@ namespace EasySave
 
             string path = String.Format(@"{0}\Historylog-{1}.{2}", _DEFAULT_LOG_FILE_PATH, DateTime.Now.ToString("d-MM-yyyy"), App.Configuration.LogFormat);  //Create the path file
 
-            if (File.Exists(path))
-            {
-                //if the format is JSON and the file already exists
-                if (Path.GetExtension(path) == ".json")
-                {
+            if (App.Configuration.LogFormat.Equals("json")) SaveHistoryLoginJson(myHistoryLog, path);
 
-                    SaveinJsonIfFileExist(myHistoryLog, path);
-                }
-
-                else
-                {
-
-                    SaveXmlIfFileExists(myHistoryLog, path);
-                }
-            }
-
-            else
-            {
-
-                if (App.Configuration.LogFormat.Equals("json"))
-                {
-
-                    SaveinJsonIfFileDoesntExist(myHistoryLog, path);
-                }
-
-                else
-                {
-                    SaveXmlIfFileDoesntExists(myHistoryLog, path);
-                }
-            }
+            else SaveHistoryLogInXml(myHistoryLog, path);
         }
 
         /// <summary>
-        /// Save HistoryLog in xml if the file doesn't exists
+        /// Delete ProgressLog link to a jobBackup
         /// </summary>
-        /// <param name="historyLog"></param>
-        /// <param name="path"></param>
-        public static void SaveXmlIfFileDoesntExists(HistoryLog historyLog, string path)
+        /// <param name="name"></param>
+        public static void DeleteProgressLogInJson(string name)
         {
-            XDocument newHistoryLog = new XDocument(
-
-                new XElement("ArrayOfHistoryLog",
-                new XElement("HistoryLog",
-                new XElement("Name", historyLog.Name),
-                new XElement("SourceFile", historyLog.SourceFile),
-                new XElement("TargetFile", historyLog.TargetFile),
-                new XElement("FileSize", historyLog.FileSize.ToString()),
-                new XElement("TransferTime", historyLog.TransferTime.ToString()),
-                new XElement("Time", historyLog.Time.ToString()),
-                new XElement("EncryptionTime", historyLog.EncryptionTime.ToString()),
-                new XElement("Error", historyLog.Error),
-                new XElement("ErrorTitle", historyLog.ErrorTitle)
-                )));
-
-            newHistoryLog.Save(path);
+            string path = String.Format(_DEFAULT_LOG_FILE_PATH + @"\ProgressLog.json");
+            if (File.Exists(path))
+            {
+                JObject jsonFile = JObject.Parse(File.ReadAllText(path));
+                bool res = jsonFile.Remove(name);
+                File.WriteAllTextAsync(path, jsonFile.ToString());
+            }  
         }
 
         /// <summary>
@@ -93,13 +56,12 @@ namespace EasySave
         /// </summary>
         /// <param name="historyLog"></param>
         /// <param name="path"></param>
-        public static void SaveXmlIfFileExists(HistoryLog historyLog, string path)
+        public static void SaveHistoryLogInXml(HistoryLog historyLog, string path)
         {
             if (Monitor.TryEnter(path, 2000))
             {
                 try
                 {
-                    XDocument doc = XDocument.Load(path);
                     XElement newHistoryLog =
                     new XElement("HistoryLog",
                     new XElement("Name", historyLog.Name),
@@ -112,8 +74,16 @@ namespace EasySave
                     new XElement("Error", historyLog.Error),
                     new XElement("ErrorTitle", historyLog.ErrorTitle)
                     );
-                    doc.Root.Add(newHistoryLog);
-                    doc.Save(path);
+                    XDocument doc;
+                    if (File.Exists(path))
+                    {
+                        doc = XDocument.Load(path);
+                        doc.Root.Add(newHistoryLog);
+                        doc.Save(path);
+                    }
+
+                    else newHistoryLog.Save(path);
+
                 }
                 finally
                 {
@@ -127,103 +97,48 @@ namespace EasySave
         /// </summary>
         /// <param name="hs"></param>
         /// <param name="path"></param>
-        public static void SaveinJsonIfFileDoesntExist(this HistoryLog hs, string path)
+        public static void SaveHistoryLoginJson(HistoryLog hs, string path)
         {
-            using StringWriter sw = new StringWriter();
-            using JsonTextWriter writer = new JsonTextWriter(sw)
-            {
-                Formatting = Formatting.Indented
-            };
-            // {
+            JObject newHistoryLog = new JObject(
 
-            writer.WriteStartObject();
-
-            // "name" : "Save"
-            writer.WritePropertyName("Name");
-            writer.WriteValue(hs.Name);
-            writer.WritePropertyName("SourceFile");
-            writer.WriteValue(hs.SourceFile);
-            writer.WritePropertyName("TargetFile");
-            writer.WriteValue(hs.TargetFile);
-            writer.WritePropertyName("FileSize");
-            writer.WriteValue(hs.FileSize);
-            writer.WritePropertyName("TransferTime");
-            writer.WriteValue(hs.TransferTime);
-            writer.WritePropertyName("Time");
-            writer.WriteValue(hs.Time);
-            writer.WritePropertyName("EncryptionTime");
-            writer.WriteValue(hs.EncryptionTime);
-            writer.WritePropertyName("Error");
-            writer.WriteValue(hs.Error);
-            writer.WritePropertyName("ErrorTitle");
-            writer.WriteValue(hs.ErrorTitle);
-            // }
-            writer.WriteEndObject();
-
-            writer.Close();
-
-            File.WriteAllTextAsync(path, sw.ToString());
-        }
-
-        /// <summary>
-        /// Save HistoryLog in Json if the file exists
-        /// </summary>
-        /// <param name="hs"></param>
-        /// <param name="path"></param>
-        public static void SaveinJsonIfFileExist(this HistoryLog hs, string path)
-        {
+            new JProperty("Name", hs.Name),
+            new JProperty("SourceFile", hs.SourceFile),
+            new JProperty("TargetFile", hs.TargetFile),
+            new JProperty("FileSize", hs.FileSize),
+            new JProperty("TransferTime", hs.TransferTime),
+            new JProperty("Time", hs.Time),
+            new JProperty("EncryptionTime", hs.EncryptionTime),
+            new JProperty("Error", hs.Error),
+            new JProperty("ErrorTitle", hs.ErrorTitle)
+            );
+            JObject json;
             if (Monitor.TryEnter(path, 2000))
             {
                 try
                 {
-                    using StringWriter swHistoryLog = new StringWriter();
-                    using JsonTextWriter writer = new JsonTextWriter(swHistoryLog);
-                    writer.Formatting = Formatting.Indented;
-                    // {
-                    writer.WriteStartObject();
-                    // "name" : "Save"
-                    writer.WritePropertyName("Name");
-                    writer.WriteValue(hs.Name);
-                    writer.WritePropertyName("SourceFile");
-                    writer.WriteValue(hs.SourceFile);
-                    writer.WritePropertyName("TargetFile");
-                    writer.WriteValue(hs.TargetFile);
-                    writer.WritePropertyName("FileSize");
-                    writer.WriteValue(hs.FileSize);
-                    writer.WritePropertyName("TransferTime");
-                    writer.WriteValue(hs.TransferTime);
-                    writer.WritePropertyName("Time");
-                    writer.WriteValue(hs.Time);
-                    writer.WritePropertyName("EncryptionTime");
-                    writer.WriteValue(hs.EncryptionTime);
-                    writer.WritePropertyName("Error");
-                    writer.WriteValue(hs.Error);
-                    writer.WritePropertyName("ErrorTitle");
-                    writer.WriteValue(hs.ErrorTitle);
+                    if (File.Exists(path))
+                    {
+                        json = JObject.Parse(File.ReadAllText(path));
 
-                    // }
-                    writer.WriteEndObject();
-                    writer.Close();
+                        json.Add(new JProperty(hs.Name + " - " + Path.GetFileName(hs.SourceFile) +" - " + hs.Time + " - " + hs.TransferTime,newHistoryLog));
+                    }
+                    else json = new JObject(new JProperty(hs.Name + " - " + Path.GetFileName(hs.SourceFile) + " - " + hs.Time + " - " + hs.TransferTime, newHistoryLog));
 
-                    string jsonHistoryLog = swHistoryLog.ToString();
-                    using FileStream fs = new FileStream(path, FileMode.Append, FileAccess.Write);
-                    using StreamWriter sw = new StreamWriter(fs);
-                    sw.Write(",");
-                    sw.WriteLine(jsonHistoryLog);
+                    File.WriteAllTextAsync(path, json.ToString());
                 }
-
                 finally
                 {
                     Monitor.Exit(path);
                 }
             }
         }
+
         /// <summary>
         /// Save progress log in json if the file doesn't exists
         /// </summary>
         /// <param name="hs"></param>
         /// <param name="path"></param>
-        public static void SaveProgressLoginJsonIfFileDoesntExist(this ProgressLog pl, string path)
+        public static void SaveProgressLoginJsonIfFileDoesntExist(ProgressLog pl, string path)
         {
             JObject newProgressLog = new JObject(
 
@@ -270,38 +185,21 @@ namespace EasySave
                     }
                     else
                     {
+                        JObject newProgressLog = new JObject(
 
-                        using StringWriter swHistoryLog = new StringWriter();
-                        using JsonTextWriter writer = new JsonTextWriter(swHistoryLog);
-                        writer.Formatting = Formatting.Indented;
-                        // {
-                        writer.WriteStartObject();
-                        // "name" : "Save"
-                        writer.WritePropertyName("Name");
-                        writer.WriteValue(pl.Name);
-                        writer.WritePropertyName("SourceFile");
-                        writer.WriteValue(pl.SourceFile);
-                        writer.WritePropertyName("TargetFile");
-                        writer.WriteValue(pl.TargetFile);
-                        writer.WritePropertyName("State");
-                        writer.WriteValue(pl.State);
-                        writer.WritePropertyName("TotalFilesToCopy");
-                        writer.WriteValue(pl.TotalFilesToCopy);
-                        writer.WritePropertyName("TotalFilesSize");
-                        writer.WriteValue(pl.TotalFilesSize);
-                        writer.WritePropertyName("TotalFilesRemaining");
-                        writer.WriteValue(pl.TotalFilesRemaining);
-                        writer.WritePropertyName("Progression");
-                        writer.WriteValue(pl.Progression);
-                        // }
-                        writer.WriteEndObject();
-                        writer.Close();
+                        new JProperty("Name", pl.Name),
+                        new JProperty("SourceFile", pl.SourceFile),
+                        new JProperty("TargetFile", pl.TargetFile),
+                        new JProperty("State", pl.State),
+                        new JProperty("TotalFilesToCopy", pl.TotalFilesToCopy),
+                        new JProperty("TotalFilesSize", pl.TotalFilesRemaining),
+                        new JProperty("TotalFilesRemaining", pl.TotalFilesRemaining),
+                        new JProperty("Progression", pl.Progression)
+                        );
 
-                        string jsonHistoryLog = swHistoryLog.ToString();
-                        using FileStream fs = new FileStream(path, FileMode.Append, FileAccess.Write);
-                        using StreamWriter sw = new StreamWriter(fs);
-                        sw.Write(",");
-                        sw.WriteLine(jsonHistoryLog);
+                        jsonFile.Add(new JProperty(pl.Name, newProgressLog));
+
+                        File.WriteAllTextAsync(path, jsonFile.ToString());
                     }
                 }
                 finally
