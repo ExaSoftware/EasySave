@@ -13,6 +13,7 @@ namespace EasySave.ViewModel
         private int _selectedLogFormat;
         private string _extensions;
         private string _businessSoftware;
+        private ulong _sizeLimit;
         private ResourceManager _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
         private Dictionary<string, string> _errors = new Dictionary<string, string>();
 
@@ -44,17 +45,10 @@ namespace EasySave.ViewModel
             {
                 _extensions = String.Join(";", App.Configuration.Extensions);
             }
+
+            _sizeLimit = App.Configuration.SizeLimit / 1000;
         }
 
-        public void SaveSettings(String language, String businessSoftware, String[] extensions, string logFormat)
-        {
-            CultureInfo.CurrentUICulture = new CultureInfo(language, false);
-            App.Configuration.Language = language;
-            App.Configuration.BusinessSoftware = businessSoftware;
-            App.Configuration.Extensions = extensions;
-            App.Configuration.LogFormat = logFormat;
-            App.Configuration.Save();
-        }
         public void CheckExtension(string extensions)
         {
             //Check if the list doesnt have multiple ;;
@@ -65,10 +59,58 @@ namespace EasySave.ViewModel
                 _errors.Add("extensionError", _rm.GetString("extensionFormatError"));
             }
         }
+
+        public void CheckSizeLimit(string sizeLimit)
+        {
+            if (!String.IsNullOrEmpty(sizeLimit))
+            {
+                ulong size;
+                try
+                {
+                    size = ulong.Parse(sizeLimit);
+                }
+
+                catch (FormatException)
+                {
+                    _errors.Add("sizeLimitError", "Merci de mettre un entier");
+                }
+                catch (OverflowException)
+                {
+                    _errors.Add("sizeLimitError", "Le nombre indiqué doit être positif (ou 0 si pas de taille limite) et ne doit pas dépasser 18 chiffres");
+                }
+            }
+        }
+
+        public ulong ConvertSizeLimit(string sizeLimit)
+        {
+            //If the field is empty, set a default value
+            if (String.IsNullOrEmpty(sizeLimit))
+            {
+                return 0;
+            }
+            else
+            {
+                //Convert Ko to O
+                return ulong.Parse(sizeLimit) * 1000;
+            }
+        }
+
+        public void SaveSettings(String language, String businessSoftware, String[] extensions, string logFormat, ulong sizeLimit)
+        {
+            CultureInfo.CurrentUICulture = new CultureInfo(language, false);
+            App.Configuration.Language = language;
+            App.Configuration.BusinessSoftware = businessSoftware;
+            App.Configuration.Extensions = extensions;
+            App.Configuration.LogFormat = logFormat;
+            App.Configuration.SizeLimit = sizeLimit;
+            App.Configuration.Save();
+        }
+
         public int SelectedLanguage { get => _selectedLanguage; set => _selectedLanguage = value; }
         public String Extensions { get => _extensions; set => _extensions = value; }
         public string BusinessSoftware { get => _businessSoftware; set => _businessSoftware = value; }
         public Dictionary<string, string> Errors { get => _errors; set => _errors = value; }
         public int SelectedLogFormat { get => _selectedLogFormat; set => _selectedLogFormat = value; }
+        public ulong SizeLimit { get => _sizeLimit; set => _sizeLimit = value; }
     }
 }
