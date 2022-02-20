@@ -23,13 +23,17 @@ namespace EasySave
         private string _destinationDirectory;
         private Boolean _isDifferential;
         private int _id;
+
         private string[] _encryptionExtensionList;
-        private string[] _priorityExtensionList;
         private bool _disposedValue;
+
         private ProgressLog _state;
-        private bool _isRunning;
-        private int _priority;
         private ResourceManager _rm;
+        private bool _isRunning;
+
+        private int _priority = 0;
+        private List<string> _bigFilesList = new List<string>();
+        private int _sizeLimit = 500;
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName = null)
@@ -200,62 +204,74 @@ namespace EasySave
             // Copy the files and overwrite destination files if they already exist.
             foreach (string file in files)
             {
-                FileInfo fileInfo = new FileInfo(file);
-                string destFile = file.Replace(_sourceDirectory, realDest);
-
-                try
+                if (!App.ThreadPause)
                 {
-                    historyStopwatch.Reset();
+                    FileInfo fileInfo = new FileInfo(file);
+                    string destFile = file.Replace(_sourceDirectory, realDest);
 
-                    if (Monitor.TryEnter(file, 5000))
+                    if (fileInfo.Length > _sizeLimit)
                     {
-                        if (!(_encryptionExtensionList is null) && new List<string>(_encryptionExtensionList).Contains(fileInfo.Extension) && _encryptionExtensionList[0] != "")
-                        {
-                            encryptionTime = CypherFile(file, destFile);
-                            string b = fileInfo.Extension;
-                        }
-                        else
-                        {
-                            historyStopwatch.Start();
-                            File.Copy(file, destFile, true);
-                            historyStopwatch.Stop();
-                        }
-                        fileTransfered++;
-                        sizeRemaining -= fileInfo.Length;
-
-                        //Write logs
-                        progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), _id, sizeRemaining);
-                        historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
-                        State = progressLog;
+                        _bigFilesList.Add(destFile);
+                        continue;
                     }
                     else
                     {
-                        throw (new IOException());
+                        try
+                        {
+                            historyStopwatch.Reset();
+
+                            if (Monitor.TryEnter(file, 5000))
+                            {
+                                if (!(_encryptionExtensionList is null) && new List<string>(_encryptionExtensionList).Contains(fileInfo.Extension) && _encryptionExtensionList[0] != "")
+                                {
+                                    encryptionTime = CypherFile(file, destFile);
+                                    string b = fileInfo.Extension;
+                                }
+                                else
+                                {
+                                    historyStopwatch.Start();
+                                    File.Copy(file, destFile, true);
+                                    historyStopwatch.Stop();
+                                }
+
+                                fileTransfered++;
+                                sizeRemaining -= fileInfo.Length;
+
+                                //Write logs
+                                progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), _id, sizeRemaining);
+                                historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
+                                State = progressLog;
+                            }
+                            else
+                            {
+                                throw (new IOException());
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            string fileName = Path.GetFileName(file);
+                            destFile = Path.Combine(_destinationDirectory, fileName);
+                            historyLog.Error = e.StackTrace;
+                            historyLog.Fill(file, destFile, 0, -1, e.GetType().Name, -1);
+
+                            //Show errors on file to the view
+                            logSb.AppendLine(String.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
+                            State.Log = logSb.ToString();
+                        }
+                        finally
+                        {
+                            Monitor.Exit(file);
+
+                            //Free memory
+                            fileInfo = null;
+                            destFile = string.Empty;
+
+                            //dispose history and progress log
+                            historyLog.Dispose();
+                            progressLog.Dispose();
+
+                        }
                     }
-                }
-                catch (Exception e)
-                {
-                    string fileName = Path.GetFileName(file);
-                    destFile = Path.Combine(_destinationDirectory, fileName);
-                    historyLog.Error = e.StackTrace;
-                    historyLog.Fill(file, destFile, 0, -1, e.GetType().Name, -1);
-
-                    //Show errors on file to the view
-                    logSb.AppendLine(String.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
-                    State.Log = logSb.ToString();
-                }
-                finally
-                {
-                    Monitor.Exit(file);
-
-                    //Free memory
-                    fileInfo = null;
-                    destFile = string.Empty;
-
-                    //dispose history and progress log
-                    historyLog.Dispose();
-                    progressLog.Dispose();
-
                 }
             }
 
@@ -270,13 +286,11 @@ namespace EasySave
         /// <remarks>This method ignores deleted files.</remarks>
         private void DoDifferentialSave()
         {
-            _isRunning = true;
             _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
-
             StringBuilder logSb = new StringBuilder();
             logSb.AppendLine(String.Format("{0} {1}", _rm.GetString("executionOf"), this.Label));
 
-            int encryptionTime = 0;
+            int encryptionTime;
             string realDest = Path.Combine(_destinationDirectory, Path.GetFileName(_sourceDirectory));
 
             String[] files = FindFilesForDifferentialSave();
@@ -302,47 +316,62 @@ namespace EasySave
 
             foreach (String file in files)
             {
-                try
+                if (!App.ThreadPause)
                 {
                     FileInfo fileInfo = new FileInfo(file);
 
                     // Creation of the destFile
                     string destFile = file.Replace(_sourceDirectory, realDest);
 
-                    if (!(_encryptionExtensionList is null) && new List<String>(_encryptionExtensionList).Contains(fileInfo.Extension) && _encryptionExtensionList[0] != "")
+                    if (fileInfo.Length > _sizeLimit)
                     {
-                        encryptionTime = CypherFile(file, destFile);
+                        _bigFilesList.Add(destFile);
                     }
                     else
                     {
-                        encryptionTime = 0;
-                        historyStopwatch.Reset();
-                        historyStopwatch.Start();
+                        try
+                        {
+                            if (Monitor.TryEnter(file, 5000))
+                            {
 
-                        File.Copy(file, destFile, true);
+                                if (!(_encryptionExtensionList is null) && new List<String>(_encryptionExtensionList).Contains(fileInfo.Extension) && _encryptionExtensionList[0] != "")
+                                {
+                                    encryptionTime = CypherFile(file, destFile);
+                                }
+                                else
+                                {
+                                    encryptionTime = 0;
+                                    historyStopwatch.Reset();
+                                    historyStopwatch.Start();
 
-                        historyStopwatch.Stop();
+                                    File.Copy(file, destFile, true);
+
+                                    historyStopwatch.Stop();
+                                }
+
+                                fileTransfered++;
+                                sizeRemaining -= fileInfo.Length;
+
+                                progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), _id, sizeRemaining);
+                                historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
+                            }
+                            else
+                            {
+                                throw new IOException();
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            historyLog.Error = e.StackTrace;
+                            historyLog.Fill(file, destFile, 0, -1, file, -1);
+
+                            logSb.AppendLine(String.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
+                            State.Log = logSb.ToString();
+
+                            historyLog.Dispose();
+                            progressLog.Dispose();
+                        }
                     }
-
-                    fileTransfered++;
-                    sizeRemaining -= fileInfo.Length;
-
-                    progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), _id, sizeRemaining);
-                    historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
-                }
-                catch (Exception e)
-                {
-                    string fileName = Path.GetFileName(file);
-                    string destFile = Path.Combine(_destinationDirectory, fileName);
-
-                    historyLog.Error = e.StackTrace;
-                    historyLog.Fill(file, destFile, 0, -1, file, -1);
-
-                    logSb.AppendLine(String.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
-                    State.Log = logSb.ToString();
-
-                    historyLog.Dispose();
-                    progressLog.Dispose();
                 }
             }
 
@@ -376,7 +405,6 @@ namespace EasySave
             logSb.AppendLine(_rm.GetString("executionFinished"));
             State.Log = logSb.ToString();
             logSb = null;
-            _isRunning = false;
 
             //Reset progressLog
             progressLog.Reset(_id);
