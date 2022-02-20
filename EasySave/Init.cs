@@ -20,6 +20,11 @@ namespace EasySave
                 Configuration configuration = Configuration.GetInstance();
                 configuration.CreateConfigurationFile();
                 configuration.Language = Thread.CurrentThread.CurrentUICulture.Name;
+                configuration.Extensions = new string[1];
+                configuration.Extensions[0] = "";
+                configuration.BusinessSoftware = "";
+                configuration.LogFormat = "json";
+                configuration.SizeLimit = 0;
                 configuration.Save();
                 return configuration;
             }
