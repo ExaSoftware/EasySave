@@ -8,7 +8,9 @@ namespace EasySave
     /// </summary>
     public partial class App : Application
     {
-        public static Configuration _configuration;
+        private static Configuration _configuration;
+
+        private static bool _threadPause;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -29,5 +31,6 @@ namespace EasySave
         }
 
         public static Configuration Configuration { get => _configuration; }
+        public static bool ThreadPause { get => _threadPause; set => _threadPause = value; }
     }
 }
