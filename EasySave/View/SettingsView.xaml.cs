@@ -60,7 +60,8 @@ namespace EasySave
                 if (comboBoxLogFormat.SelectedIndex == 1) logFormat = "xml";
                 if (comboBoxLanguages.SelectedIndex == 0) language = "fr-FR";
                 if (comboBoxLanguages.SelectedIndex == 1) language = "en-US";
-                _settingsViewModel.SaveSettings(language, businessSoftware, extensions,logFormat);
+                ulong sizeLimit = _settingsViewModel.ConvertSizeLimit(txtBoxSizeLimit.Text);
+                _settingsViewModel.SaveSettings(language, businessSoftware, extensions,logFormat, sizeLimit);
                 this.NavigationService.GoBack();
             }
         }
@@ -68,6 +69,7 @@ namespace EasySave
         private void CheckFields()
         {
             _settingsViewModel.CheckExtension(txtBoxExtensionsList.Text);
+            _settingsViewModel.CheckSizeLimit(txtBoxSizeLimit.Text);
         }
 
         /// <summary>
@@ -81,6 +83,10 @@ namespace EasySave
                 {
                     extensionError.Text = _settingsViewModel.Errors["extensionError"]; extensionError.Visibility = Visibility.Visible;
                 }
+                if (entry.Key == "sizeLimitError")
+                {
+                    sizeLimitError.Text = _settingsViewModel.Errors["sizeLimitError"]; sizeLimitError.Visibility = Visibility.Visible;
+                }
             }
             _settingsViewModel.Errors.Clear();
         }
@@ -91,6 +97,7 @@ namespace EasySave
         private void ClearErrorFields()
         {
             extensionError.Text = ""; extensionError.Visibility = Visibility.Collapsed;
+            sizeLimitError.Text = ""; sizeLimitError.Visibility = Visibility.Collapsed;
         }
 
         /// <summary>
@@ -132,6 +139,20 @@ namespace EasySave
             _settingsViewModel.Errors.Remove("extensionError");
         }
 
+        private void txtBoxSizeLimit_LostFocus(object sender, RoutedEventArgs e)
+        {
+            _settingsViewModel.CheckSizeLimit(txtBoxSizeLimit.Text);
+            if (_settingsViewModel.Errors.ContainsKey("sizeLimitError"))
+            {
+                sizeLimitError.Text = _settingsViewModel.Errors["sizeLimitError"]; sizeLimitError.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                sizeLimitError.Text = ""; sizeLimitError.Visibility = Visibility.Collapsed;
+            }
+            _settingsViewModel.Errors.Remove("sizeLimitError");
+        }
+
         //prevent spam click when using of goback()
         public static SettingsView GetInstance()
         {
@@ -141,5 +162,7 @@ namespace EasySave
             }
             return _instance;
         }
+
+
     }
 }

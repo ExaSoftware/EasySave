@@ -24,6 +24,7 @@ namespace EasySave
                 configuration.Extensions[0] = "";
                 configuration.BusinessSoftware = "";
                 configuration.LogFormat = "json";
+                configuration.SizeLimit = 0;
                 configuration.Save();
                 return configuration;
             }
