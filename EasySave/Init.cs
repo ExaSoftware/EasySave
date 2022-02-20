@@ -20,6 +20,7 @@ namespace EasySave
                 Configuration configuration = Configuration.GetInstance();
                 configuration.CreateConfigurationFile();
                 configuration.Language = Thread.CurrentThread.CurrentUICulture.Name;
+                configuration.LogFormat = "json";
                 configuration.Save();
                 return configuration;
             }
