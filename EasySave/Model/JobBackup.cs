@@ -8,6 +8,7 @@ using System.Threading;
 using System.Text;
 using System.Resources;
 using System.Reflection;
+using System.Windows;
 
 namespace EasySave
 {
@@ -244,6 +245,7 @@ namespace EasySave
             State.Log = logSb.ToString();
             logSb = null;
             _isRunning = false;
+            State.State = "END";
 
         }
 
@@ -311,6 +313,7 @@ namespace EasySave
 
                     progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), _id, sizeRemaining);
                     historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
+                    State = progressLog;
                 }
                 catch (Exception e)
                 {
@@ -360,10 +363,13 @@ namespace EasySave
             logSb = null;
             _isRunning = false;
 
+
             //Reset progressLog
-            progressLog.Reset(_id);
+            
+            //progressLog.Reset(_id);
             historyLog.Dispose();
             progressLog.Dispose();
+            State.State = "END";
         }
 
         /// <summary>
