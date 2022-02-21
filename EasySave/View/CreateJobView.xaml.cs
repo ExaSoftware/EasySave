@@ -61,7 +61,7 @@ namespace EasySave
         /// <param name="e"></param>
         private void BtnCancelClick(object sender, RoutedEventArgs e)
         {
-            this.NavigationService.Navigate(new MainView());
+            this.NavigationService.GoBack();
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace EasySave
                 if (type.SelectedIndex == 0) isDifferential = false;
                 if (type.SelectedIndex == 1) isDifferential = true;
                 _createJobViewModel.JobCreation(id, name, sourceDirectory, destinationDirectory, isDifferential);
-                this.NavigationService.Navigate(new MainView());
+                this.NavigationService.GoBack();
             }
             
         }
