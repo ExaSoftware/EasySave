@@ -1,4 +1,5 @@
 ﻿using EasySave.ViewModel;
+using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Windows;
@@ -87,7 +88,7 @@ namespace EasySave
         /// <param name="e"></param>
         private void btnExecuteSequentially_Click(object sender, RoutedEventArgs e)
         {
-            _mainViewModel.ExecuteAll();
+            _mainViewModel.ExecuteAll(listViewBackups.SelectedItems.Cast<JobBackup>().ToList());
         }
 
         /// <summary>
@@ -100,7 +101,7 @@ namespace EasySave
             //If there is a job backup selected
             if (listViewBackups.SelectedItems.Count != 0)
             {
-                _mainViewModel.ExecuteOne((JobBackup)listViewBackups.SelectedItem);
+                _mainViewModel.ExecuteAll(listViewBackups.SelectedItems.Cast<JobBackup>().ToList());
             }
         }
 

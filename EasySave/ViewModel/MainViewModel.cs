@@ -191,23 +191,23 @@ namespace EasySave.ViewModel
         /// Execute all the list of JobBackup with the ExecuteOne method.
         /// </summary>
         /// <remarks>Threads are executed one by one, in the order of the list.</remarks>
-        public void ExecuteAll()
+        public void ExecuteAll(List<JobBackup> jbList)
         {
             if (_mainThread is null || !_mainThread.IsAlive)
             {
                 _mainThread = new Thread(() =>
                 {
                     List<Thread> threadList = new List<Thread>() { _thread1, _thread2, _thread3, _thread4, _thread5 };
-                    double numberOfIteration = Math.Round((double)(_listOfJobBackup.Count / 5));
+                    double numberOfIteration = Math.Round((double)(jbList.Count / 5));
                     int i = 0;
 
                     for (i = 0; i < numberOfIteration * 5; i += 5)
                     {
-                        _thread1 = new Thread(() => Execute(_listOfJobBackup[i]));
-                        _thread2 = new Thread(() => Execute(_listOfJobBackup[i++]));
-                        _thread3 = new Thread(() => Execute(_listOfJobBackup[i + 2]));
-                        _thread4 = new Thread(() => Execute(_listOfJobBackup[i + 3]));
-                        _thread5 = new Thread(() => Execute(_listOfJobBackup[i + 4]));
+                        _thread1 = new Thread(() => Execute(jbList[i]));
+                        _thread2 = new Thread(() => Execute(jbList[i++]));
+                        _thread3 = new Thread(() => Execute(jbList[i + 2]));
+                        _thread4 = new Thread(() => Execute(jbList[i + 3]));
+                        _thread5 = new Thread(() => Execute(jbList[i + 4]));
 
                         _thread1.Start();
                         _thread2.Start();
@@ -222,10 +222,10 @@ namespace EasySave.ViewModel
                         _thread5.Join();
                     }
 
-                    for (int a = 0; a < _listOfJobBackup.Count; a++)
+                    for (int a = 0; a < jbList.Count; a++)
                     {
                         int b = a;
-                        threadList[b % 5] = new Thread(() => Execute(_listOfJobBackup[b]));
+                        threadList[b % 5] = new Thread(() => Execute(jbList[b]));
                         threadList[b % 5].Start();
                     }
 
