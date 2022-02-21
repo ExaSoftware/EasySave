@@ -34,7 +34,6 @@ namespace EasySave
         private ResourceManager _rm;
         private bool _isRunning;
 
-
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName = null)
         {
@@ -124,44 +123,7 @@ namespace EasySave
             {
                 try
                 {
-                    Directory.CreateDirectory(_destinationDirectory);
-                }
-                catch (Exception)
-                {
-                    error = true;
-                }
-            }
-
-            if (!error)
-            {
-                _isRunning = true;
-                _encryptionExtensionList = App.Configuration.Extensions;
-                _sizeLimit = App.Configuration.SizeLimit;
-
-                if (_isDifferential)
-                {
-                    SaveFiles(FindFilesForDifferentialSave());
-                    DeleteExcessFile();
-                }
-                else
-                {
-                    SaveFiles(Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories));
-                }
-
-                _isRunning = false;
-            }
-        }
-
-
-        public void SaveBigFiles()
-        {
-            bool error = false;
-
-            if (!Directory.Exists(_destinationDirectory))
-            {
-                try
-                {
-                    Directory.CreateDirectory(_destinationDirectory);
+                    _ = Directory.CreateDirectory(_destinationDirectory);
                 }
                 catch (Exception)
                 {
@@ -195,14 +157,13 @@ namespace EasySave
         /// </summary>
         /// <param name="files"></param>
         /// <param name="saveBigFiles"></param>
-        private void SaveFiles(String[] files)
+        private void SaveFiles(string[] files)
         {
             _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
             StringBuilder logSb = new StringBuilder();
-            logSb.AppendLine(String.Format("{0} {1}", _rm.GetString("executionOf"), this.Label));
+            _ = logSb.AppendLine(string.Format("{0} {1}", _rm.GetString("executionOf"), Label));
 
             int encryptionTime = 0;
-
             int fileTransfered = 0;                 //Incease each file transfered
             int fileToTranfer = files.Length;       //Ammount of file to transfer
             long sizeTotal = TotalFileSize(files);
@@ -223,6 +184,7 @@ namespace EasySave
                 if (!App.ThreadPause)
                 {
                     FileInfo fileInfo = new FileInfo(file);
+                    long fileInfoLength = fileInfo.Length;
                     string destFile = file.Replace(_sourceDirectory, realDest);
 
                     if ((ulong) fileInfo.Length > _sizeLimit)
@@ -251,7 +213,7 @@ namespace EasySave
                                 }
 
                                 fileTransfered++;
-                                sizeRemaining -= fileInfo.Length;
+                                sizeRemaining -= fileInfo.Length; ;
 
                                 //Write logs
                                 progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), _id, sizeRemaining);
@@ -297,6 +259,8 @@ namespace EasySave
 
             logSb.AppendLine(_rm.GetString("executionFinished"));
             State.Log = logSb.ToString();
+            logSb = null;
+            _isRunning = false;
         }
 
 
