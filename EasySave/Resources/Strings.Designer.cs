@@ -205,6 +205,33 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Une erreur est survenue sur ce fichier.
+        /// </summary>
+        public static string errorFile {
+            get {
+                return ResourceManager.GetString("errorFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Exécution terminée.
+        /// </summary>
+        public static string executionFinished {
+            get {
+                return ResourceManager.GetString("executionFinished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Exécution de.
+        /// </summary>
+        public static string executionOf {
+            get {
+                return ResourceManager.GetString("executionOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Liste des extensions des fichiers à chiffrer (ex : .pdf, .docx,...).
         /// </summary>
         public static string extensionFormat {
@@ -354,6 +381,15 @@ namespace EasySave.Resources {
         public static string singleInstance {
             get {
                 return ResourceManager.GetString("singleInstance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Taille minimale (en Ko) d&apos;interdiction de transfert simultané de fichiers.
+        /// </summary>
+        public static string sizeLimit {
+            get {
+                return ResourceManager.GetString("sizeLimit", resourceCulture);
             }
         }
         
