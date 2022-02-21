@@ -225,9 +225,8 @@ namespace EasySave
                     //Show errors on file to the view
                     logSb.AppendLine(String.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
                     State.Log = logSb.ToString();
-
                     historyLog.Dispose();
-                    progressLog.Dispose(); ;
+                    progressLog.Dispose();
                 }
                 finally
                 {
@@ -240,6 +239,7 @@ namespace EasySave
                     progressLog.Dispose();
                 }
             }
+
             logSb.AppendLine(_rm.GetString("executionFinished"));
             State.Log = logSb.ToString();
             logSb = null;

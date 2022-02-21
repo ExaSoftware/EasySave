@@ -182,11 +182,11 @@ namespace EasySave.Object
                     this._totalFilesToCopy = 0;
                     this._totalFilesSize = 0;
                     this._progression = 0;
+                    this._state = String.Empty;
                 }
 
                 // TODO: libérer les ressources non managées (objets non managés) et substituer le finaliseur
                 // TODO: affecter aux grands champs une valeur null
-
                 disposedValue = true;
             }
         }
