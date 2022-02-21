@@ -225,6 +225,9 @@
   <data name="singleInstance" xml:space="preserve">
     <value>An instance of EasySave is already running...</value>
   </data>
+  <data name="sizeLimit" xml:space="preserve">
+    <value>Minimum size (in KB) to prevent concurrent file transfer</value>
+  </data>
   <data name="sourceDirectory" xml:space="preserve">
     <value>Source directory:</value>
   </data>
