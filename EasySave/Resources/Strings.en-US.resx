@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="appTitle" xml:space="preserve">
+    <value>EasySave</value>
+  </data>
+  <data name="boxDetailTitle" xml:space="preserve">
+    <value>Detail</value>
+  </data>
+  <data name="boxExecutionTitle" xml:space="preserve">
+    <value>Execution</value>
+  </data>
+  <data name="boxLogTitle" xml:space="preserve">
+    <value>Logs</value>
+  </data>
+  <data name="businessSoftware" xml:space="preserve">
+    <value>Business software</value>
+  </data>
+  <data name="cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="createJobViewTitle" xml:space="preserve">
+    <value>Create or update a job backup</value>
+  </data>
+  <data name="destinationDirectory" xml:space="preserve">
+    <value>Destination directory:</value>
+  </data>
+  <data name="destinationPathEqualsSourcePath" xml:space="preserve">
+    <value>Destination directory must be different of the source directory.</value>
+  </data>
+  <data name="differential" xml:space="preserve">
+    <value>Differential</value>
+  </data>
+  <data name="emptyDestinationDirectoryError" xml:space="preserve">
+    <value>Destination directory is required.</value>
+  </data>
+  <data name="emptyLabelError" xml:space="preserve">
+    <value>Label is required.</value>
+  </data>
+  <data name="emptySourceDirectoryError" xml:space="preserve">
+    <value>Source directory is required.</value>
+  </data>
+  <data name="english" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="errorFile" xml:space="preserve">
+    <value>An occured with this file</value>
+  </data>
+  <data name="executionFinished" xml:space="preserve">
+    <value>Execution finished</value>
+  </data>
+  <data name="executionOf" xml:space="preserve">
+    <value>Execution of</value>
+  </data>
+  <data name="extensionFormat" xml:space="preserve">
+    <value>Extension list of files to cypher (ex : .pdf, .docx,...)</value>
+  </data>
+  <data name="extensionFormatError" xml:space="preserve">
+    <value>The extension list format is not respected. Please use this format: .png;.pdf;.xlsx</value>
+  </data>
+  <data name="filesLeftToCopy" xml:space="preserve">
+    <value>Number of files remaining</value>
+  </data>
+  <data name="finish" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="french" xml:space="preserve">
+    <value>French</value>
+  </data>
+  <data name="jobBackupList" xml:space="preserve">
+    <value>Job Backups</value>
+  </data>
+  <data name="jobCreateBackupType" xml:space="preserve">
+    <value>Backup type</value>
+  </data>
+  <data name="jobCreateDestinationDirectory" xml:space="preserve">
+    <value>Destination Directory *</value>
+  </data>
+  <data name="jobCreateSourceDirectory" xml:space="preserve">
+    <value>Source Directory *</value>
+  </data>
+  <data name="jobType" xml:space="preserve">
+    <value>Backup type:</value>
+  </data>
+  <data name="json" xml:space="preserve">
+    <value>JSON</value>
+  </data>
+  <data name="label" xml:space="preserve">
+    <value>Label *</value>
+  </data>
+  <data name="language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="megabyteUnit" xml:space="preserve">
+    <value>MB</value>
+  </data>
+  <data name="return" xml:space="preserve">
+    <value>Return</value>
+  </data>
+  <data name="SaveLogFormat" xml:space="preserve">
+    <value>Save format of daily log</value>
+  </data>
+  <data name="settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="singleInstance" xml:space="preserve">
+    <value>An instance of EasySave is already running...</value>
+  </data>
+  <data name="sizeLimit" xml:space="preserve">
+    <value>Minimum size (in KB) to prevent concurrent file transfer</value>
+  </data>
+  <data name="sourceDirectory" xml:space="preserve">
+    <value>Source directory:</value>
+  </data>
+  <data name="sourceDirectoryNotExistsError" xml:space="preserve">
+    <value>Source directory doesn't exist.</value>
+  </data>
+  <data name="state" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="totalFilesSize" xml:space="preserve">
+    <value>Total files size:</value>
+  </data>
+  <data name="totalFilesToCopy" xml:space="preserve">
+    <value>Number of total files to copy</value>
+  </data>
+  <data name="totalSizeRemaining" xml:space="preserve">
+    <value>Size remaining</value>
+  </data>
+  <data name="valid" xml:space="preserve">
+    <value>Validate</value>
+  </data>
+  <data name="xml" xml:space="preserve">
+    <value>XML</value>
+  </data>
+</root>
