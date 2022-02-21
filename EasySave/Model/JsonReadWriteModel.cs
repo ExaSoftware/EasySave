@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace EasySave
@@ -22,7 +23,7 @@ namespace EasySave
         private const string _DEFAULT_JOB_BACKUP_FILE_PATH = @"C:\EasySave\Job-Backup";
 
         /// <summary>
-        /// Method which check if the directory exist and create the file if it doesn't exist, 
+        /// Method which check if the directory exist and create the file if it doesn't exist,
         /// then deserialized the file if it exists for appends the new save job or create a new log file
         /// </summary>
         ///<param name=myHistoryLog>An object HistoryLog</param>
@@ -47,9 +48,12 @@ namespace EasySave
             if (File.Exists(path))
             {
                 JObject jsonFile = JObject.Parse(File.ReadAllText(path));
-                bool res = jsonFile.Remove(name);
-                File.WriteAllTextAsync(path, jsonFile.ToString());
-            }  
+                if (jsonFile.Property(name) != null)
+                {
+                    File.WriteAllText(path, jsonFile.ToString());
+                    jsonFile.Remove(name);
+                }
+            }
         }
 
         /// <summary>
@@ -75,6 +79,7 @@ namespace EasySave
                     new XElement("Error", historyLog.Error),
                     new XElement("ErrorTitle", historyLog.ErrorTitle)
                     );
+
                     XDocument doc;
                     if (File.Exists(path))
                     {
@@ -121,11 +126,11 @@ namespace EasySave
                     {
                         json = JObject.Parse(File.ReadAllText(path));
 
-                        json.Add(new JProperty(hs.Name + " - " + Path.GetFileName(hs.SourceFile) +" - " + hs.Time + " - " + hs.TransferTime,newHistoryLog));
+                        json.Add(new JProperty(hs.Name + " - " + Path.GetFileName(hs.SourceFile) + " - " + hs.Time + " - " + hs.TransferTime, newHistoryLog));
                     }
                     else json = new JObject(new JProperty(hs.Name + " - " + Path.GetFileName(hs.SourceFile) + " - " + hs.Time + " - " + hs.TransferTime, newHistoryLog));
 
-                    File.WriteAllTextAsync(path, json.ToString());
+                    File.WriteAllText(path, json.ToString());
                 }
                 finally
                 {
@@ -141,67 +146,25 @@ namespace EasySave
         /// <param name="path"></param>
         public static void SaveProgressLoginJsonIfFileDoesntExist(ProgressLog pl, string path)
         {
-            JObject newProgressLog = new JObject(
-
-            new JProperty("Name", pl.Name),
-            new JProperty("SourceFile", pl.SourceFile),
-            new JProperty("TargetFile", pl.TargetFile),
-            new JProperty("State", pl.State),
-            new JProperty("TotalFilesToCopy", pl.TotalFilesToCopy),
-            new JProperty("TotalFilesSize", pl.TotalFilesRemaining),
-            new JProperty("TotalFilesRemaining", pl.TotalFilesRemaining),
-            new JProperty("Progression", pl.Progression)
-            );
-
-            JObject json = new JObject(new JProperty(pl.Name, newProgressLog));
-
-            File.WriteAllTextAsync(path, json.ToString());
-        }
-
-        /// <summary>
-        /// Save progress log if file exists
-        /// </summary>
-        /// <param name="hs"></param>
-        /// <param name="path"></param>
-        public static void SaveProgressLoginJsonIfFileExist(ProgressLog pl, string path)
-        {
-
             if (Monitor.TryEnter(path, 2000))
             {
                 try
                 {
-                    JObject jsonFile = JObject.Parse(File.ReadAllText(path));
+                    JObject newProgressLog = new JObject(
 
-                    if (jsonFile.Property(pl.Name) != null)
-                    {
-                        JObject progressLogToUpdate = (JObject)jsonFile[pl.Name];
-                        progressLogToUpdate["SourceFile"] = pl.SourceFile;
-                        progressLogToUpdate["TargetFile"] = pl.TargetFile;
-                        progressLogToUpdate["State"] = pl.State;
-                        progressLogToUpdate["TotalFilesToCopy"] = pl.TotalFilesToCopy;
-                        progressLogToUpdate["TotalFilesSize"] = pl.TotalFilesSize;
-                        progressLogToUpdate["TotalFilesRemaining"] = pl.TotalFilesRemaining;
-                        progressLogToUpdate["Progression"] = pl.Progression;
-                        File.WriteAllTextAsync(path, jsonFile.ToString());
-                    }
-                    else
-                    {
-                        JObject newProgressLog = new JObject(
+                    new JProperty("Name", pl.Name),
+                    new JProperty("SourceFile", pl.SourceFile),
+                    new JProperty("TargetFile", pl.TargetFile),
+                    new JProperty("State", pl.State),
+                    new JProperty("TotalFilesToCopy", pl.TotalFilesToCopy),
+                    new JProperty("TotalFilesSize", pl.TotalFilesRemaining),
+                    new JProperty("TotalFilesRemaining", pl.TotalFilesRemaining),
+                    new JProperty("Progression", pl.Progression)
+                    );
 
-                        new JProperty("Name", pl.Name),
-                        new JProperty("SourceFile", pl.SourceFile),
-                        new JProperty("TargetFile", pl.TargetFile),
-                        new JProperty("State", pl.State),
-                        new JProperty("TotalFilesToCopy", pl.TotalFilesToCopy),
-                        new JProperty("TotalFilesSize", pl.TotalFilesRemaining),
-                        new JProperty("TotalFilesRemaining", pl.TotalFilesRemaining),
-                        new JProperty("Progression", pl.Progression)
-                        );
+                    JObject json = new JObject(new JProperty(pl.Name, newProgressLog));
 
-                        jsonFile.Add(new JProperty(pl.Name, newProgressLog));
-
-                        File.WriteAllTextAsync(path, jsonFile.ToString());
-                    }
+                    File.WriteAllText(path, json.ToString());
                 }
                 finally
                 {
@@ -211,27 +174,82 @@ namespace EasySave
         }
 
         /// <summary>
-        /// Delete a file and wait if the file is open
+        /// Save progress log if file exists
         /// </summary>
+        /// <param name="hs"></param>
         /// <param name="path"></param>
-        public static void DeleteFile(string path)
+        public static void SaveProgressLoginJsonIfFileExist(ProgressLog pl, string path)
         {
-            while (true)
+            JObject jsonFile = null;
+            if (Monitor.TryEnter(path, 2000))
             {
                 try
                 {
-                    File.Delete(path);
-                    break;
+                    jsonFile = JObject.Parse(File.ReadAllText(path));
                 }
 
-                catch (IOException)
+                finally
                 {
-                    continue;
+                    Monitor.Exit(path);
                 }
 
-                catch (Exception e)
+                if (jsonFile.Property(pl.Name) != null)
                 {
-                    break;
+                    JObject progressLogToUpdate = (JObject)jsonFile[pl.Name];
+                    progressLogToUpdate["SourceFile"] = pl.SourceFile;
+                    progressLogToUpdate["TargetFile"] = pl.TargetFile;
+                    progressLogToUpdate["State"] = pl.State;
+                    progressLogToUpdate["TotalFilesToCopy"] = pl.TotalFilesToCopy;
+                    progressLogToUpdate["TotalFilesSize"] = pl.TotalFilesSize;
+                    progressLogToUpdate["TotalFilesRemaining"] = pl.TotalFilesRemaining;
+                    progressLogToUpdate["Progression"] = pl.Progression;
+
+                    if (Monitor.TryEnter(path, 3000))
+                    {
+                        try
+                        {
+                            File.WriteAllText(path, jsonFile.ToString());
+                        }
+
+                        catch
+                        {
+
+                        }
+
+                        finally
+                        {
+                            Monitor.Exit(path);
+                        }
+                    }
+                }
+
+                else
+                {
+                    JObject newProgressLog = new JObject(
+
+                    new JProperty("Name", pl.Name),
+                    new JProperty("SourceFile", pl.SourceFile),
+                    new JProperty("TargetFile", pl.TargetFile),
+                    new JProperty("State", pl.State),
+                    new JProperty("TotalFilesToCopy", pl.TotalFilesToCopy),
+                    new JProperty("TotalFilesSize", pl.TotalFilesRemaining),
+                    new JProperty("TotalFilesRemaining", pl.TotalFilesRemaining),
+                    new JProperty("Progression", pl.Progression)
+                    );
+
+                    jsonFile.Add(new JProperty(pl.Name, newProgressLog));
+
+                    if (Monitor.TryEnter(path, 3000))
+                    {
+                        try
+                        {
+                            File.WriteAllText(path, jsonFile.ToString());
+                        }
+                        finally
+                        {
+                            Monitor.Exit(path);
+                        }
+                    }
                 }
             }
         }
@@ -243,18 +261,29 @@ namespace EasySave
         public static ObservableCollection<JobBackup> ReadJobBackup()
         {
             string path = String.Format(@"{0}\SavedJobBackup.json", _DEFAULT_JOB_BACKUP_FILE_PATH);
-            if (File.Exists(path))
+            if (Monitor.TryEnter(path, 10000))
             {
-                string myJsonFile = File.ReadAllText(path);
-                var JobBackupJsonList = JsonConvert.DeserializeObject<ObservableCollection<JobBackup>>(myJsonFile);
-                if (JobBackupJsonList == null) return new ObservableCollection<JobBackup>();
-                return JobBackupJsonList;
+                ObservableCollection<JobBackup> listOfJobackup = new ObservableCollection<JobBackup>();
+                try
+                {
+                    if (File.Exists(path))
+                    {
+                        string myJsonFile = File.ReadAllText(path);
+                        listOfJobackup = JsonConvert.DeserializeObject<ObservableCollection<JobBackup>>(myJsonFile);
+                    }
+                    else
+                    {
+                        File.Create(path).Close();
+                    }
+                }
+
+                finally
+                {
+                    Monitor.Exit(path);
+                }
+                return listOfJobackup;
             }
-            else
-            {
-                File.Create(path).Close();
-                return new ObservableCollection<JobBackup>();
-            }
+            return ReadJobBackup();
         }
 
         /// <summary>
@@ -263,10 +292,11 @@ namespace EasySave
         /// <param name="jobBackupList"></param>
         public static void SaveJobBackup(ObservableCollection<JobBackup> jobBackupList)
         {
+
             Directory.CreateDirectory(_DEFAULT_JOB_BACKUP_FILE_PATH);
             string jsonStringJobBackup = JsonConvert.SerializeObject(jobBackupList, Newtonsoft.Json.Formatting.Indented);
 
-            File.WriteAllTextAsync(String.Format(@"{0}\SavedJobBackup.json", _DEFAULT_JOB_BACKUP_FILE_PATH), jsonStringJobBackup);
+            File.WriteAllText(String.Format(@"{0}\SavedJobBackup.json", _DEFAULT_JOB_BACKUP_FILE_PATH), jsonStringJobBackup);
         }
 
         /// <summary>
