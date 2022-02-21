@@ -232,17 +232,18 @@ namespace EasySave
                             historyLog.Error = e.StackTrace;
                             historyLog.Fill(file, destFile, 0, -1, e.GetType().Name, -1);
 
-                            //Show errors on file to the view
-                            logSb.AppendLine(String.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
-                            State.Log = logSb.ToString();
-                        }
-                        finally
-                        {
+                    //Show errors on file to the view
+                    logSb.AppendLine(String.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
+                    State.Log = logSb.ToString();
+                    historyLog.Dispose();
+                    progressLog.Dispose();
+                }
+                finally
+                {
                             Monitor.Exit(file);
-
                             //Free memory
                             fileInfo = null;
-                            destFile = string.Empty;
+                    destFile = string.Empty;
 
                             //dispose history and progress log
                             historyLog.Dispose();
