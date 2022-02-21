@@ -47,27 +47,5 @@ namespace EasySave
             Directory.CreateDirectory(@"C:\EasySave");
             Directory.CreateDirectory(@"C:\EasySave\Job-Backup");
         }
-
-        public static ObservableCollection<JobBackup> CreateJobBackupList()
-        {
-            ObservableCollection<JobBackup> parts = new ObservableCollection<JobBackup>();
-
-            if (JsonReadWriteModel.ReadJobBackup() == null)
-            {
-                for (int i = 0; i < 5; i++)
-                {
-                    parts.Add(new JobBackup(i));
-                }
-                JsonReadWriteModel.SaveJobBackup(parts);
-                return parts;
-            }
-            else
-            {
-                parts = JsonReadWriteModel.ReadJobBackup();
-                JsonReadWriteModel.SaveJobBackup(parts);
-                return parts;
-            }
-
-        }
     }
 }
