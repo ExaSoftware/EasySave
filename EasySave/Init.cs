@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Text.Json;
@@ -47,9 +48,9 @@ namespace EasySave
             Directory.CreateDirectory(@"C:\EasySave\Job-Backup");
         }
 
-        public static List<JobBackup> CreateJobBackupList()
+        public static ObservableCollection<JobBackup> CreateJobBackupList()
         {
-            List<JobBackup> parts = new List<JobBackup>();
+            ObservableCollection<JobBackup> parts = new ObservableCollection<JobBackup>();
 
             if (JsonReadWriteModel.ReadJobBackup() == null)
             {

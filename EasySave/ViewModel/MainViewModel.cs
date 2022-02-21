@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -15,7 +16,7 @@ namespace EasySave.ViewModel
     class MainViewModel : INotifyPropertyChanged
     {
         //Attributes
-        private List<JobBackup> _listOfJobBackup = null;
+        private ObservableCollection<JobBackup> _listOfJobBackup = null;
         private Thread _thread = null;
         private Thread _thread1 = null;
         private Thread _thread2 = null;
@@ -28,7 +29,7 @@ namespace EasySave.ViewModel
         private double _totalFilesSizeFormatted;
         private string _jobTypeFormatted;
         //Define getter / setter
-        public List<JobBackup> ListOfJobBackup { get => _listOfJobBackup; set => _listOfJobBackup = value; }
+        public ObservableCollection<JobBackup> ListOfJobBackup { get => _listOfJobBackup; set { _listOfJobBackup = value; OnPropertyChanged("ListOfJobBackup"); } }
         public JobBackup Job 
         {
             get => _job;

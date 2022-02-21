@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -239,20 +240,20 @@ namespace EasySave
         /// Method which read a json file and convert it into a list of list of JobBackup
         /// </summary>
         /// <returns>The list of JobBackup associate to the json file</returns>
-        public static List<JobBackup> ReadJobBackup()
+        public static ObservableCollection<JobBackup> ReadJobBackup()
         {
             string path = String.Format(@"{0}\SavedJobBackup.json", _DEFAULT_JOB_BACKUP_FILE_PATH);
             if (File.Exists(path))
             {
                 string myJsonFile = File.ReadAllText(path);
-                var JobBackupJsonList = JsonConvert.DeserializeObject<List<JobBackup>>(myJsonFile);
-                if (JobBackupJsonList == null) return new List<JobBackup>();
+                var JobBackupJsonList = JsonConvert.DeserializeObject<ObservableCollection<JobBackup>>(myJsonFile);
+                if (JobBackupJsonList == null) return new ObservableCollection<JobBackup>();
                 return JobBackupJsonList;
             }
             else
             {
                 File.Create(path).Close();
-                return new List<JobBackup>();
+                return new ObservableCollection<JobBackup>();
             }
         }
 
@@ -260,7 +261,7 @@ namespace EasySave
         /// Method which save a list of jobBackup into a json file
         /// </summary>
         /// <param name="jobBackupList"></param>
-        public static void SaveJobBackup(List<JobBackup> jobBackupList)
+        public static void SaveJobBackup(ObservableCollection<JobBackup> jobBackupList)
         {
             Directory.CreateDirectory(_DEFAULT_JOB_BACKUP_FILE_PATH);
             string jsonStringJobBackup = JsonConvert.SerializeObject(jobBackupList, Newtonsoft.Json.Formatting.Indented);
