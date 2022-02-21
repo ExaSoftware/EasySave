@@ -41,8 +41,6 @@ namespace EasySave.Object
             _totalFilesRemaining = totalFilesRemaining;
             _sizeRemaining = sizeRemaining;
         }
-
-        [JsonProperty(Order = 4)]
         public string State
         {
             get => _state;
@@ -52,7 +50,6 @@ namespace EasySave.Object
                 OnPropertyChanged("State");
             }  
         }
-        [JsonProperty(Order = 5)]
         public int TotalFilesToCopy
         {
             get => _totalFilesToCopy;
@@ -62,7 +59,6 @@ namespace EasySave.Object
                 OnPropertyChanged("TotalFilesToCopy");
             }
         }
-        [JsonProperty(Order = 6)]
         public long TotalFilesSize 
         {
             get => _totalFilesSize;
@@ -72,7 +68,6 @@ namespace EasySave.Object
                 OnPropertyChanged("TotalFilesSize");
             }
         }
-        [JsonProperty(Order = 7)]
         public int TotalFilesRemaining
         {
             get => _totalFilesRemaining;
@@ -83,7 +78,6 @@ namespace EasySave.Object
             }
         }
 
-        [JsonProperty(Order = 8)]
         public long SizeRemaining 
         {
             get => _sizeRemaining;
@@ -93,8 +87,6 @@ namespace EasySave.Object
                 OnPropertyChanged("SizeRemaining");
             }  
         }
-
-        [JsonProperty(Order = 9)]
         public int Progression
         {
             get => _progression;
@@ -131,7 +123,15 @@ namespace EasySave.Object
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-
+        /// <summary>
+        /// Fill a progressLog
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="destFile"></param>
+        /// <param name="totalFilesRemaining"></param>
+        /// <param name="progression"></param>
+        /// <param name="id"></param>
+        /// <param name="sizeRemaining"></param>
         public void Fill(string file, string destFile, int totalFilesRemaining, int progression, int id, long sizeRemaining)
         {
             this._sourceFile = file;
@@ -142,6 +142,10 @@ namespace EasySave.Object
             this.SaveLog();
         }
 
+        /// <summary>
+        /// Reset progressLog content
+        /// </summary>
+        /// <param name="id"></param>
         public void Reset(int id)
         {
             this._sourceFile = "";
