@@ -43,14 +43,14 @@ namespace EasySave
         public bool IsDifferential { get => _isDifferential; set => _isDifferential = value; }
         public string Label { get => _label; set => _label = value; }
         public int Id { get => _id; set => _id = value; }
-        public ProgressLog State 
+        public ProgressLog State
         {
             get => _state;
             set
             {
                 _state = value;
                 OnPropertyChanged("State");
-            } 
+            }
         }
 
         public bool IsRunning { get => _isRunning; set => _isRunning = value; }
@@ -188,6 +188,7 @@ namespace EasySave
             foreach (string file in files)
             {
                 FileInfo fileInfo = new FileInfo(file);
+                long fileInfoLength = fileInfo.Length;
                 string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
 
                 try
@@ -206,11 +207,11 @@ namespace EasySave
                         historyStopwatch.Stop();
                     }
                     fileTransfered++;
-                    sizeRemaining -= fileInfo.Length;
+                    sizeRemaining -= fileInfoLength;
 
                     //Write logs
                     progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), _id, sizeRemaining);
-                    historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
+                    historyLog.Fill(file, destFile, fileInfoLength, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
                     State = progressLog;
                 }
                 catch (Exception e)
@@ -236,15 +237,12 @@ namespace EasySave
                     //dispose history and progress log
                     historyLog.Dispose();
                     progressLog.Dispose();
-                    
-
                 }
             }
             logSb.AppendLine(_rm.GetString("executionFinished"));
             State.Log = logSb.ToString();
             logSb = null;
             _isRunning = false;
-
         }
 
         /// <summary> 
