@@ -210,6 +210,9 @@
   <data name="language" xml:space="preserve">
     <value>Language</value>
   </data>
+  <data name="lengthLabelError" xml:space="preserve">
+    <value>Label doesn't contain more than 30 characters.</value>
+  </data>
   <data name="megabyteUnit" xml:space="preserve">
     <value>MB</value>
   </data>

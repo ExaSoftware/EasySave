@@ -80,6 +80,10 @@ namespace EasySave.ViewModel
             {
                 _errors.Add("labelError", _rm.GetString("emptyLabelError"));
             }
+            else
+            {
+                if (text.Length > 30) _errors.Add("labelError", _rm.GetString("lengthLabelError"));
+            }
         }
 
         /// <summary>

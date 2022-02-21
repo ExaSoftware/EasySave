@@ -349,6 +349,15 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Le label ne doit pas contenir plus de 30 caractères..
+        /// </summary>
+        public static string lengthLabelError {
+            get {
+                return ResourceManager.GetString("lengthLabelError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Mo.
         /// </summary>
         public static string megabyteUnit {
