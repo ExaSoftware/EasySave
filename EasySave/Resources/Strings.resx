@@ -210,6 +210,9 @@
   <data name="language" xml:space="preserve">
     <value>Langue</value>
   </data>
+  <data name="lengthLabelError" xml:space="preserve">
+    <value>Le label ne doit pas contenir plus de 30 caractères.</value>
+  </data>
   <data name="megabyteUnit" xml:space="preserve">
     <value>Mo</value>
   </data>
@@ -236,6 +239,24 @@
   </data>
   <data name="state" xml:space="preserve">
     <value>État</value>
+  </data>
+  <data name="toolTipAddButton" xml:space="preserve">
+    <value>Créer un travail de sauvegarde</value>
+  </data>
+  <data name="toolTipDeleteButton" xml:space="preserve">
+    <value>Supprimer le travail de sauvegarde sélectionné</value>
+  </data>
+  <data name="toolTipExecuteAllButton" xml:space="preserve">
+    <value>Lancer tous les travaux de sauvegarde 5 par 5</value>
+  </data>
+  <data name="toolTipPauseButton" xml:space="preserve">
+    <value>Mettre en pause le ou les travaux en cours</value>
+  </data>
+  <data name="toolTipPlayButton" xml:space="preserve">
+    <value>Démarrer ou reprendre un travail de sauvegarde</value>
+  </data>
+  <data name="toolTipStopButton" xml:space="preserve">
+    <value>Arrêter le ou les travaux de sauvegarde en cours</value>
   </data>
   <data name="total" xml:space="preserve">
     <value>Totale</value>

@@ -210,6 +210,9 @@
   <data name="language" xml:space="preserve">
     <value>Language</value>
   </data>
+  <data name="lengthLabelError" xml:space="preserve">
+    <value>Label doesn't contain more than 30 characters.</value>
+  </data>
   <data name="megabyteUnit" xml:space="preserve">
     <value>MB</value>
   </data>
@@ -236,6 +239,24 @@
   </data>
   <data name="state" xml:space="preserve">
     <value>State</value>
+  </data>
+  <data name="toolTipAddButton" xml:space="preserve">
+    <value>Create a job backup</value>
+  </data>
+  <data name="toolTipDeleteButton" xml:space="preserve">
+    <value>Delete the selected job backup</value>
+  </data>
+  <data name="toolTipExecuteAllButton" xml:space="preserve">
+    <value>Launch all job backups 5 by 5</value>
+  </data>
+  <data name="toolTipPauseButton" xml:space="preserve">
+    <value>Pause job backups in progress</value>
+  </data>
+  <data name="toolTipPlayButton" xml:space="preserve">
+    <value>Launch or resume a job backup</value>
+  </data>
+  <data name="toolTipStopButton" xml:space="preserve">
+    <value>Stop job backups in progress</value>
   </data>
   <data name="total" xml:space="preserve">
     <value>Total</value>

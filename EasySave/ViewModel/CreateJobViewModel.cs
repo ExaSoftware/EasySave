@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
 using System.Resources;
@@ -9,6 +10,7 @@ namespace EasySave.ViewModel
     public class CreateJobViewModel
     {
         private JobBackup _jobBackup;
+        private ObservableCollection<JobBackup> _jbList;
         private int _selectedIndex;
 
         //RessourceManager for the strings translation
@@ -19,19 +21,21 @@ namespace EasySave.ViewModel
         /// <summary>
         /// Constructor used when we want to add a new jobackup
         /// </summary>
-        public CreateJobViewModel()
+        public CreateJobViewModel(ObservableCollection<JobBackup> list)
         {
             //When we add a job backup, set the default combobox value
             _selectedIndex = 0;
+            _jbList = list;
         }
 
         /// <summary>
         /// Constructor used to bind the view with selected job backup in the list
         /// </summary>
         /// <param name="jobBackup"></param>
-        public CreateJobViewModel(JobBackup jobBackup)
+        public CreateJobViewModel(JobBackup jobBackup, ObservableCollection<JobBackup> list)
         {
             _jobBackup = jobBackup;
+            _jbList = list;
             //Set value in combobox according to the type of backup
             if (_jobBackup.IsDifferential) _selectedIndex = 1;
             if (!_jobBackup.IsDifferential) _selectedIndex = 0;
@@ -44,14 +48,12 @@ namespace EasySave.ViewModel
         ///  <summary>Create or modifiy the job</summary>
         public void JobCreation(int id, string label, string sourceDirectory, string destinationDirectory, bool isDifferential)
         {
-            MainViewModel main = new MainViewModel();
-            List<JobBackup> list = main.ListOfJobBackup;
 
             //Modify a list
             if (id != -1)
             {
                 //Ajoute un élément dans la liste
-                list[id].Fill(label, sourceDirectory, destinationDirectory, isDifferential);
+                _jbList[id].Fill(label, sourceDirectory, destinationDirectory, isDifferential);
             }
             //Insert a new list if it's not modified
             else
@@ -60,11 +62,11 @@ namespace EasySave.ViewModel
 
                 JobBackup newJobBackup = new JobBackup();
                 newJobBackup.Fill(label, sourceDirectory, destinationDirectory, isDifferential);
-                newJobBackup.Id = list.Count;
-                list.Add(newJobBackup);
+                newJobBackup.Id = _jbList.Count;
+                _jbList.Add(newJobBackup);
             }
             //Save the JobBackup list in JSON file
-            JsonReadWriteModel.SaveJobBackup(list);
+            JsonReadWriteModel.SaveJobBackup(_jbList);
         }
 
         /// <summary>
@@ -77,6 +79,10 @@ namespace EasySave.ViewModel
             if (String.IsNullOrEmpty(text))
             {
                 _errors.Add("labelError", _rm.GetString("emptyLabelError"));
+            }
+            else
+            {
+                if (text.Length > 30) _errors.Add("labelError", _rm.GetString("lengthLabelError"));
             }
         }
 

@@ -349,6 +349,15 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Le label ne doit pas contenir plus de 30 caractères..
+        /// </summary>
+        public static string lengthLabelError {
+            get {
+                return ResourceManager.GetString("lengthLabelError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Mo.
         /// </summary>
         public static string megabyteUnit {
@@ -417,6 +426,60 @@ namespace EasySave.Resources {
         public static string state {
             get {
                 return ResourceManager.GetString("state", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Créer un travail de sauvegarde.
+        /// </summary>
+        public static string toolTipAddButton {
+            get {
+                return ResourceManager.GetString("toolTipAddButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Supprimer le travail de sauvegarde sélectionné.
+        /// </summary>
+        public static string toolTipDeleteButton {
+            get {
+                return ResourceManager.GetString("toolTipDeleteButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Lancer tous les travaux de sauvegarde 5 par 5.
+        /// </summary>
+        public static string toolTipExecuteAllButton {
+            get {
+                return ResourceManager.GetString("toolTipExecuteAllButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Mettre en pause le ou les travaux en cours.
+        /// </summary>
+        public static string toolTipPauseButton {
+            get {
+                return ResourceManager.GetString("toolTipPauseButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Démarrer ou reprendre un travail de sauvegarde.
+        /// </summary>
+        public static string toolTipPlayButton {
+            get {
+                return ResourceManager.GetString("toolTipPlayButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Arrêter le ou les travaux de sauvegarde en cours.
+        /// </summary>
+        public static string toolTipStopButton {
+            get {
+                return ResourceManager.GetString("toolTipStopButton", resourceCulture);
             }
         }
         
