@@ -223,6 +223,8 @@ namespace EasySave.ViewModel
                         _thread3.Join();
                         _thread4.Join();
                         _thread5.Join();
+
+                        GC.Collect();
                     }
 
                     for (int a = 0; a < _listOfJobBackup.Count; a++)
@@ -240,11 +242,11 @@ namespace EasySave.ViewModel
                         }
                     }
 
+                    GC.Collect();
                 });
                 _mainThread.Start();
             }
         }
-
 
         /// <summary>
         /// Pause all JobBackups threads.

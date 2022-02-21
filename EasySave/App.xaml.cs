@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Threading;
 using System.Windows;
 
 namespace EasySave
@@ -28,9 +29,41 @@ namespace EasySave
                 Init.CreateDataDirectoryIfNotExists();
                 _configuration = Init.LoadConfiguration();
             }
+
+            new Thread(() =>
+            {
+                const int time = 5000;
+
+                while (true)
+                {
+                    if (App.Configuration.BusinessSoftware != "" || App.Configuration.BusinessSoftware != null)
+                    {
+                        if (App.ThreadPause)
+                        {
+                            Thread.Sleep(time);
+                            continue;
+                        }
+                        else
+                        {
+                            App.ThreadPause = Process.GetProcessesByName(App.Configuration.BusinessSoftware).Length != 0;
+                            Thread.Sleep(time);
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        Thread.Sleep(time);
+                        continue;
+                    }
+                }
+
+            }).Start();
         }
+
+
 
         public static Configuration Configuration { get => _configuration; }
         public static bool ThreadPause { get => _threadPause; set => _threadPause = value; }
     }
+
 }
