@@ -1,0 +1,143 @@
+﻿<Page x:Class="EasySave.SettingsView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+      xmlns:local="clr-namespace:EasySave"
+      xmlns:language="clr-namespace:EasySave.Resources"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Paramètres"
+      Background="White">
+
+    <Page.Resources>
+
+        <!-- Styles -->
+
+        <!-- Button styles -->
+        <Style TargetType="{x:Type Button}" x:Key="controlButtonStyle">
+            <Setter Property="Background" Value="#423b36"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" Padding="10" CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="FontWeight" Value="Bold" />
+                    <Setter Property="Cursor" Value="Hand" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type Button}" x:Key="buttonStyle">
+            <Setter Property="Background" Value="#423b36"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" Padding="3">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="Cursor" Value="Hand" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type Button}" x:Key="selectFolderButton" BasedOn="{StaticResource buttonStyle}">
+            <Setter Property="Foreground" Value="LightBlue"/>
+        </Style>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <!-- Page title -->
+
+        <StackPanel Orientation="Vertical" Grid.Row="0" HorizontalAlignment="Stretch" Margin="0,20">
+            <TextBlock Text="{x:Static language:Strings.settings}" HorizontalAlignment="Center" FontSize="24" Foreground="#423b36" FontWeight="Bold"/>
+            <Rectangle Fill="#a30700" Grid.Row="1" Height="5" Margin="100,20,100,5" Width="Auto" HorizontalAlignment="Stretch"/>
+        </StackPanel>
+
+        <!-- Fields -->
+
+        <Grid Grid.Row="1" Margin="50,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            
+            <!-- Language -->
+            <TextBlock Text="{x:Static language:Strings.language}" Grid.Row="0" VerticalAlignment="Center"/>
+            <ComboBox Grid.Row="0" Grid.Column="1" Height="25" Name="comboBoxLanguages" SelectedIndex="{Binding SelectedLanguage}">
+                <ComboBoxItem Content="{x:Static language:Strings.french}"/>
+                <ComboBoxItem Content="{x:Static language:Strings.english}" />
+            </ComboBox>
+
+            <!-- Business Software -->
+            <TextBlock Text="{x:Static language:Strings.businessSoftware}" Grid.Row="1" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <DockPanel Grid.Column="2" Grid.Row="1" Height="20">
+                <Button Name="btnSelectBusinessSoftwarePath" Margin="0" Padding="0" DockPanel.Dock="Right" Width="22" Content="{iconPacks:FontAwesome Kind=FolderPlusSolid, Height=16, Width=16}" Style="{StaticResource selectFolderButton}" Click="btnSelectSourcePath_Click"/>
+                <TextBox Name="txtBoxBusinessSoftwarePath" Height="Auto" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Text="{Binding BusinessSoftware}" />
+            </DockPanel>
+            
+            <!-- Extensions List -->
+            <TextBlock Text="{x:Static language:Strings.extensionFormat}" Grid.Row="2" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Vertical" VerticalAlignment="Center">
+                <TextBox Name="txtBoxExtensionsList" Height="20" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Text="{Binding Extensions}" LostFocus="txtBoxExtensionsList_LostFocus" />
+                <TextBlock Name="extensionError" Visibility="Collapsed" Foreground="#a30700"/>
+            </StackPanel>
+
+            <!-- Log Format -->
+            <TextBlock Text="{x:Static language:Strings.SaveLogFormat}" Grid.Row="3" VerticalAlignment="Center"/>
+            <ComboBox Grid.Row="3" Grid.Column="1" Height="25" Name="comboBoxLogFormat" SelectedIndex="{Binding SelectedLogFormat}">
+                <ComboBoxItem Content="{x:Static language:Strings.json}"/>
+                <ComboBoxItem Content="{x:Static language:Strings.xml}" />
+            </ComboBox>
+
+            <!-- Extensions List -->
+            <TextBlock Text="{x:Static language:Strings.sizeLimit}" Grid.Row="4" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <StackPanel Grid.Column="1" Grid.Row="4" Orientation="Vertical" VerticalAlignment="Center">
+                <TextBox Name="txtBoxSizeLimit" Height="20" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Text="{Binding SizeLimit}" LostFocus="txtBoxSizeLimit_LostFocus" />
+                <TextBlock Name="sizeLimitError" Visibility="Collapsed" Foreground="#a30700"/>
+            </StackPanel>
+
+        </Grid>
+
+        <!-- Page button control -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Name="btnReturn" Height="50" Width="Auto" Margin="10,0" Style="{StaticResource controlButtonStyle}" Click="btnReturn_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{iconPacks:FontAwesome Kind=UndoSolid}" Foreground="#a30700" VerticalAlignment="Center" Padding="0" Margin="0,0,5,0"/>
+                    <TextBlock Text="{x:Static language:Strings._return}" VerticalAlignment="Center" Foreground="White"/>
+                </StackPanel>
+            </Button>
+            <Button Name="btnValid" Height="50" Width="Auto" Margin="10,0" Style="{StaticResource controlButtonStyle}" Click="btnValid_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{iconPacks:FontAwesome Kind=CheckSolid}" Foreground="Green" VerticalAlignment="Center"  Padding="0" Margin="0,0,5,0"/>
+                    <TextBlock Text="{x:Static language:Strings.valid}" VerticalAlignment="Center" Foreground="White"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+
+    </Grid>
+</Page>
