@@ -8,6 +8,7 @@ using System.Text;
 using System.Resources;
 using System.Reflection;
 using System.Windows;
+using System.Threading.Tasks;
 
 namespace EasySave
 {
@@ -113,6 +114,7 @@ namespace EasySave
         ///  <remarks>Use it whether differential or not.</remarks>
         public void Execute()
         {
+
             bool error = false;
 
             if (!Directory.Exists(_destinationDirectory))
@@ -218,7 +220,7 @@ namespace EasySave
                         {
                             if ((ulong)fileInfo.Length > _sizeLimit && _sizeLimit > 0)
                             {
-                                if(!App.IsMovingBigFile)
+                                if (!App.IsMovingBigFile)
                                 {
 
                                 }
@@ -226,7 +228,7 @@ namespace EasySave
                                 //var globale
                                 //var local pour by pass
                                 _bigFilesList.Add(destFile);
-                                
+
                             }
 
                             if (!(_encryptionExtensionList is null) && new List<string>(_encryptionExtensionList).Contains(fileInfo.Extension) && _encryptionExtensionList[0] != "")
@@ -245,8 +247,13 @@ namespace EasySave
                             sizeRemaining -= fileInfo.Length; ;
 
                             //Write logs
-                            progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), _id, sizeRemaining);
-                            historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
+                            var task = Task.Run(() =>
+                                {
+                                    progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, _id, (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), sizeRemaining, fileToTranfer, sizeTotal);
+                                    historyLog.Fill(file, destFile, fileInfoLength, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime, _id);
+                            });
+                            task.Wait();
+                            task.Dispose();
                             State = progressLog;
                         }
                         else
@@ -256,16 +263,15 @@ namespace EasySave
                     }
                     catch (Exception e)
                     {
-                        string fileName = Path.GetFileName(file);
-                        destFile = Path.Combine(_destinationDirectory, fileName);
+                        destFile = Path.Combine(_destinationDirectory, Path.GetFileName(file));
+                        fileTransfered++;
+
                         historyLog.Error = e.StackTrace;
-                        historyLog.Fill(file, destFile, 0, -1, e.GetType().Name, -1);
+                        historyLog.Fill(file, destFile, 0, -1, e.GetType().Name, -1, _id);
 
                         //Show errors on file to the view
                         logSb.AppendLine(String.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
                         State.Log = logSb.ToString();
-                        historyLog.Dispose();
-                        progressLog.Dispose();
                     }
                     finally
                     {

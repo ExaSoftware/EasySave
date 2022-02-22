@@ -5,7 +5,6 @@ using System.Xml.Serialization;
 namespace EasySave
 {
     [JsonConverter(typeof(HistoryLog))]
-    [Serializable]
     [XmlRoot(ElementName = "HistoryLog")]
     /// <summary>
     /// This class models an history log of what have been saved for a specific job save
@@ -30,6 +29,8 @@ namespace EasySave
         [XmlElement(ElementName = "errorTitle")]
         /// <summary>Code error needed in the View to notify the user</summary>
         protected string _errorTitle;
+
+        private JsonReadWriteModel _jsonReadWriteModel = new JsonReadWriteModel();
 
         public HistoryLog() { }
 
@@ -101,12 +102,12 @@ namespace EasySave
         /// Method which call SaveHistoryLog() from LogModel for created a history log file in C:\EasySave\Logs repository
         /// </summary>
         /// <returns>True if the history log file have been created False in the opposite case</returns>
-        public override void SaveLog()
+        public override void SaveLog(int id)
         {
-            JsonReadWriteModel.SaveHistoryLog(this);
+            _jsonReadWriteModel.SaveHistoryLog(this,id);
         }
 
-        public void Fill(string sourceFile, string targetFile, long fileSize, double transfertTime, string error, int encryptionTime)
+        public void Fill(string sourceFile, string targetFile, long fileSize, double transfertTime, string error, int encryptionTime,int id)
         {
             this.SourceFile = sourceFile;
             this.TargetFile = targetFile;
@@ -114,7 +115,7 @@ namespace EasySave
             this.TransferTime = transfertTime;
             this.ErrorTitle = error;
             this.EncryptionTime = encryptionTime;
-            this.SaveLog();
+            this.SaveLog(id);
         }
 
         protected override void Dispose(bool disposing)

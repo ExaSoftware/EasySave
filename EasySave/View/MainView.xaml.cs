@@ -21,7 +21,7 @@ namespace EasySave
         public MainView()
         {
             _mainViewModel = new MainViewModel();
-            this.DataContext = _mainViewModel;
+            DataContext = _mainViewModel;
             InitializeComponent();
         }
 
@@ -88,7 +88,7 @@ namespace EasySave
         /// <param name="e"></param>
         private void btnExecuteSequentially_Click(object sender, RoutedEventArgs e)
         {
-            _mainViewModel.ExecuteAll(listViewBackups.SelectedItems.Cast<JobBackup>().ToList());
+            _mainViewModel.ExecuteAll(listViewBackups.Items.Cast<JobBackup>().ToList());
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace EasySave
         /// <param name="e"></param>
         private void btnPause_Click(object sender, RoutedEventArgs e)
         {
-            
+            _mainViewModel.Pause();
         }
 
         /// <summary>

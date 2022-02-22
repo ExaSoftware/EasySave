@@ -12,6 +12,7 @@ namespace EasySave.ViewModel
         private JobBackup _jobBackup;
         private ObservableCollection<JobBackup> _jbList;
         private int _selectedIndex;
+        private JsonReadWriteModel _jsonReadWriteModel = new JsonReadWriteModel();
 
         //RessourceManager for the strings translation
         private ResourceManager _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
@@ -67,7 +68,7 @@ namespace EasySave.ViewModel
                 _jbList.Add(newJobBackup);
             }
             //Save the JobBackup list in JSON file
-            JsonReadWriteModel.SaveJobBackup(_jbList);
+            _jsonReadWriteModel.SaveJobBackup(_jbList);
         }
 
         /// <summary>
