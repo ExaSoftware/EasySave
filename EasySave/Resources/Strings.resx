@@ -117,11 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="active" xml:space="preserve">
-    <value>Actif</value>
+  <data name="ACTIVE" xml:space="preserve">
+    <value>ACTIF</value>
   </data>
   <data name="appTitle" xml:space="preserve">
     <value>EasySave</value>
+  </data>
+  <data name="at" xml:space="preserve">
+    <value>à</value>
   </data>
   <data name="boxDetailTitle" xml:space="preserve">
     <value>Détails</value>
@@ -158,6 +161,9 @@
   </data>
   <data name="emptySourceDirectoryError" xml:space="preserve">
     <value>Le répertoire source est obligatoire.</value>
+  </data>
+  <data name="END" xml:space="preserve">
+    <value>TERMINÉ</value>
   </data>
   <data name="english" xml:space="preserve">
     <value>Anglais</value>
