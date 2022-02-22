@@ -17,6 +17,7 @@ namespace EasySave.ViewModel
     {
         //Attributes
         private ObservableCollection<JobBackup> _listOfJobBackup = null;
+        private Communication _communication;
         private Thread _thread = null;
         private Thread _thread1 = null;
         private Thread _thread2 = null;
@@ -83,11 +84,13 @@ namespace EasySave.ViewModel
         public MainViewModel()
         {
             //Read the list in the json
-            
             _listOfJobBackup = JsonReadWriteModel.ReadJobBackup();
 
             //No job backup selected
             SelectedIndex = -1;
+
+            CommunicationWithRemoteInterface();
+
 
         }
 
@@ -164,6 +167,14 @@ namespace EasySave.ViewModel
         };
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public void CommunicationWithRemoteInterface()
+        {
+
+            Communication comm = new Communication();
+            comm.LaunchConnection();
+        }
+
         protected void OnPropertyChanged(string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
