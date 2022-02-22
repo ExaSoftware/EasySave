@@ -60,6 +60,7 @@ namespace EasySave.ViewModel
             {
                 //Ajoute un élément dans la liste
 
+
                 JobBackup newJobBackup = new JobBackup();
                 newJobBackup.Fill(label, sourceDirectory, destinationDirectory, isDifferential);
                 newJobBackup.Id = _jbList.Count;
