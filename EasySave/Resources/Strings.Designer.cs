@@ -70,11 +70,11 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Actif.
+        ///   Recherche une chaîne localisée semblable à ACTIF.
         /// </summary>
-        public static string active {
+        public static string ACTIVE {
             get {
-                return ResourceManager.GetString("active", resourceCulture);
+                return ResourceManager.GetString("ACTIVE", resourceCulture);
             }
         }
         
@@ -84,6 +84,15 @@ namespace EasySave.Resources {
         public static string appTitle {
             get {
                 return ResourceManager.GetString("appTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à à.
+        /// </summary>
+        public static string at {
+            get {
+                return ResourceManager.GetString("at", resourceCulture);
             }
         }
         
@@ -192,6 +201,15 @@ namespace EasySave.Resources {
         public static string emptySourceDirectoryError {
             get {
                 return ResourceManager.GetString("emptySourceDirectoryError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à TERMINÉ.
+        /// </summary>
+        public static string END {
+            get {
+                return ResourceManager.GetString("END", resourceCulture);
             }
         }
         
