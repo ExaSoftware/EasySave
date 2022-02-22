@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reflection;
 using System.Resources;
@@ -22,9 +24,8 @@ namespace EasySave
         private int _progression = 0;
 
         private string _stateFormatted;
+        private ObservableCollection<string> _log = new ObservableCollection<string>();
         private JsonReadWriteModel _jsonReadWriteModel = new JsonReadWriteModel();
-
-        private string _log = String.Empty;
 
         ResourceManager _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
 
@@ -111,8 +112,8 @@ namespace EasySave
 
         }
 
-        public string Log
-        {
+        public ObservableCollection<string> Log
+        { 
             get => _log;
             set
             {

@@ -286,10 +286,7 @@
                 
                 <!-- Box content -->
                 <Border Grid.Row="1" BorderThickness="1,0,1,1" BorderBrush="#423b36" Padding="6" CornerRadius="0, 0, 5, 5">
-                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                        <!-- Use of textbox in readonly to allow user to select log text (i.e make some research on web)-->
-                        <TextBox Name="txtBlockLogs" IsReadOnly="True" BorderThickness="0" Text="{Binding Job.State.Log}" />
-                    </ScrollViewer>
+                    <ListBox Name="listLog" VirtualizingStackPanel.IsVirtualizing="True" ItemsSource="{Binding Job.State.Log, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0"/>
                 </Border>
             </Grid>
         </Grid>
