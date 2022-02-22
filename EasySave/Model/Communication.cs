@@ -16,6 +16,8 @@ namespace EasySave
         Socket client;
         Socket newsock;
 
+        public bool Connected { get => _connected; set => _connected = value; }
+
         /// <summary>
         /// Create the socket, bind it and start listening on the networ
         /// </summary>
@@ -61,7 +63,27 @@ namespace EasySave
         /// <summary>
         /// Send the state of the progress 
         /// </summary>
-        public void SendUsedJob(JobBackup job)
+        public void SendUsedJob()
+        {
+            //Verify if the connection is established
+            if (_connected)
+            {
+                //Send the list to the client
+                try
+                {
+                    client.Send(Encoding.UTF8.GetBytes("test"));
+                }
+                catch (SocketException exp)
+                {
+                    MessageBox.Show("Problem with da socket");
+                }
+
+            }
+        }
+            /// <summary>
+            /// Send the state of the progress 
+            /// </summary>
+            public void SendUsedJob(JobBackup job)
         {
             //Verify if the connection is established
             if (_connected)

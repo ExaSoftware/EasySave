@@ -75,6 +75,7 @@ namespace RemoteInterface
         {
             //No job backup selected
             SelectedIndex = -1;
+
         }
         //Instanciate the delegate
         readonly Del Execute = delegate (JobBackup jobBackup)
@@ -87,6 +88,10 @@ namespace RemoteInterface
         {
             Communication comm = new Communication();
             comm.LaunchConnection();
+            while (comm.Connected)
+            {
+                comm.receiveJobBackup();
+            }
         }
 
 

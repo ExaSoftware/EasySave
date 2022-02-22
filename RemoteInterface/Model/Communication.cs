@@ -12,6 +12,7 @@ namespace RemoteInterface
         //Attributes
         private bool _connected = false;
         private static Socket server;
+        public bool Connected { get => _connected; set => _connected = value; }
 
         /// <summary>
         /// Launch the connection to the main application
@@ -31,7 +32,6 @@ namespace RemoteInterface
                 {
                     //Request of connection
                     server.Connect(ipep);
-                    MessageBox.Show("Connected");
                     _connected = true;
 
                 }
@@ -64,9 +64,8 @@ namespace RemoteInterface
             }
             _connected = false;
         }
-        /*
-        private void dispatcherTimer_Tick(object sender, EventArgs e)
-
+        
+        public void receiveJobBackup()
         {
 
             //Déclaration d'un buffer de type byte pour enregistrer les données reçues
@@ -83,22 +82,9 @@ namespace RemoteInterface
 
             }
 
-            
             //transcodage de data en string
             String mg = (Encoding.UTF8.GetString(data));
-            //affichage des données recues dans le label label1
-            int pos = mg.LastIndexOf("%");
-            if (pos >= 2)
-            {
-                if (mg.Substring(pos - 2, 1).Equals("%"))
-                    lb_etat_prog_client.Content = mg.Substring(pos - 1, 2);
-                else
-                    lb_etat_prog_client.Content = mg.Substring(pos - 2, 3);
-            }
-            else
-                lb_etat_prog_client.Content = mg.Substring(pos - 1, 2);
 
         }
-        */
     }
 }
