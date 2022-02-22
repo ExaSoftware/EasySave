@@ -138,7 +138,6 @@ namespace EasySave
                 MainViewModel vm = this.DataContext as MainViewModel;
                 vm.Job = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex];
             }
-
         }
     }
 }
