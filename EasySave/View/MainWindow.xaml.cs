@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace EasySave
 {
@@ -17,6 +18,11 @@ namespace EasySave
         private void btnSettings_Click(object sender, RoutedEventArgs e)
         {
             frame.Navigate(SettingsView.GetInstance());
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Environment.Exit(0);
         }
     }
 }

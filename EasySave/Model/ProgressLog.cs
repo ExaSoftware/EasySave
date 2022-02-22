@@ -1,5 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Reflection;
+using System.Resources;
+using System.Text;
 
 namespace EasySave.Object
 {
@@ -18,9 +21,12 @@ namespace EasySave.Object
         /// <summary>The current progression of the job saving</summary>
         private int _progression = 0;
 
+        private string _stateFormatted;
         private JsonReadWriteModel _jsonReadWriteModel = new JsonReadWriteModel();
 
         private string _log = String.Empty;
+
+        ResourceManager _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
 
         /// <summary>
         /// Progress log builder
@@ -112,6 +118,19 @@ namespace EasySave.Object
             {
                 _log = value;
                 OnPropertyChanged("Log");
+            }
+        }
+
+        public string StateFormatted
+        {
+            get
+            {
+                return _rm.GetString(State);
+            }
+            set 
+            { 
+                _stateFormatted = value;
+                OnPropertyChanged("StateFormatted");
             }
         }
 

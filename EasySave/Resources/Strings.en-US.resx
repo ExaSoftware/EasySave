@@ -117,11 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="active" xml:space="preserve">
-    <value>Active</value>
+  <data name="ACTIVE" xml:space="preserve">
+    <value>ACTIVE</value>
   </data>
   <data name="appTitle" xml:space="preserve">
     <value>EasySave</value>
+  </data>
+  <data name="at" xml:space="preserve">
+    <value>at</value>
   </data>
   <data name="boxDetailTitle" xml:space="preserve">
     <value>Detail</value>
@@ -158,6 +161,9 @@
   </data>
   <data name="emptySourceDirectoryError" xml:space="preserve">
     <value>Source directory is required.</value>
+  </data>
+  <data name="END" xml:space="preserve">
+    <value>END</value>
   </data>
   <data name="english" xml:space="preserve">
     <value>English</value>
