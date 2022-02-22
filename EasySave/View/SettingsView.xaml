@@ -15,6 +15,7 @@
 
         <!-- Styles -->
 
+        <!-- Button styles -->
         <Style TargetType="{x:Type Button}" x:Key="controlButtonStyle">
             <Setter Property="Background" Value="#423b36"/>
             <Setter Property="Template">
@@ -138,11 +139,5 @@
             </Button>
         </StackPanel>
 
-
-
-
-
-        <!--<Label Content="job backupo creation edition" />
-        <Button Name="btnReturn" Content="Return" Height="50" Width="50" Click="btnReturn_Click"/>-->
     </Grid>
 </Page>

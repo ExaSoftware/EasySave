@@ -1,4 +1,5 @@
 ﻿using EasySave.ViewModel;
+using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Windows;
@@ -34,14 +35,12 @@ namespace EasySave
             if (listViewBackups.SelectedItems.Count != 0)
             {
                 _mainViewModel.DeleteSave(id);
-                listViewBackups.ItemsSource = null;
-                listViewBackups.ItemsSource = _mainViewModel.ListOfJobBackup;
             }
         }
         private void btnAddJob_Click(object sender, RoutedEventArgs e)
         {
             //When we want add a job backup, there is no need to pass a job as parameter
-            CreateJobView addJobView = new CreateJobView(new CreateJobViewModel());
+            CreateJobView addJobView = new CreateJobView(new CreateJobViewModel(_mainViewModel.ListOfJobBackup));
             this.NavigationService.Navigate(addJobView);
         }
 
@@ -55,7 +54,7 @@ namespace EasySave
             //Prevent click on the empty list to avoid an exception
             if (listViewBackups.SelectedItems.Count != 0 && !_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].IsRunning)
             {
-                CreateJobView editJobView = new CreateJobView(new CreateJobViewModel((JobBackup)listViewBackups.SelectedItem));
+                CreateJobView editJobView = new CreateJobView(new CreateJobViewModel((JobBackup)listViewBackups.SelectedItem, _mainViewModel.ListOfJobBackup));
                 this.NavigationService.Navigate(editJobView);
             }
         }
@@ -89,7 +88,7 @@ namespace EasySave
         /// <param name="e"></param>
         private void btnExecuteSequentially_Click(object sender, RoutedEventArgs e)
         {
-            _mainViewModel.ExecuteAll();
+            _mainViewModel.ExecuteAll(listViewBackups.SelectedItems.Cast<JobBackup>().ToList());
         }
 
         /// <summary>
@@ -102,7 +101,7 @@ namespace EasySave
             //If there is a job backup selected
             if (listViewBackups.SelectedItems.Count != 0)
             {
-                _mainViewModel.ExecuteOne((JobBackup)listViewBackups.SelectedItem);
+                _mainViewModel.ExecuteAll(listViewBackups.SelectedItems.Cast<JobBackup>().ToList());
             }
         }
 

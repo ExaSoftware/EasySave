@@ -8,6 +8,7 @@ using System.Threading;
 using System.Text;
 using System.Resources;
 using System.Reflection;
+using System.Windows;
 
 namespace EasySave
 {
@@ -26,7 +27,6 @@ namespace EasySave
         private string[] _encryptionExtensionList;
         private ulong _sizeLimit;
         private List<string> _bigFilesList = new List<string>();
-        private Boolean _movingBigFile = false;
 
         private bool _disposedValue;
 
@@ -141,6 +141,7 @@ namespace EasySave
                 }
                 else
                 {
+                    DeleteFiles();
                     SaveFiles(Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories));
                 }
 
@@ -291,6 +292,8 @@ namespace EasySave
             State.Log = logSb.ToString();
             logSb = null;
             _isRunning = false;
+            State.State = "END";
+
         }
 
 
@@ -363,12 +366,12 @@ namespace EasySave
                 Monitor.Exit(_destinationDirectory);
 
                 //Restart from zero. 
-                Directory.CreateDirectory(realDest);
+                _ = Directory.CreateDirectory(realDest);
 
                 //Creation of all sub directories
                 foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
                 {
-                    Directory.CreateDirectory(path.Replace(_sourceDirectory, realDest));
+                    _ = Directory.CreateDirectory(path.Replace(_sourceDirectory, realDest));
                 }
             }
         }
@@ -413,10 +416,10 @@ namespace EasySave
         /// <returns>A list of diferent files between source and dest directories.</returns>
         private string[] FindFilesForDifferentialSave()
         {
-            List<String> filesToSave = new List<string>();
-            String[] filesInDirectory = Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories);
+            List<string> filesToSave = new List<string>();
+            string[] filesInDirectory = Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories);
 
-            foreach (String file in filesInDirectory)
+            foreach (string file in filesInDirectory)
             {
                 // Creation of the destFile
                 string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
