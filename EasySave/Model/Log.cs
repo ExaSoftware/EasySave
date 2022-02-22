@@ -42,7 +42,7 @@ namespace EasySave
         /// <summary>
         /// Method which doing nothing but is useful for polymorphism
         /// </summary>
-        public virtual void SaveLog()
+        public virtual void SaveLog(int id)
         {
 
         }
