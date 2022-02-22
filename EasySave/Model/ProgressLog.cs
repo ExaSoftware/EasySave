@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reflection;
 using System.Resources;
@@ -24,7 +25,7 @@ namespace EasySave.Object
         private int _progression = 0;
 
         private string _stateFormatted;
-        private string _log = String.Empty;
+        private ObservableCollection<string> _log = new ObservableCollection<string>();
 
         ResourceManager _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
 
@@ -111,7 +112,7 @@ namespace EasySave.Object
 
         }
 
-        public string Log
+        public ObservableCollection<string> Log
         { 
             get => _log;
             set

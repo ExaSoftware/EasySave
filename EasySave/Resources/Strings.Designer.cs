@@ -232,6 +232,15 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à erreur(s).
+        /// </summary>
+        public static string errors {
+            get {
+                return ResourceManager.GetString("errors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Exécution terminée.
         /// </summary>
         public static string executionFinished {
@@ -381,6 +390,15 @@ namespace EasySave.Resources {
         public static string megabyteUnit {
             get {
                 return ResourceManager.GetString("megabyteUnit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Aucune erreur..
+        /// </summary>
+        public static string noError {
+            get {
+                return ResourceManager.GetString("noError", resourceCulture);
             }
         }
         

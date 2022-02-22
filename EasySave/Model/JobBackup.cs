@@ -9,6 +9,7 @@ using System.Text;
 using System.Resources;
 using System.Reflection;
 using System.Windows;
+using System.Collections.ObjectModel;
 
 namespace EasySave
 {
@@ -158,22 +159,29 @@ namespace EasySave
         private void SaveFiles(string[] files)
         {
             _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
-            StringBuilder logSb = new StringBuilder();
-            _ = logSb.AppendLine(string.Format("{0} '{1}'", _rm.GetString("executionOf"), Label));
+            ObservableCollection<string> temp = new ObservableCollection<string>();
 
             int encryptionTime = 0;
             int fileTransfered = 0;                 //Incease each file transfered
             int fileToTranfer = files.Length;       //Ammount of file to transfer
             long sizeTotal = TotalFileSize(files);
             long sizeRemaining = sizeTotal;
+            int errors = 0;
 
             // Setup objects
             Stopwatch historyStopwatch = new Stopwatch();
             ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered, sizeTotal);
             HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0, 0);
             State = progressLog;
-            State.Log = logSb.ToString();
 
+            //Show message which say that job backup is executing
+            App.Current.Dispatcher.Invoke(delegate
+            {
+                State.Log.Add(String.Format("{0} '{1}' {2} {3}. ", _rm.GetString("executionOf"), Label, _rm.GetString("at"), DateTime.Now.ToString("T")));
+            });
+            //Add the string to conserv it for the final display
+            temp.Add(String.Format("{0} '{1}' {2} {3} ", _rm.GetString("executionOf"), Label, _rm.GetString("at"), DateTime.Now.ToString("T")));
+            
             string realDest = Path.Combine(_destinationDirectory, Path.GetFileName(_sourceDirectory));
 
             if (Monitor.TryEnter(_destinationDirectory, Timeout.Infinite))
@@ -262,10 +270,9 @@ namespace EasySave
                         historyLog.Error = e.StackTrace;
                         historyLog.Fill(file, destFile, 0, -1, e.GetType().Name, -1);
 
-                        //Show errors on file to the view
-                        logSb.AppendLine(String.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
-                        State.Log = logSb.ToString();
-                        historyLog.Dispose();
+                        //Add error to the temp list
+                        errors++;
+                        temp.Add(String.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
                         progressLog.Dispose();
                     }
                     finally
@@ -286,11 +293,25 @@ namespace EasySave
                 {
                     while (App.ThreadPause) { Thread.Sleep(1000); }
                 }
-            }
 
-            logSb.AppendLine(String.Format("{0} {1} {2}.", _rm.GetString("executionFinished"), _rm.GetString("at"), DateTime.Now.ToString("T")));
-            State.Log = logSb.ToString();
-            logSb = null;
+            }
+            string result = String.Empty;
+            if (errors == 0)
+            {
+                result = String.Format("{0} {1} {2}.     {3}", _rm.GetString("executionFinished"), _rm.GetString("at"), DateTime.Now.ToString("T"), _rm.GetString("noError"));
+            }
+            else
+            {
+                result = String.Format("{0} {1} {2}.     {3} {4}:", _rm.GetString("executionFinished"), _rm.GetString("at"), DateTime.Now.ToString("T"), errors, _rm.GetString("errors"));
+            }
+            Application.Current.Dispatcher.Invoke(delegate
+            {
+                //Insert the execution finished string at the begin of the list to show
+                temp.Insert(1, result);
+                State.Log = temp;
+                temp = null;
+            });
+            
             _isRunning = false;
             State.State = "END";
 
