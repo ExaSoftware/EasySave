@@ -1,8 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel;
-using System.Text;
 
 namespace EasySave.Object
 {
@@ -20,6 +17,8 @@ namespace EasySave.Object
         private int _totalFilesRemaining;
         /// <summary>The current progression of the job saving</summary>
         private int _progression = 0;
+
+        private JsonReadWriteModel _jsonReadWriteModel = new JsonReadWriteModel();
 
         private string _log = String.Empty;
 
@@ -48,7 +47,7 @@ namespace EasySave.Object
             {
                 _state = value;
                 OnPropertyChanged("State");
-            }  
+            }
         }
         public int TotalFilesToCopy
         {
@@ -59,7 +58,7 @@ namespace EasySave.Object
                 OnPropertyChanged("TotalFilesToCopy");
             }
         }
-        public long TotalFilesSize 
+        public long TotalFilesSize
         {
             get => _totalFilesSize;
             set
@@ -78,14 +77,14 @@ namespace EasySave.Object
             }
         }
 
-        public long SizeRemaining 
+        public long SizeRemaining
         {
             get => _sizeRemaining;
             set
             {
                 _sizeRemaining = value;
                 OnPropertyChanged("SizeRemaining");
-            }  
+            }
         }
         public int Progression
         {
@@ -107,7 +106,7 @@ namespace EasySave.Object
         }
 
         public string Log
-        { 
+        {
             get => _log;
             set
             {
@@ -132,15 +131,17 @@ namespace EasySave.Object
         /// <param name="progression"></param>
         /// <param name="id"></param>
         /// <param name="sizeRemaining"></param>
-        public void Fill(string file, string destFile, int totalFilesRemaining, int progression, int id, long sizeRemaining)
+        public void Fill(string file, string destFile, int totalFilesRemaining, int id, int progression, long sizeRemaining,int totalFilesToCopy, long totalFilesSize)
         {
             _state = "ACTIVE";
             this._sourceFile = file;
             this._targetFile = destFile;
             this._totalFilesRemaining = totalFilesRemaining;
+            this._totalFilesToCopy = totalFilesToCopy;
+            this._totalFilesSize = totalFilesSize;
             this._progression = progression;
             this._sizeRemaining = sizeRemaining;
-            this.SaveLog();
+            this.SaveLog(id);
         }
 
         /// <summary>
@@ -157,15 +158,15 @@ namespace EasySave.Object
             this._totalFilesSize = 0;
             this._sizeRemaining = 0;
             this._progression = 100;
-            this.SaveLog();
+            this.SaveLog(id);
         }
 
         /// <summary>
         /// Method which call SaveProgressLog() from LogModel for created a progress log file in C:\EasySave\Logs repository
         /// </summary>
-        public override void SaveLog()
+        public override void SaveLog(int id)
         {
-            JsonReadWriteModel.SaveProgressLog(this);
+            _jsonReadWriteModel.SaveProgressLog(this,id);
         }
 
         protected override void Dispose(bool disposing)

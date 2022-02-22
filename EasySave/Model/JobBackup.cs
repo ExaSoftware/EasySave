@@ -1,14 +1,13 @@
 ﻿using EasySave.Object;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.ComponentModel;
-using System.Threading;
-using System.Text;
-using System.Resources;
 using System.Reflection;
-using System.Windows;
+using System.Resources;
+using System.Text;
+using System.Threading;
 
 namespace EasySave
 {
@@ -173,7 +172,7 @@ namespace EasySave
 
 
             string[] files = Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories);
-            int fileTransfered = 0;                 //Incease each file transfered
+            int fileTransfered = 0;                 //Increase each file transfered
             int fileToTranfer = files.Length;       //Ammount of file to transfer
             long sizeTotal = TotalFileSize(files);
             long sizeRemaining = sizeTotal;
@@ -211,10 +210,14 @@ namespace EasySave
                     sizeRemaining -= fileInfoLength;
 
                     //Write logs
-                    new Thread(() =>
-                        progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), _id, sizeRemaining)).Start();
-                    new Thread(() => historyLog.Fill(file, destFile, fileInfoLength, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime)).Start();
-
+                    Thread logThread = new Thread(() =>
+                    {
+                        progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, _id, (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), sizeRemaining, fileToTranfer, sizeTotal);
+                        historyLog.Fill(file, destFile, fileInfoLength, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime, _id);
+                    }
+                    );
+                    logThread.Start();
+                    logThread.Join();
                     State = progressLog;
                 }
                 catch (Exception e)
@@ -222,13 +225,11 @@ namespace EasySave
                     string fileName = Path.GetFileName(file);
                     destFile = Path.Combine(_destinationDirectory, fileName);
                     historyLog.Error = e.StackTrace;
-                    historyLog.Fill(file, destFile, 0, -1, e.GetType().Name, -1);
+                    historyLog.Fill(file, destFile, 0, -1, e.GetType().Name, -1, _id);
 
                     //Show errors on file to the view
                     logSb.AppendLine(String.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
                     State.Log = logSb.ToString();
-                    historyLog.Dispose();
-                    progressLog.Dispose();
                 }
                 finally
                 {
@@ -312,8 +313,8 @@ namespace EasySave
                     fileTransfered++;
                     sizeRemaining -= fileInfo.Length;
 
-                    progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), _id, sizeRemaining);
-                    historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
+                    progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, _id, (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), sizeRemaining, fileToTranfer, sizeTotal);
+                    historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime, _id);
                     State = progressLog;
                 }
                 catch (Exception e)
@@ -322,7 +323,7 @@ namespace EasySave
                     string destFile = Path.Combine(_destinationDirectory, fileName);
 
                     historyLog.Error = e.StackTrace;
-                    historyLog.Fill(file, destFile, 0, -1, file, -1);
+                    historyLog.Fill(file, destFile, 0, -1, e.GetType().Name, -1, _id);
 
                     logSb.AppendLine(String.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
                     State.Log = logSb.ToString();
@@ -366,7 +367,7 @@ namespace EasySave
 
 
             //Reset progressLog
-            
+
             //progressLog.Reset(_id);
             historyLog.Dispose();
             progressLog.Dispose();
