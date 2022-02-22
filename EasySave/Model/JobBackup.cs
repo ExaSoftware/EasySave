@@ -210,8 +210,10 @@ namespace EasySave
                     sizeRemaining -= fileInfoLength;
 
                     //Write logs
-                    progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), _id, sizeRemaining);
-                    historyLog.Fill(file, destFile, fileInfoLength, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
+                    new Thread(() =>
+                        progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), _id, sizeRemaining)).Start();
+                    new Thread(() => historyLog.Fill(file, destFile, fileInfoLength, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime)).Start();
+
                     State = progressLog;
                 }
                 catch (Exception e)
