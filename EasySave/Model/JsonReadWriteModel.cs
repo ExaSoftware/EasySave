@@ -24,6 +24,11 @@ namespace EasySave
 
         private const string _DEFAULT_JOB_BACKUP_FILE_PATH = @"C:\EasySave\Job-Backup";
 
+        private ReaderWriterLockSlim _readWriteLock = new ReaderWriterLockSlim();
+
+        private ReaderWriterLockSlim _readWriteLockHs = new ReaderWriterLockSlim();
+
+
         /// <summary>
         /// Method which check if the directory exist and create the file if it doesn't exist,
         /// then deserialized the file if it exists for appends the new save job or create a new log file
@@ -315,7 +320,9 @@ namespace EasySave
 
                     JObject json = new JObject(new JProperty(pl.Name + " - " + id, newProgressLog));
 
+                    _readWriteLockHs.EnterWriteLock();
                     File.WriteAllText(path, json.ToString());
+                    _readWriteLockHs.ExitWriteLock();
                 }
                 finally
                 {
@@ -334,13 +341,14 @@ namespace EasySave
             JObject jsonFile = null;
             if (Monitor.TryEnter(path, 2000))
             {
+                _readWriteLockHs.EnterReadLock();
                 try
                 {
                     jsonFile = JObject.Parse(File.ReadAllText(path));
                 }
-
                 finally
                 {
+                    _readWriteLockHs.ExitReadLock();
                     Monitor.Exit(path);
                 }
 
@@ -357,11 +365,11 @@ namespace EasySave
 
                     if (Monitor.TryEnter(path, 3000))
                     {
+                        _readWriteLockHs.EnterWriteLock();
                         try
                         {
                             File.WriteAllText(path, jsonFile.ToString());
                         }
-
                         catch
                         {
 
@@ -369,6 +377,7 @@ namespace EasySave
 
                         finally
                         {
+                            _readWriteLockHs.ExitWriteLock();
                             Monitor.Exit(path);
                         }
                     }

@@ -115,6 +115,7 @@ namespace EasySave
         ///  <remarks>Use it whether differential or not.</remarks>
         public void Execute()
         {
+
             bool error = false;
 
             if (!Directory.Exists(_destinationDirectory))
@@ -263,8 +264,9 @@ namespace EasySave
                     }
                     catch (Exception e)
                     {
-                        string fileName = Path.GetFileName(file);
-                        destFile = Path.Combine(_destinationDirectory, fileName);
+                        destFile = Path.Combine(_destinationDirectory, Path.GetFileName(file));
+                        fileTransfered++;
+
                         historyLog.Error = e.StackTrace;
                         historyLog.Fill(file, destFile, 0, -1, e.GetType().Name, -1, _id);
 
