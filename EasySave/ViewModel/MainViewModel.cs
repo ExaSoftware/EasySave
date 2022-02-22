@@ -20,6 +20,12 @@ namespace EasySave
         private Task _thread3 = null;
         private Task _thread4 = null;
         private Task _thread5 = null;
+        private Task _threadRemote = null;
+        private Task _threadRemote1 = null;
+        private Task _threadRemote2 = null;
+        private Task _threadRemote3 = null;
+        private Task _threadRemote4 = null;
+        private Task _threadRemote5 = null;
         private Task _mainThread = null;
         private int _selectedIndex;
         private JobBackup _job;
@@ -93,7 +99,7 @@ namespace EasySave
         public MainViewModel()
         {
             //Read the list in the json
-            
+
             _listOfJobBackup = _jsonReadWriteModel.ReadJobBackup();
 
             //No job backup selected
@@ -123,7 +129,7 @@ namespace EasySave
                         if (_listOfJobBackup.Count == 1)
                         {
                             //Remove the progressLog in json link to this jobBackup
-                            if(Directory.Exists(@"C:\EasySave\Logs\")) File.Delete(@"C:\EasySave\Logs\ProgressLog.json");
+                            if (Directory.Exists(@"C:\EasySave\Logs\")) File.Delete(@"C:\EasySave\Logs\ProgressLog.json");
                             _listOfJobBackup.Remove(item);
                             _listOfJobBackup.Clear();
                             item.Dispose();
@@ -157,8 +163,8 @@ namespace EasySave
             }
             //Save the list in json
             _jsonReadWriteModel.SaveJobBackup(_listOfJobBackup);
-            
         }
+
 
         //Instanciate the delegate
         readonly Del Execute = delegate (JobBackup jobBackup)
@@ -169,6 +175,7 @@ namespace EasySave
                 if (procName.Length == 0)
                 {
                     jobBackup.Execute();
+
                 }
             }
             else
@@ -177,31 +184,6 @@ namespace EasySave
             }
         };
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Resume threads or instanciate a thread and execute the jobBackup in this thread.
-        /// </summary>
-        /// <param name="jobBackup">The JobBackup to execute.</param>
-        public void ExecuteOne(JobBackup jobBackup)
-        {
-            if (_mainThread is null || !_mainThread.IsAlive)
-            {
-                Job = jobBackup;
-                SelectedIndex = Job.Id;
-                _mainThread = new Thread(() =>
-                {
-                    _thread = new Thread(() => Execute(jobBackup));
-                    _thread.Start();
-                });
-                _mainThread.Start();
-            }
-        }
-
 
         /// <summary>
         /// Execute all the list of JobBackup with the ExecuteOne method.
@@ -209,27 +191,32 @@ namespace EasySave
         /// <remarks>Threads are executed one by one, in the order of the list.</remarks>
         public void ExecuteAll(List<JobBackup> jbList)
         {
+            Communication comm = new Communication();
             App.ThreadPause = false;
 
             if (_mainThread is null || _mainThread.IsCompleted)
-            Communication comm = new Communication();
-            if (_mainThread is null || !_mainThread.IsAlive)
             {
                 App.ThreadPause = false;
 
                 _mainThread = Task.Run(() =>
                 {
-                    Task[] taskArray = new Task[]{ _thread1, _thread2, _thread3, _thread4, _thread5 };
+                    Task[] taskArray = new Task[] { _thread1, _thread2, _thread3, _thread4, _thread5 };
                     double numberOfIteration = Math.Round((double)(jbList.Count / 5));
                     int i = 0;
 
                     for (i = 0; i < numberOfIteration * 5; i += 5)
                     {
                         _thread1 = Task.Run(() => Execute(jbList[i]));
+                        _threadRemote1 = Task.Run(() => comm.SendUsedJob(jbList[i]));
                         _thread2 = Task.Run(() => Execute(jbList[i++]));
+                        _threadRemote2 = Task.Run(() => comm.SendUsedJob(jbList[i++]));
                         _thread3 = Task.Run(() => Execute(jbList[i + 2]));
+                        _threadRemote3 = Task.Run(() => comm.SendUsedJob(jbList[i + 2]));
                         _thread4 = Task.Run(() => Execute(jbList[i + 3]));
+                        _threadRemote4 = Task.Run(() => comm.SendUsedJob(jbList[i + 3]));
                         _thread5 = Task.Run(() => Execute(jbList[i + 4]));
+                        _threadRemote5 = Task.Run(() => comm.SendUsedJob(jbList[i + 4]));
+
 
                         _thread1.Wait();
                         _thread2.Wait();
@@ -237,9 +224,10 @@ namespace EasySave
                         _thread4.Wait();
                         _thread5.Wait();
 
+
                         GC.Collect();
                     }
-                    
+
                     for (int a = 0; a < jbList.Count - (int)numberOfIteration; a++)
                     {
                         int b = a;
@@ -266,12 +254,6 @@ namespace EasySave
             }
         }
 
-        public void StopConnection()
-        {
-            Communication comm = new Communication();
-            comm.SendStopConnection();
-        }
-
         /// <summary>
         /// Pause all JobBackups threads.
         /// </summary>
@@ -281,13 +263,30 @@ namespace EasySave
         }
 
         /// <summary>
+        /// socket listening on the network
+        /// </summary>
+        public void CommunicationWithRemoteInterface()
+        {
+            Communication comm = new Communication();
+            comm.LaunchConnection();
+        }
+
+        /// <summary>
+        ///Stop connection to the remote app and warn it
+        /// </summary>
+        public void StopConnection()
+        {
+            Communication comm = new Communication();
+            comm.SendStopConnection();
+        }
+        /// <summary>
         /// Stop all JobBackups threads.
         /// </summary>
         public void Stop()
         {
             if (!(_mainThread is null))
             {
-                
+
             }
         }
 
