@@ -134,6 +134,7 @@ namespace EasySave.Object
         /// <param name="sizeRemaining"></param>
         public void Fill(string file, string destFile, int totalFilesRemaining, int progression, int id, long sizeRemaining)
         {
+            _state = "ACTIVE";
             this._sourceFile = file;
             this._targetFile = destFile;
             this._totalFilesRemaining = totalFilesRemaining;
@@ -155,7 +156,7 @@ namespace EasySave.Object
             this._totalFilesToCopy = 0;
             this._totalFilesSize = 0;
             this._sizeRemaining = 0;
-            this._progression = 0;
+            this._progression = 100;
             this.SaveLog();
         }
 
