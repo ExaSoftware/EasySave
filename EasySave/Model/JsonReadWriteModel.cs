@@ -80,8 +80,8 @@ namespace EasySave
                         fsDel.SetLength(fsDel.Length - 15);
                         fsDel.Close();
 
-                        Stream xmlFile = new FileStream(path, FileMode.Append, FileAccess.Write);
-                        XmlTextWriter xmlwriter = new XmlTextWriter(xmlFile, Encoding.Default)
+                        using Stream xmlFile = new FileStream(path, FileMode.Append, FileAccess.Write);
+                        using XmlTextWriter xmlwriter = new XmlTextWriter(xmlFile, Encoding.Default)
                         {
                             Formatting = System.Xml.Formatting.Indented
                         };
@@ -132,10 +132,11 @@ namespace EasySave
 
                     else
                     {
-                        using StringWriter swHistoryLog = new StringWriter();
-                        XmlWriterSettings writtersetting = new XmlWriterSettings();
-                        writtersetting.Indent = true;
-                        using XmlWriter xmlwriter = XmlWriter.Create(swHistoryLog, writtersetting);
+                        using Stream xmlFile = new FileStream(path, FileMode.Create, FileAccess.Write);
+                        using XmlTextWriter xmlwriter = new XmlTextWriter(xmlFile, Encoding.Default)
+                        {
+                            Formatting = System.Xml.Formatting.Indented
+                        };
 
                         xmlwriter.WriteStartDocument();
 
@@ -182,8 +183,6 @@ namespace EasySave
                         xmlwriter.WriteEndDocument();
 
                         xmlwriter.Close();
-
-                        File.WriteAllText(path, swHistoryLog.ToString() + "\n");
                     }
                 }
                 finally
