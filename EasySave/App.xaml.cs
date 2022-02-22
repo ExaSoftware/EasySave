@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 
@@ -64,6 +65,10 @@ namespace EasySave
                 }
 
             }).Start();
+        }
+        protected override void OnExit(ExitEventArgs e)
+        {
+            Environment.Exit(0);
         }
 
 

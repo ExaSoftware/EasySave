@@ -158,7 +158,7 @@ namespace EasySave
         {
             _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
             StringBuilder logSb = new StringBuilder();
-            _ = logSb.AppendLine(string.Format("{0} {1}", _rm.GetString("executionOf"), Label));
+            _ = logSb.AppendLine(string.Format("{0} '{1}'", _rm.GetString("executionOf"), Label));
 
             int encryptionTime = 0;
             int fileTransfered = 0;                 //Incease each file transfered
@@ -287,7 +287,7 @@ namespace EasySave
                 }
             }
 
-            logSb.AppendLine(_rm.GetString("executionFinished"));
+            logSb.AppendLine(String.Format("{0} {1} {2}.", _rm.GetString("executionFinished"), _rm.GetString("at"), DateTime.Now.ToString("T")));
             State.Log = logSb.ToString();
             logSb = null;
             _isRunning = false;
@@ -457,7 +457,7 @@ namespace EasySave
             Process process = new Process();
             int time;
 
-            process.StartInfo.FileName = @"C:\EasySave\CryptoSoft\bin\Debug\netcoreapp3.1\CryptoSoft.exe";
+            process.StartInfo.FileName = String.Format("{0}{1}", AppDomain.CurrentDomain.BaseDirectory, @"CryptoSoft\CryptoSoft.exe");
             process.StartInfo.Arguments = String.Format("\"{0}\" \"{1}\"", sourceFile, destFile);
             Trace.WriteLine(process.StartInfo.Arguments);
             process.StartInfo.UseShellExecute = false;
