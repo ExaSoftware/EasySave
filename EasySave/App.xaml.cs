@@ -66,6 +66,10 @@ namespace EasySave
 
             }).Start();
         }
+        protected override void OnExit(ExitEventArgs e)
+        {
+            Environment.Exit(0);
+        }
 
         protected void App_Exit(object sender, ExitEventArgs e)
         {
