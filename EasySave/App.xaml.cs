@@ -12,6 +12,12 @@ namespace EasySave
         private static Configuration _configuration;
 
         private static bool _threadPause;
+        private static bool _isMovingBigFile;
+
+        public static Configuration Configuration { get => _configuration; }
+        public static bool ThreadPause { get => _threadPause; set => _threadPause = value; }
+        public static bool IsMovingBigFile { get => _isMovingBigFile; set => _isMovingBigFile = value; }
+
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -22,7 +28,7 @@ namespace EasySave
             if (Process.GetProcessesByName(easySave.ProcessName).Length > 1)
             {
                 MessageBox.Show("An instance of EasySave is already running...", "Instance Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                App.Current.Shutdown();
+                Current.Shutdown();
             }
             else
             {
@@ -36,16 +42,16 @@ namespace EasySave
 
                 while (true)
                 {
-                    if (App.Configuration.BusinessSoftware != "" || App.Configuration.BusinessSoftware != null)
+                    if (Configuration.BusinessSoftware != "" || Configuration.BusinessSoftware != null)
                     {
-                        if (App.ThreadPause)
+                        if (ThreadPause)
                         {
                             Thread.Sleep(time);
                             continue;
                         }
                         else
                         {
-                            App.ThreadPause = Process.GetProcessesByName(App.Configuration.BusinessSoftware).Length != 0;
+                            ThreadPause = Process.GetProcessesByName(Configuration.BusinessSoftware).Length != 0;
                             Thread.Sleep(time);
                             continue;
                         }
@@ -61,9 +67,6 @@ namespace EasySave
         }
 
 
-
-        public static Configuration Configuration { get => _configuration; }
-        public static bool ThreadPause { get => _threadPause; set => _threadPause = value; }
     }
 
 }

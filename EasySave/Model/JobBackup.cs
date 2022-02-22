@@ -26,7 +26,7 @@ namespace EasySave
         private string[] _encryptionExtensionList;
         private ulong _sizeLimit;
         private List<string> _bigFilesList = new List<string>();
-        private int _priority = 0;
+        private Boolean _movingBigFile = false;
 
         private bool _disposedValue;
 
@@ -63,7 +63,6 @@ namespace EasySave
         ///  </summary>
         public JobBackup()
         {
-            _priority = 0;
             _isRunning = false;
         }
 
@@ -77,7 +76,6 @@ namespace EasySave
             _sourceDirectory = string.Empty;
             _destinationDirectory = string.Empty;
             _isDifferential = false;
-            _priority = 0;
             _id = id;
             _isRunning = false;
         }
@@ -96,7 +94,6 @@ namespace EasySave
             _destinationDirectory = destinationDirectory;
             _isDifferential = isDifferential;
             _isRunning = false;
-            _priority = 0;
         }
 
         ///  <summary>
@@ -178,6 +175,32 @@ namespace EasySave
 
             string realDest = Path.Combine(_destinationDirectory, Path.GetFileName(_sourceDirectory));
 
+            if (Monitor.TryEnter(_destinationDirectory, Timeout.Infinite))
+            {
+                try
+                {
+                    //Delete all files if it's not differential
+                    if (Directory.Exists(realDest) && !_isDifferential)
+                    {
+                        Directory.Delete(realDest, true);
+                    }
+
+                    //Restart from zero. 
+                    _ = Directory.CreateDirectory(realDest);
+
+                    //Creation of all sub directories
+                    foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
+                    {
+                        _ = Directory.CreateDirectory(path.Replace(_sourceDirectory, realDest));
+                    }
+                }
+                finally
+                {
+                    Monitor.Exit(_destinationDirectory);
+                }
+            }
+
+
             // Copy the files and overwrite destination files if they already exist.
             foreach (string file in files)
             {
@@ -187,74 +210,80 @@ namespace EasySave
                     long fileInfoLength = fileInfo.Length;
                     string destFile = file.Replace(_sourceDirectory, realDest);
 
-                    if ((ulong) fileInfo.Length > _sizeLimit)
+                    try
                     {
-                        _bigFilesList.Add(destFile);
-                        continue;
-                    }
-                    else
-                    {
-                        try
+                        historyStopwatch.Reset();
+
+                        if (Monitor.TryEnter(file, 10000))
                         {
-                            historyStopwatch.Reset();
-
-                            if (Monitor.TryEnter(file, 5000))
+                            if ((ulong)fileInfo.Length > _sizeLimit && _sizeLimit > 0)
                             {
-                                if (!(_encryptionExtensionList is null) && new List<string>(_encryptionExtensionList).Contains(fileInfo.Extension) && _encryptionExtensionList[0] != "")
+                                if(!App.IsMovingBigFile)
                                 {
-                                    encryptionTime = CypherFile(file, destFile);
-                                    string b = fileInfo.Extension;
-                                }
-                                else
-                                {
-                                    historyStopwatch.Start();
-                                    File.Copy(file, destFile, true);
-                                    historyStopwatch.Stop();
+
                                 }
 
-                                fileTransfered++;
-                                sizeRemaining -= fileInfo.Length; ;
+                                //var globale
+                                //var local pour by pass
+                                _bigFilesList.Add(destFile);
+                                
+                            }
 
-                                //Write logs
-                                progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), _id, sizeRemaining);
-                                historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
-                                State = progressLog;
+                            if (!(_encryptionExtensionList is null) && new List<string>(_encryptionExtensionList).Contains(fileInfo.Extension) && _encryptionExtensionList[0] != "")
+                            {
+                                encryptionTime = CypherFile(file, destFile);
+                                string b = fileInfo.Extension;
                             }
                             else
                             {
-                                throw new IOException();
+                                historyStopwatch.Start();
+                                File.Copy(file, destFile, true);
+                                historyStopwatch.Stop();
                             }
+
+                            fileTransfered++;
+                            sizeRemaining -= fileInfo.Length; ;
+
+                            //Write logs
+                            progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), _id, sizeRemaining);
+                            historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
+                            State = progressLog;
                         }
-                        catch (Exception e)
+                        else
                         {
-                            string fileName = Path.GetFileName(file);
-                            destFile = Path.Combine(_destinationDirectory, fileName);
-                            historyLog.Error = e.StackTrace;
-                            historyLog.Fill(file, destFile, 0, -1, e.GetType().Name, -1);
-
-                    //Show errors on file to the view
-                    logSb.AppendLine(String.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
-                    State.Log = logSb.ToString();
-                    historyLog.Dispose();
-                    progressLog.Dispose();
-                }
-                finally
-                {
-                            Monitor.Exit(file);
-                            //Free memory
-                            fileInfo = null;
-                    destFile = string.Empty;
-
-                            //dispose history and progress log
-                            historyLog.Dispose();
-                            progressLog.Dispose();
+                            throw new IOException();
                         }
                     }
+                    catch (Exception e)
+                    {
+                        string fileName = Path.GetFileName(file);
+                        destFile = Path.Combine(_destinationDirectory, fileName);
+                        historyLog.Error = e.StackTrace;
+                        historyLog.Fill(file, destFile, 0, -1, e.GetType().Name, -1);
+
+                        //Show errors on file to the view
+                        logSb.AppendLine(String.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
+                        State.Log = logSb.ToString();
+                        historyLog.Dispose();
+                        progressLog.Dispose();
+                    }
+                    finally
+                    {
+                        Monitor.Exit(file);
+                        //Free memory
+                        fileInfo = null;
+                        destFile = string.Empty;
+
+                        //dispose history and progress log
+                        historyLog.Dispose();
+                        progressLog.Dispose();
+                    }
                 }
+
                 // If pause
                 else
                 {
-                    while(App.ThreadPause) { Thread.Sleep(1000); }
+                    while (App.ThreadPause) { Thread.Sleep(1000); }
                 }
             }
 
@@ -298,7 +327,7 @@ namespace EasySave
                     {
                         File.Delete(path);
                     }
-                    catch 
+                    catch
                     {
                         continue;
                     }
