@@ -30,23 +30,23 @@ namespace EasySave.ViewModel
         private string _jobTypeFormatted;
         //Define getter / setter
         public ObservableCollection<JobBackup> ListOfJobBackup { get => _listOfJobBackup; set { _listOfJobBackup = value; OnPropertyChanged("ListOfJobBackup"); } }
-        public JobBackup Job 
+        public JobBackup Job
         {
             get => _job;
             set
             {
                 _job = value;
                 OnPropertyChanged("Job");
-            } 
+            }
         }
 
-        public double TotalFilesSizeFormatted 
+        public double TotalFilesSizeFormatted
         {
             get
             {
                 //Convert in MO
                 return (double)Math.Round(_totalFilesSizeFormatted / 1048576, 2);
-            } 
+            }
             set
             {
                 _totalFilesSizeFormatted = value;
@@ -54,14 +54,14 @@ namespace EasySave.ViewModel
             }
         }
 
-        public int SelectedIndex 
+        public int SelectedIndex
         {
             get => _selectedIndex;
-            set 
+            set
             {
                 _selectedIndex = value;
                 OnPropertyChanged("SelectedIndex");
-            }  
+            }
         }
 
         public string JobTypeFormatted
@@ -69,7 +69,7 @@ namespace EasySave.ViewModel
             get
             {
                 return _jobTypeFormatted;
-            } 
+            }
             set
             {
                 _jobTypeFormatted = value;
@@ -83,7 +83,7 @@ namespace EasySave.ViewModel
         public MainViewModel()
         {
             //Read the list in the json
-            
+
             _listOfJobBackup = JsonReadWriteModel.ReadJobBackup();
 
             //No job backup selected
@@ -143,7 +143,7 @@ namespace EasySave.ViewModel
             }
             //Save the list in json
             JsonReadWriteModel.SaveJobBackup(_listOfJobBackup);
-            
+
         }
 
         //Instanciate the delegate
@@ -219,16 +219,16 @@ namespace EasySave.ViewModel
                         _thread4.Start();
                         _thread5.Start();
 
-                        _thread1.Join();
-                        _thread2.Join();
-                        _thread3.Join();
-                        _thread4.Join();
-                        _thread5.Join();
+                        try { _thread1.Join(); } catch (ThreadInterruptedException) { _thread1.Interrupt(); break; };
+                        try { _thread2.Join(); } catch (ThreadInterruptedException) { _thread2.Interrupt(); break; };
+                        try { _thread3.Join(); } catch (ThreadInterruptedException) { _thread3.Interrupt(); break; };
+                        try { _thread4.Join(); } catch (ThreadInterruptedException) { _thread4.Interrupt(); break; };
+                        try { _thread5.Join(); } catch (ThreadInterruptedException) { _thread5.Interrupt(); break; };
 
                         GC.Collect();
                     }
 
-                    for (int a = 0; a < jbList.Count; a++)
+                    for (int a = 0; a < jbList.Count - (int)numberOfIteration; a++)
                     {
                         int b = a;
                         threadList[b % 5] = new Thread(() => Execute(jbList[b]));
@@ -239,7 +239,15 @@ namespace EasySave.ViewModel
                     {
                         if (!(thread is null))
                         {
-                            thread.Join();
+                            try
+                            {
+                                thread.Join();
+                            }
+                            catch (ThreadInterruptedException)
+                            {
+                                thread.Interrupt();
+                                break;
+                            }
                         }
                     }
 
@@ -263,13 +271,10 @@ namespace EasySave.ViewModel
         /// </summary>
         public void Stop()
         {
-            try
+            if (!(_mainThread is null) && _mainThread.IsAlive)
             {
-                _mainThread.Abort();
-            }
-            catch
-            {
-
+                _mainThread.Interrupt();
+                _mainThread = null;
             }
         }
 

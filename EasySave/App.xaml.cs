@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 
@@ -66,6 +67,12 @@ namespace EasySave
             }).Start();
         }
 
+        protected void App_Exit(object sender, ExitEventArgs e)
+        {
+            GC.Collect();
+            Thread.CurrentThread.Interrupt();
+            
+        }
 
     }
 
