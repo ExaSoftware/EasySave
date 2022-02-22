@@ -11,9 +11,9 @@ namespace RemoteInterface
     public class JsonReadWriteModel
     {
         /// <summary>The default directory path for saving logs</summary>
-        private const string _DEFAULT_LOG_FILE_PATH = @"C:\RemoteInterface\Logs";
+        private const string _DEFAULT_LOG_FILE_PATH = @"C:\EasySave\Logs";
 
-        private const string _DEFAULT_JOB_BACKUP_FILE_PATH = @"C:\RemoteInterface\Job-Backup";
+        private const string _DEFAULT_JOB_BACKUP_FILE_PATH = @"C:\EasySave\Job-Backup";
 
         /// <summary>A list of History log objects which contains all saving action files</summary>
         private List<HistoryLog> _myListHistoryLog = new List<HistoryLog>();
