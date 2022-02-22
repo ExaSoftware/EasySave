@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Resources;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -74,12 +75,25 @@ namespace EasySave
                 id = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Id;
 
                 //Get the totalFileSize from the VM
-                _mainViewModel.TotalFilesSizeFormatted = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].TotalFileSize();
+                _ = Task.Run(() => GetTotalFileSize(_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex], _mainViewModel));
 
                 ResourceManager rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
                 _mainViewModel.JobTypeFormatted = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].IsDifferential ? rm.GetString("differential") : rm.GetString("total");
+                
             }
         }
+
+        private delegate void DelJbMv(JobBackup jobBackup, MainViewModel mainViewModel);
+
+        private readonly DelJbMv GetTotalFileSize = delegate (JobBackup jobBackup, MainViewModel mainViewModel)
+        {
+            long result = 0;
+            mainViewModel.TotalFilesSizeFormatted = result;
+
+            result = jobBackup.TotalFileSize();
+
+            mainViewModel.TotalFilesSizeFormatted = result;
+        };
 
         /// <summary>
         /// Method which start the all job backup
