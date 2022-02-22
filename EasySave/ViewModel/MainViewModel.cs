@@ -9,7 +9,7 @@ using System.Resources;
 using System.Threading;
 using System.Windows;
 
-namespace EasySave.ViewModel
+namespace EasySave
 {
     delegate void Del(JobBackup jobBackup);
 
@@ -17,13 +17,19 @@ namespace EasySave.ViewModel
     {
         //Attributes
         private ObservableCollection<JobBackup> _listOfJobBackup = null;
-        private Communication _communication;
         private Thread _thread = null;
         private Thread _thread1 = null;
         private Thread _thread2 = null;
         private Thread _thread3 = null;
         private Thread _thread4 = null;
         private Thread _thread5 = null;
+        private Thread _threadRemote = null;
+        private Thread _threadRemote1 = null;
+        private Thread _threadRemote2 = null;
+        private Thread _threadRemote3 = null;
+        private Thread _threadRemote4 = null;
+        private Thread _threadRemote5 = null;
+
         private Thread _mainThread = null;
         private int _selectedIndex;
         private JobBackup _job;
@@ -90,8 +96,6 @@ namespace EasySave.ViewModel
             SelectedIndex = -1;
 
             CommunicationWithRemoteInterface();
-
-
         }
 
         /// <summary>
@@ -170,10 +174,10 @@ namespace EasySave.ViewModel
 
         public void CommunicationWithRemoteInterface()
         {
-
             Communication comm = new Communication();
             comm.LaunchConnection();
         }
+
 
         protected void OnPropertyChanged(string propertyName = null)
         {
@@ -186,6 +190,7 @@ namespace EasySave.ViewModel
         /// <param name="jobBackup">The JobBackup to execute.</param>
         public void ExecuteOne(JobBackup jobBackup)
         {
+            Communication comm = new Communication();
             if (_mainThread is null || !_mainThread.IsAlive)
             {
                 Job = jobBackup;
@@ -193,9 +198,14 @@ namespace EasySave.ViewModel
                 _mainThread = new Thread(() =>
                 {
                     _thread = new Thread(() => Execute(jobBackup));
+                    _threadRemote = new Thread(() => comm.SendUsedJob(jobBackup));
+
                     _thread.Start();
+                    _threadRemote.Start();
                 });
+
                 _mainThread.Start();
+                comm.SendUsedJob(jobBackup);
             }
         }
 
@@ -206,6 +216,7 @@ namespace EasySave.ViewModel
         /// <remarks>Threads are executed one by one, in the order of the list.</remarks>
         public void ExecuteAll(List<JobBackup> jbList)
         {
+            Communication comm = new Communication();
             if (_mainThread is null || !_mainThread.IsAlive)
             {
                 App.ThreadPause = false;
@@ -218,6 +229,7 @@ namespace EasySave.ViewModel
 
                     for (i = 0; i < numberOfIteration * 5; i += 5)
                     {
+
                         _thread1 = new Thread(() => Execute(jbList[i]));
                         _thread2 = new Thread(() => Execute(jbList[i++]));
                         _thread3 = new Thread(() => Execute(jbList[i + 2]));
@@ -235,6 +247,19 @@ namespace EasySave.ViewModel
                         _thread3.Join();
                         _thread4.Join();
                         _thread5.Join();
+
+                        //Send the executed jobBackup to the remote application
+                        _threadRemote1 = new Thread(() => comm.SendUsedJob(jbList[i]));
+                        _threadRemote2 = new Thread(() => comm.SendUsedJob(jbList[i++]));
+                        _threadRemote3 = new Thread(() => comm.SendUsedJob(jbList[i+2]));
+                        _threadRemote4 = new Thread(() => comm.SendUsedJob(jbList[i+3]));
+                        _threadRemote5 = new Thread(() => comm.SendUsedJob(jbList[i+4]));
+
+                        _threadRemote1.Start();
+                        _threadRemote2.Start();
+                        _threadRemote3.Start();
+                        _threadRemote4.Start();
+                        _threadRemote5.Start();
 
                         GC.Collect();
                     }
@@ -258,6 +283,12 @@ namespace EasySave.ViewModel
                 });
                 _mainThread.Start();
             }
+        }
+
+        public void StopConnection()
+        {
+            Communication comm = new Communication();
+            comm.SendStopConnection();
         }
 
         /// <summary>
