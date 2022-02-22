@@ -133,11 +133,10 @@ namespace EasySave
                     if (File.Exists(path))
                     {
                         json = JObject.Parse(File.ReadAllText(path));
-
-
-                        json.Add(new JProperty(hs.Name + " - " + id + " - " + Path.GetFileName(hs.SourceFile) + " - " + hs.Time + " - " + hs.TransferTime, newHistoryLog));
-
+                        if (json.Property(hs.Name + " - " + id + " - " + Path.GetFileName(hs.SourceFile) + " - " + hs.Time + " - " + hs.TransferTime) == null)
+                            json.Add(new JProperty(hs.Name + " - " + id + " - " + Path.GetFileName(hs.SourceFile) + " - " + hs.Time + " - " + hs.TransferTime, newHistoryLog));
                     }
+
                     else
                     {
                         json = new JObject(new JProperty(hs.Name + " - " + id + " - " + Path.GetFileName(hs.SourceFile) + " - " + hs.Time + " - " + hs.TransferTime, newHistoryLog));
@@ -184,7 +183,7 @@ namespace EasySave
                 _readWriteLock.EnterWriteLock();
                 try
                 {
-                    File.AppendAllText(path, _jsonFile.ToString());
+                    File.WriteAllText(path, _jsonFile.ToString());
                 }
                 catch (Exception e)
                 {
@@ -268,7 +267,7 @@ namespace EasySave
                         _readWriteLock.EnterWriteLock();
                         try
                         {
-                            File.AppendAllText(path, _jsonFile.ToString());
+                            File.WriteAllText(path,  _jsonFile.ToString());
                         }
                         finally
                         {
