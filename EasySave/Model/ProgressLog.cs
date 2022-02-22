@@ -27,8 +27,6 @@ namespace EasySave.Object
         private ObservableCollection<string> _log = new ObservableCollection<string>();
         private JsonReadWriteModel _jsonReadWriteModel = new JsonReadWriteModel();
 
-        private string _log = String.Empty;
-
         ResourceManager _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
 
         /// <summary>
