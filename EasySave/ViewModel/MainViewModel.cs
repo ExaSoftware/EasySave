@@ -28,6 +28,7 @@ namespace EasySave.ViewModel
         private JobBackup _job;
         private double _totalFilesSizeFormatted;
         private string _jobTypeFormatted;
+        private JsonReadWriteModel _jsonReadWriteModel = new JsonReadWriteModel();
         //Define getter / setter
         public ObservableCollection<JobBackup> ListOfJobBackup { get => _listOfJobBackup; set { _listOfJobBackup = value; OnPropertyChanged("ListOfJobBackup"); } }
         public JobBackup Job 
@@ -84,7 +85,7 @@ namespace EasySave.ViewModel
         {
             //Read the list in the json
             
-            _listOfJobBackup = JsonReadWriteModel.ReadJobBackup();
+            _listOfJobBackup = _jsonReadWriteModel.ReadJobBackup();
 
             //No job backup selected
             SelectedIndex = -1;
@@ -109,7 +110,7 @@ namespace EasySave.ViewModel
                         if (_listOfJobBackup.Count == 1)
                         {
                             //Remove the progressLog in json link to this jobBackup
-                            File.Delete(@"C:\EasySave\Logs\ProgressLog.json");
+                            if(Directory.Exists(@"C:\EasySave\Logs\")) File.Delete(@"C:\EasySave\Logs\ProgressLog.json");
                             _listOfJobBackup.Remove(item);
                             _listOfJobBackup.Clear();
                             item.Dispose();
@@ -120,7 +121,7 @@ namespace EasySave.ViewModel
                         else
                         {
                             //Remove the progressLog in json link to this jobBackup
-                            JsonReadWriteModel.DeleteProgressLogInJson(item.Label);
+                            _jsonReadWriteModel.DeleteProgressLogInJson(item.Label);
 
                             //Remove the Job Backup from the list
                             _listOfJobBackup.Remove(item);
@@ -142,7 +143,7 @@ namespace EasySave.ViewModel
 
             }
             //Save the list in json
-            JsonReadWriteModel.SaveJobBackup(_listOfJobBackup);
+            _jsonReadWriteModel.SaveJobBackup(_listOfJobBackup);
             
         }
 
