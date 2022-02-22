@@ -458,7 +458,7 @@ namespace EasySave
             Process process = new Process();
             int time;
 
-            process.StartInfo.FileName = @"C:\EasySave\CryptoSoft\bin\Debug\netcoreapp3.1\CryptoSoft.exe";
+            process.StartInfo.FileName = String.Format("{0}{1}", AppDomain.CurrentDomain.BaseDirectory, @"CryptoSoft\CryptoSoft.exe");
             process.StartInfo.Arguments = String.Format("\"{0}\" \"{1}\"", sourceFile, destFile);
             Trace.WriteLine(process.StartInfo.Arguments);
             process.StartInfo.UseShellExecute = false;
