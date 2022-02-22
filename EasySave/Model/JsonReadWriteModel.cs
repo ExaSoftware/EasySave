@@ -6,8 +6,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace EasySave
@@ -66,30 +68,118 @@ namespace EasySave
             if (Monitor.TryEnter(path, 2000))
             {
                 try
-                {
-                    XElement newHistoryLog =
-                    new XElement("HistoryLog",
-                    new XElement("Name", historyLog.Name + " - " + id),
-                    new XElement("SourceFile", historyLog.SourceFile),
-                    new XElement("TargetFile", historyLog.TargetFile),
-                    new XElement("FileSize", historyLog.FileSize.ToString()),
-                    new XElement("TransferTime", historyLog.TransferTime.ToString()),
-                    new XElement("Time", historyLog.Time.ToString()),
-                    new XElement("EncryptionTime", historyLog.EncryptionTime.ToString()),
-                    new XElement("Error", historyLog.Error),
-                    new XElement("ErrorTitle", historyLog.ErrorTitle)
-                    );
-
-                    XDocument doc;
+                { 
                     if (File.Exists(path))
                     {
-                        doc = XDocument.Load(path);
-                        doc.Root.Add(newHistoryLog);
-                        doc.Save(path);
+                        using FileStream fsDel = new FileStream(path, FileMode.Open, FileAccess.ReadWrite);
+                        fsDel.SetLength(fsDel.Length - 15);
+                        fsDel.Close();
+
+                        Stream xmlFile = new FileStream(path, FileMode.Append, FileAccess.Write);
+                        XmlTextWriter xmlwriter = new XmlTextWriter(xmlFile, Encoding.Default)
+                        {
+                            Formatting = System.Xml.Formatting.Indented
+                        };
+
+                        xmlwriter.WriteStartElement("Name");
+                        xmlwriter.WriteString( historyLog.Name);
+                        xmlwriter.WriteEndElement();
+
+                        xmlwriter.WriteStartElement("SourceFile");
+                        xmlwriter.WriteString(historyLog.SourceFile);
+                        xmlwriter.WriteEndElement();
+
+                        xmlwriter.WriteStartElement("TargetFile");
+                        xmlwriter.WriteString(historyLog.TargetFile);
+                        xmlwriter.WriteEndElement();
+
+                        xmlwriter.WriteStartElement("FileSize");
+                        xmlwriter.WriteString(historyLog.FileSize.ToString());
+                        xmlwriter.WriteEndElement();
+
+                        xmlwriter.WriteStartElement("TransferTime");
+                        xmlwriter.WriteString(historyLog.TransferTime.ToString());
+                        xmlwriter.WriteEndElement();
+
+                        xmlwriter.WriteStartElement("Time");
+                        xmlwriter.WriteString(historyLog.Time.ToString());
+                        xmlwriter.WriteEndElement();
+
+                        xmlwriter.WriteStartElement("EncryptionTime");
+                        xmlwriter.WriteString(historyLog.EncryptionTime.ToString());
+                        xmlwriter.WriteEndElement();
+
+                        xmlwriter.WriteStartElement("Error");
+                        xmlwriter.WriteString(historyLog.Error.ToString());
+                        xmlwriter.WriteEndElement();
+
+                        xmlwriter.WriteStartElement("ErrorTitle");
+                        xmlwriter.WriteString(historyLog.ErrorTitle.ToString());
+                        xmlwriter.WriteEndElement();
+
+                        xmlwriter.Close();
+
+                        using FileStream fs = new FileStream(path, FileMode.Append, FileAccess.Write);
+                        using StreamWriter sw = new StreamWriter(fs);
+                        sw.WriteLine("\n" + "</HistoryLog>");
+                        sw.Close();
                     }
 
-                    else newHistoryLog.Save(path);
+                    else
+                    {
+                        using StringWriter swHistoryLog = new StringWriter();
+                        XmlWriterSettings writtersetting = new XmlWriterSettings();
+                        writtersetting.Indent = true;
+                        using XmlWriter xmlwriter = XmlWriter.Create(swHistoryLog, writtersetting);
 
+                        xmlwriter.WriteStartDocument();
+
+                        xmlwriter.WriteStartElement("HistoryLog");
+
+                        xmlwriter.WriteStartElement("Name");
+                        xmlwriter.WriteString(historyLog.Name);
+                        xmlwriter.WriteEndElement();
+
+                        xmlwriter.WriteStartElement("SourceFile");
+                        xmlwriter.WriteString(historyLog.SourceFile);
+                        xmlwriter.WriteEndElement();
+
+                        xmlwriter.WriteStartElement("TargetFile");
+                        xmlwriter.WriteString(historyLog.TargetFile);
+                        xmlwriter.WriteEndElement();
+
+                        xmlwriter.WriteStartElement("FileSize");
+                        xmlwriter.WriteString(historyLog.FileSize.ToString());
+                        xmlwriter.WriteEndElement();
+
+                        xmlwriter.WriteStartElement("TransferTime");
+                        xmlwriter.WriteString(historyLog.TransferTime.ToString());
+                        xmlwriter.WriteEndElement();
+
+                        xmlwriter.WriteStartElement("Time");
+                        xmlwriter.WriteString(historyLog.Time.ToString());
+                        xmlwriter.WriteEndElement();
+
+                        xmlwriter.WriteStartElement("EncryptionTime");
+                        xmlwriter.WriteString(historyLog.EncryptionTime.ToString());
+                        xmlwriter.WriteEndElement();
+
+                        xmlwriter.WriteStartElement("Error");
+                        xmlwriter.WriteString(historyLog.Error.ToString());
+                        xmlwriter.WriteEndElement();
+
+                        xmlwriter.WriteStartElement("ErrorTitle");
+                        xmlwriter.WriteString(historyLog.ErrorTitle.ToString());
+                        xmlwriter.WriteEndElement();
+
+                        xmlwriter.WriteEndElement();
+
+                        xmlwriter.WriteEndDocument();
+
+                        xmlwriter.Close();
+
+                        File.WriteAllText(path, swHistoryLog.ToString() + "\n");
+                    }
                 }
                 finally
                 {
@@ -117,7 +207,7 @@ namespace EasySave
 
                         using StringWriter swHistoryLog = new StringWriter();
                         using JsonTextWriter writer = new JsonTextWriter(swHistoryLog);
-                        writer.Formatting = Formatting.Indented;
+                        writer.Formatting = Newtonsoft.Json.Formatting.Indented;
                         // {
                         writer.WriteStartObject();
                         // "name" : "Save"
@@ -150,13 +240,14 @@ namespace EasySave
                         sw.Write(",");
                         sw.WriteLine(jsonHistoryLog);
                         sw.Write("]");
+                        sw.Close();
                     }
                     else
                     {
                         using StringWriter sw = new StringWriter();
                         using JsonTextWriter writer = new JsonTextWriter(sw)
                         {
-                            Formatting = Formatting.Indented
+                            Formatting = Newtonsoft.Json.Formatting.Indented
                         };
                         // {
                         writer.WriteStartArray();
@@ -189,7 +280,7 @@ namespace EasySave
 
                         writer.Close();
 
-                        File.WriteAllTextAsync(path, sw.ToString());
+                        File.WriteAllText(path, sw.ToString());
                     }
                 }
                 finally
