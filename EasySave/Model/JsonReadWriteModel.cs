@@ -2,9 +2,12 @@ using EasySave.Object;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace EasySave
@@ -19,21 +22,12 @@ namespace EasySave
 
         private const string _DEFAULT_JOB_BACKUP_FILE_PATH = @"C:\EasySave\Job-Backup";
 
-        private ReaderWriterLockSlim _readWriteLock = new ReaderWriterLockSlim();
-
-        private ReaderWriterLockSlim _readWriteLockHs = new ReaderWriterLockSlim();
-
-        private JObject _jsonFile = null;
-
-        public ReaderWriterLockSlim ReadWriteLock { get => _readWriteLock; set => _readWriteLock = value; }
-        public ReaderWriterLockSlim ReadWriteLockHs { get => _readWriteLockHs; set => _readWriteLockHs = value; }
-
         /// <summary>
         /// Method which check if the directory exist and create the file if it doesn't exist,
         /// then deserialized the file if it exists for appends the new save job or create a new log file
         /// </summary>
         ///<param name=myHistoryLog>An object HistoryLog</param>
-        public void SaveHistoryLog(HistoryLog myHistoryLog, int id)
+        public void SaveHistoryLog(HistoryLog myHistoryLog,int id)
         {
             Directory.CreateDirectory(_DEFAULT_LOG_FILE_PATH);
 
@@ -111,45 +105,92 @@ namespace EasySave
         /// <param name="path"></param>
         public void SaveHistoryLoginJson(HistoryLog hs, string path, int id)
         {
-            JObject newHistoryLog = new JObject(
-
-            new JProperty("Name", hs.Name + " - " + id),
-            new JProperty("SourceFile", hs.SourceFile),
-            new JProperty("TargetFile", hs.TargetFile),
-            new JProperty("FileSize", hs.FileSize),
-            new JProperty("TransferTime", hs.TransferTime),
-            new JProperty("Time", hs.Time),
-            new JProperty("EncryptionTime", hs.EncryptionTime),
-            new JProperty("Error", hs.Error),
-            new JProperty("ErrorTitle", hs.ErrorTitle)
-            );
-            JObject json = null;
             if (Monitor.TryEnter(path, 2000))
             {
-                _readWriteLockHs.EnterReadLock();
-
                 try
                 {
                     if (File.Exists(path))
                     {
-                        json = JObject.Parse(File.ReadAllText(path));
-                        if (json.Property(hs.Name + " - " + id + " - " + Path.GetFileName(hs.SourceFile) + " - " + hs.Time + " - " + hs.TransferTime) == null)
-                            json.Add(new JProperty(hs.Name + " - " + id + " - " + Path.GetFileName(hs.SourceFile) + " - " + hs.Time + " - " + hs.TransferTime, newHistoryLog));
-                    }
+                        using FileStream fsDel = new FileStream(path, FileMode.Open, FileAccess.ReadWrite);
+                        fsDel.SetLength(fsDel.Length - 1);
+                        fsDel.Close();
 
+                        using StringWriter swHistoryLog = new StringWriter();
+                        using JsonTextWriter writer = new JsonTextWriter(swHistoryLog);
+                        writer.Formatting = Formatting.Indented;
+                        // {
+                        writer.WriteStartObject();
+                        // "name" : "Save"
+                        writer.WritePropertyName("Name");
+                        writer.WriteValue(hs.Name);
+                        writer.WritePropertyName("SourceFile");
+                        writer.WriteValue(hs.SourceFile);
+                        writer.WritePropertyName("TargetFile");
+                        writer.WriteValue(hs.TargetFile);
+                        writer.WritePropertyName("FileSize");
+                        writer.WriteValue(hs.FileSize);
+                        writer.WritePropertyName("TransferTime");
+                        writer.WriteValue(hs.TransferTime);
+                        writer.WritePropertyName("Time");
+                        writer.WriteValue(hs.Time);
+                        writer.WritePropertyName("EncryptionTime");
+                        writer.WriteValue(hs.EncryptionTime);
+                        writer.WritePropertyName("Error");
+                        writer.WriteValue(hs.Error);
+                        writer.WritePropertyName("ErrorTitle");
+                        writer.WriteValue(hs.ErrorTitle);
+
+                        // }
+                        writer.WriteEndObject();
+                        writer.Close();
+
+                        string jsonHistoryLog = swHistoryLog.ToString();
+                        using FileStream fs = new FileStream(path, FileMode.Append, FileAccess.Write);
+                        using StreamWriter sw = new StreamWriter(fs);
+                        sw.Write(",");
+                        sw.WriteLine(jsonHistoryLog);
+                        sw.Write("]");
+                    }
                     else
                     {
-                        json = new JObject(new JProperty(hs.Name + " - " + id + " - " + Path.GetFileName(hs.SourceFile) + " - " + hs.Time + " - " + hs.TransferTime, newHistoryLog));
+                        using StringWriter sw = new StringWriter();
+                        using JsonTextWriter writer = new JsonTextWriter(sw)
+                        {
+                            Formatting = Formatting.Indented
+                        };
+                        // {
+                        writer.WriteStartArray();
 
+                        writer.WriteStartObject();
+
+                        // "name" : "Save"
+                        writer.WritePropertyName("Name");
+                        writer.WriteValue(hs.Name);
+                        writer.WritePropertyName("SourceFile");
+                        writer.WriteValue(hs.SourceFile);
+                        writer.WritePropertyName("TargetFile");
+                        writer.WriteValue(hs.TargetFile);
+                        writer.WritePropertyName("FileSize");
+                        writer.WriteValue(hs.FileSize);
+                        writer.WritePropertyName("TransferTime");
+                        writer.WriteValue(hs.TransferTime);
+                        writer.WritePropertyName("Time");
+                        writer.WriteValue(hs.Time);
+                        writer.WritePropertyName("EncryptionTime");
+                        writer.WriteValue(hs.EncryptionTime);
+                        writer.WritePropertyName("Error");
+                        writer.WriteValue(hs.Error);
+                        writer.WritePropertyName("ErrorTitle");
+                        writer.WriteValue(hs.ErrorTitle);
+                        // }
+                        writer.WriteEndObject();
+
+                        writer.WriteEndArray();
+
+                        writer.Close();
+
+                        File.WriteAllTextAsync(path, sw.ToString());
                     }
-                    _readWriteLockHs.ExitReadLock();
-                    _readWriteLockHs.EnterWriteLock();
-                    File.WriteAllText(path, json.ToString());
-                    _readWriteLockHs.ExitWriteLock();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.ToString());
                 }
                 finally
                 {
@@ -165,35 +206,29 @@ namespace EasySave
         /// <param name="path"></param>
         public void SaveProgressLoginJsonIfFileDoesntExist(ProgressLog pl, string path, int id)
         {
-            JObject newProgressLog = new JObject(
-
-            new JProperty("Name", pl.Name + "-" + id),
-            new JProperty("SourceFile", pl.SourceFile),
-            new JProperty("TargetFile", pl.TargetFile),
-            new JProperty("State", pl.State),
-            new JProperty("TotalFilesToCopy", pl.TotalFilesToCopy),
-            new JProperty("TotalFilesSize", pl.TotalFilesRemaining),
-            new JProperty("TotalFilesRemaining", pl.TotalFilesRemaining),
-            new JProperty("Progression", pl.Progression)
-            );
-            _jsonFile = new JObject(new JProperty(pl.Name + "-" + id, newProgressLog));
-
             if (Monitor.TryEnter(path, 2000))
             {
-                _readWriteLock.EnterWriteLock();
                 try
                 {
-                    File.WriteAllText(path, _jsonFile.ToString());
-                }
-                catch (Exception e)
-                {
-                    e.ToString();
+                    JObject newProgressLog = new JObject(
+
+                    new JProperty("Name", pl.Name),
+                    new JProperty("SourceFile", pl.SourceFile),
+                    new JProperty("TargetFile", pl.TargetFile),
+                    new JProperty("State", pl.State),
+                    new JProperty("TotalFilesToCopy", pl.TotalFilesToCopy),
+                    new JProperty("TotalFilesSize", pl.TotalFilesRemaining),
+                    new JProperty("TotalFilesRemaining", pl.TotalFilesRemaining),
+                    new JProperty("Progression", pl.Progression)
+                    );
+
+                    JObject json = new JObject(new JProperty(pl.Name + " - " + id, newProgressLog));
+
+                    File.WriteAllText(path, json.ToString());
                 }
                 finally
                 {
                     Monitor.Exit(path);
-                    _readWriteLock.ExitWriteLock();
-                    _jsonFile = null;
                 }
             }
         }
@@ -205,24 +240,22 @@ namespace EasySave
         /// <param name="path"></param>
         public void SaveProgressLoginJsonIfFileExist(ProgressLog pl, string path, int id)
         {
-
+            JObject jsonFile = null;
             if (Monitor.TryEnter(path, 2000))
             {
-                _readWriteLock.EnterWriteLock();
                 try
                 {
-                    _jsonFile = JObject.Parse(File.ReadAllText(path));
+                    jsonFile = JObject.Parse(File.ReadAllText(path));
                 }
 
                 finally
                 {
                     Monitor.Exit(path);
-                    _readWriteLock.ExitWriteLock();
                 }
 
-                if (_jsonFile.Property(pl.Name + "-" + id) != null)
+                if (jsonFile.Property(pl.Name + " - " + id) != null)
                 {
-                    JObject progressLogToUpdate = (JObject)_jsonFile[pl.Name + "-" + id];
+                    JObject progressLogToUpdate = (JObject)jsonFile[pl.Name + " - " + id];
                     progressLogToUpdate["SourceFile"] = pl.SourceFile;
                     progressLogToUpdate["TargetFile"] = pl.TargetFile;
                     progressLogToUpdate["State"] = pl.State;
@@ -231,17 +264,21 @@ namespace EasySave
                     progressLogToUpdate["TotalFilesRemaining"] = pl.TotalFilesRemaining;
                     progressLogToUpdate["Progression"] = pl.Progression;
 
-                    if (Monitor.TryEnter(path, 2000))
+                    if (Monitor.TryEnter(path, 3000))
                     {
-                        _readWriteLock.EnterWriteLock();
                         try
                         {
-                            File.WriteAllText(path, _jsonFile.ToString());
+                            File.WriteAllText(path, jsonFile.ToString());
                         }
+
+                        catch
+                        {
+
+                        }
+
                         finally
                         {
                             Monitor.Exit(path);
-                            _readWriteLock.ExitWriteLock();
                         }
                     }
                 }
@@ -260,19 +297,17 @@ namespace EasySave
                     new JProperty("Progression", pl.Progression)
                     );
 
-                    _jsonFile.Add(new JProperty(pl.Name, newProgressLog));
+                    jsonFile.Add(new JProperty(pl.Name + " - " + id, newProgressLog));
 
                     if (Monitor.TryEnter(path, 3000))
                     {
-                        _readWriteLock.EnterWriteLock();
                         try
                         {
-                            File.WriteAllText(path,  _jsonFile.ToString());
+                            File.WriteAllText(path, jsonFile.ToString());
                         }
                         finally
                         {
                             Monitor.Exit(path);
-                            _readWriteLock.ExitWriteLock();
                         }
                     }
                 }

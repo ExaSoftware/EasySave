@@ -9,6 +9,7 @@ using System.Text;
 using System.Resources;
 using System.Reflection;
 using System.Windows;
+using System.Threading.Tasks;
 
 namespace EasySave
 {
@@ -246,14 +247,13 @@ namespace EasySave
                             sizeRemaining -= fileInfo.Length; ;
 
                             //Write logs
-                            Thread logThread = new Thread(() =>
-                            {
-                                progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, _id, (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), sizeRemaining, fileToTranfer, sizeTotal);
-                                historyLog.Fill(file, destFile, fileInfoLength, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime, _id);
-                            }
-                            );
-                            logThread.Start();
-                            logThread.Join();
+                            var task = Task.Run(() =>
+                                {
+                                    progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, _id, (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), sizeRemaining, fileToTranfer, sizeTotal);
+                                    historyLog.Fill(file, destFile, fileInfoLength, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime, _id);
+                            });
+                            task.Wait();
+                            task.Dispose();
                             State = progressLog;
                         }
                         else
