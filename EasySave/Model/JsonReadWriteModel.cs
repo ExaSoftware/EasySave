@@ -2,15 +2,11 @@ using EasySave.Object;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Xml;
-using System.Xml.Linq;
 
 namespace EasySave
 {
@@ -26,9 +22,6 @@ namespace EasySave
 
         private ReaderWriterLockSlim _readWriteLock = new ReaderWriterLockSlim();
 
-        private ReaderWriterLockSlim _readWriteLockHs = new ReaderWriterLockSlim();
-
-
         /// <summary>
         /// Method which check if the directory exist and create the file if it doesn't exist,
         /// then deserialized the file if it exists for appends the new save job or create a new log file
@@ -42,7 +35,7 @@ namespace EasySave
 
             if (App.Configuration.LogFormat.Equals("json")) SaveHistoryLoginJson(myHistoryLog, path, id);
 
-            else SaveHistoryLogInXml(myHistoryLog, path, id);
+            else SaveHistoryLogInXml(myHistoryLog, path,id);
         }
 
         /// <summary>
@@ -68,7 +61,7 @@ namespace EasySave
         /// </summary>
         /// <param name="historyLog"></param>
         /// <param name="path"></param>
-        public void SaveHistoryLogInXml(HistoryLog historyLog, string path, int id)
+        private void SaveHistoryLogInXml(HistoryLog historyLog, string path, int id)
         {
             if (Monitor.TryEnter(path, 2000))
             {
@@ -102,7 +95,7 @@ namespace EasySave
                                     Formatting = System.Xml.Formatting.Indented
                                 };
 
-                                xmlwriter.WriteStartElement("Name");
+                                xmlwriter.WriteStartElement("Name" + " - " + id);
                                 xmlwriter.WriteString(historyLog.Name);
                                 xmlwriter.WriteEndElement();
 
@@ -180,7 +173,7 @@ namespace EasySave
 
                                 xmlwriter.WriteStartElement("HistoryLog");
 
-                                xmlwriter.WriteStartElement("Name");
+                                xmlwriter.WriteStartElement("Name" + " - " + id);
                                 xmlwriter.WriteString(historyLog.Name);
                                 xmlwriter.WriteEndElement();
 
@@ -242,7 +235,7 @@ namespace EasySave
         /// </summary>
         /// <param name="hs"></param>
         /// <param name="path"></param>
-        public void SaveHistoryLoginJson(HistoryLog hs, string path, int id)
+        private void SaveHistoryLoginJson(HistoryLog hs, string path, int id)
         {
             if (Monitor.TryEnter(path, 2000))
             {
@@ -260,7 +253,7 @@ namespace EasySave
                         // {
                         writer.WriteStartObject();
                         // "name" : "Save"
-                        writer.WritePropertyName("Name");
+                        writer.WritePropertyName("Name" + " - " + id);
                         writer.WriteValue(hs.Name);
                         writer.WritePropertyName("SourceFile");
                         writer.WriteValue(hs.SourceFile);
@@ -304,7 +297,7 @@ namespace EasySave
                         writer.WriteStartObject();
 
                         // "name" : "Save"
-                        writer.WritePropertyName("Name");
+                        writer.WritePropertyName("Name" + " - " + id);
                         writer.WriteValue(hs.Name);
                         writer.WritePropertyName("SourceFile");
                         writer.WriteValue(hs.SourceFile);
@@ -344,7 +337,7 @@ namespace EasySave
         /// </summary>
         /// <param name="hs"></param>
         /// <param name="path"></param>
-        public void SaveProgressLoginJsonIfFileDoesntExist(ProgressLog pl, string path, int id)
+        private void SaveProgressLoginJsonIfFileDoesntExist(ProgressLog pl, string path, int id)
         {
             if (Monitor.TryEnter(path, 2000))
             {
@@ -380,7 +373,7 @@ namespace EasySave
         /// </summary>
         /// <param name="hs"></param>
         /// <param name="path"></param>
-        public void SaveProgressLoginJsonIfFileExist(ProgressLog pl, string path, int id)
+        private void SaveProgressLoginJsonIfFileExist(ProgressLog pl, string path, int id)
         {
             while(true)
             {
@@ -517,8 +510,8 @@ namespace EasySave
         /// <param name="progressLogList"></param>
         public void SaveProgressLog(ProgressLog myProgressLog, int id)
         {
-            String path = String.Format(@"{0}\Progresslog.json", _DEFAULT_LOG_FILE_PATH);
-            Directory.CreateDirectory(_DEFAULT_LOG_FILE_PATH);
+            string path = String.Format(@"{0}\Progresslog.json", _DEFAULT_LOG_FILE_PATH);
+            _ = Directory.CreateDirectory(_DEFAULT_LOG_FILE_PATH);
             if (File.Exists(path))
             {
                 SaveProgressLoginJsonIfFileExist(myProgressLog, path, id);

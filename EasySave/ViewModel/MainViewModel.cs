@@ -218,12 +218,13 @@ namespace EasySave.ViewModel
                 else if (jobBackup.Priority == 1) _hightPriority.Add(jobBackup);
                 else _normalPriority.Add(jobBackup);
             }
-            Task.Run(() =>
-            {
-                Task.Run(() => ExecuteAll(_veryHightPriority)).Wait();
-                Task.Run(() => ExecuteAll(_hightPriority)).Wait();
-                Task.Run(() => ExecuteAll(_normalPriority)).Wait();
-            });
+
+            _ = Task.Run(() =>
+              {
+                  Task.Run(() => ExecuteAll(_veryHightPriority)).Wait();
+                  Task.Run(() => ExecuteAll(_hightPriority)).Wait();
+                  Task.Run(() => ExecuteAll(_normalPriority)).Wait();
+              });
         }
 
         /// <summary>
