@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.ComponentModel;
 using System.Threading;
-using System.Text;
 using System.Resources;
 using System.Reflection;
 using System.Windows;
@@ -59,14 +58,14 @@ namespace EasySave
         }
 
         public bool IsRunning { get => _isRunning; set => _isRunning = value; }
-        public int Priority 
+        public int Priority
         {
             get => _priority;
             set
             {
                 _priority = value;
                 OnPropertyChanged("Priority");
-            }  
+            }
         }
 
         ///  <summary> 
@@ -126,7 +125,7 @@ namespace EasySave
         ///  Execute the save according to attributes.
         ///  </summary>
         ///  <remarks>Use it whether differential or not.</remarks>
-        public void Execute()
+        public void Execute(CancellationToken token)
         {
 
             bool error = false;
@@ -151,13 +150,13 @@ namespace EasySave
 
                 if (_isDifferential)
                 {
-                    SaveFiles(FindFilesForDifferentialSave());
+                    SaveFiles(FindFilesForDifferentialSave(), token);
                     DeleteExcessFile();
                 }
                 else
                 {
                     DeleteFiles();
-                    SaveFiles(Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories));
+                    SaveFiles(Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories), token);
                 }
 
                 _isRunning = false;
@@ -170,7 +169,7 @@ namespace EasySave
         /// </summary>
         /// <param name="files"></param>
         /// <param name="saveBigFiles"></param>
-        private void SaveFiles(string[] files)
+        private int SaveFiles(string[] files, CancellationToken token)
         {
             _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
             ObservableCollection<string> temp = new ObservableCollection<string>();
@@ -236,6 +235,7 @@ namespace EasySave
 
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         historyStopwatch.Reset();
 
                         if ((ulong)fileInfo.Length > _sizeLimit && _sizeLimit > 0)
@@ -312,8 +312,25 @@ namespace EasySave
 
                         }
                     }
+                    catch (OperationCanceledException)
+                    {
+                        _isRunning = false;
+                        State.State = "END";
 
+                        string result1 = errors == 0
+                            ? string.Format("{0} {1} {2}.     {3}", _rm.GetString("executionAborted"), _rm.GetString("at"), DateTime.Now.ToString("T"), _rm.GetString("noError"))
+                            : string.Format("{0} {1} {2}.     {3} {4}:", _rm.GetString("executionAborted"), _rm.GetString("at"), DateTime.Now.ToString("T"), errors, _rm.GetString("errors"));
 
+                        Application.Current.Dispatcher.Invoke(delegate
+                        {
+                            //Insert the execution finished string at the begin of the list to show
+                            temp.Insert(1, result1);
+                            State.Log = temp;
+                            temp = null;
+                        });
+
+                        return 1;
+                    }
                     catch (Exception e)
                     {
                         destFile = Path.Combine(_destinationDirectory, Path.GetFileName(file));
@@ -324,12 +341,11 @@ namespace EasySave
 
                         //Add error to the temp list
                         errors++;
-                        temp.Add(String.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
+                        temp.Add(string.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
                         progressLog.Dispose();
                     }
                     finally
                     {
-
                         //Free memory
                         fileInfo = null;
                         destFile = string.Empty;
@@ -339,24 +355,20 @@ namespace EasySave
                         progressLog.Dispose();
                     }
                 }
-
-
                 // If pause
+                //Edit state log status to paused
                 else
                 {
+                    State.State = "PAUSED";
                     while (App.ThreadPause) { Thread.Sleep(1000); }
                 }
 
             }
-            string result = String.Empty;
-            if (errors == 0)
-            {
-                result = String.Format("{0} {1} {2}.     {3}", _rm.GetString("executionFinished"), _rm.GetString("at"), DateTime.Now.ToString("T"), _rm.GetString("noError"));
-            }
-            else
-            {
-                result = String.Format("{0} {1} {2}.     {3} {4}:", _rm.GetString("executionFinished"), _rm.GetString("at"), DateTime.Now.ToString("T"), errors, _rm.GetString("errors"));
-            }
+            string result = string.Empty;
+            result = errors == 0
+                ? string.Format("{0} {1} {2}.     {3}", _rm.GetString("executionFinished"), _rm.GetString("at"), DateTime.Now.ToString("T"), _rm.GetString("noError"))
+                : string.Format("{0} {1} {2}.     {3} {4}:", _rm.GetString("executionFinished"), _rm.GetString("at"), DateTime.Now.ToString("T"), errors, _rm.GetString("errors"));
+
             Application.Current.Dispatcher.Invoke(delegate
             {
                 //Insert the execution finished string at the begin of the list to show
@@ -368,6 +380,7 @@ namespace EasySave
             _isRunning = false;
             State.State = "END";
 
+            return 0;
         }
 
 
