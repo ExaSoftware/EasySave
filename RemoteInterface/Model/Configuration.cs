@@ -14,7 +14,7 @@ namespace RemoteInterface
         private String _language;
 
         private static Configuration _instance;
-        public const String DEFAULT_CONFIG_FILE_PATH = @"C:\EasySave\Configuration.json";
+        public const String DEFAULT_CONFIG_FILE_PATH = @"C:\EasySave\Remote\Configuration.json";
         public string Language
         {
             get => _language;
@@ -36,6 +36,7 @@ namespace RemoteInterface
 
         public void CreateConfigurationFile()
         {
+            Directory.CreateDirectory(@"C:\EasySave\Remote");
             File.Create(DEFAULT_CONFIG_FILE_PATH).Close();
         }
 

@@ -295,11 +295,20 @@ namespace RemoteInterface.Resources {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Langue.
+        ///   Recherche une chaîne localisée semblable à Langue (effectif après un redémarrage).
         /// </summary>
         public static string language {
             get {
                 return ResourceManager.GetString("language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Mo.
+        /// </summary>
+        public static string megabyteUnit {
+            get {
+                return ResourceManager.GetString("megabyteUnit", resourceCulture);
             }
         }
         
