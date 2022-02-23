@@ -24,16 +24,23 @@ namespace RemoteInterface
     /// </summary>
     public partial class MainWindow : Window
     {
+        private MainViewModel _mainViewModel;
+
         public MainWindow()
         {
             InitializeComponent();
-
+            _mainViewModel = new MainViewModel();
             frame.Navigate(new MainView());
         }
 
         private void btnSettings_Click(object sender, RoutedEventArgs e)
         {
             frame.Navigate(new SettingsView());
+        }
+
+        private void Window_Closing(object sender, EventArgs e)
+        {
+            _mainViewModel.StopConnection();
         }
     }
 }
