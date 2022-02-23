@@ -467,7 +467,7 @@ namespace EasySave
         }
 
         /// <summary>
-        /// Method which read a json file and convert it into a list of list of JobBackup
+        /// Method which read a json file and convert it into a list of list of JobBackup.
         /// </summary>
         /// <returns>The list of JobBackup associate to the json file</returns>
         public ObservableCollection<JobBackup> ReadJobBackup()
