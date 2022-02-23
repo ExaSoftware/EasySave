@@ -12,6 +12,7 @@ namespace EasySave.ViewModel
         private JobBackup _jobBackup;
         private ObservableCollection<JobBackup> _jbList;
         private int _selectedIndex;
+        private int _prioritySelectedIndex;
         private JsonReadWriteModel _jsonReadWriteModel = new JsonReadWriteModel();
 
         //RessourceManager for the strings translation
@@ -40,21 +41,25 @@ namespace EasySave.ViewModel
             //Set value in combobox according to the type of backup
             if (_jobBackup.IsDifferential) _selectedIndex = 1;
             if (!_jobBackup.IsDifferential) _selectedIndex = 0;
+
+            //Set value in combobox according to the priority
+            _prioritySelectedIndex = _jobBackup.Priority;
         }
 
         public JobBackup JobBackup { get => _jobBackup; set => _jobBackup = value; }
         public int SelectedIndex { get => _selectedIndex; set => _selectedIndex = value; }
         public Dictionary<string, string> Errors { get => _errors; set => _errors = value; }
+        public int PrioritySelectedIndex { get => _prioritySelectedIndex; set => _prioritySelectedIndex = value; }
 
         ///  <summary>Create or modifiy the job</summary>
-        public void JobCreation(int id, string label, string sourceDirectory, string destinationDirectory, bool isDifferential)
+        public void JobCreation(int id, string label, string sourceDirectory, string destinationDirectory, bool isDifferential, int priority)
         {
 
             //Modify a list
             if (id != -1)
             {
                 //Ajoute un élément dans la liste
-                _jbList[id].Fill(label, sourceDirectory, destinationDirectory, isDifferential);
+                _jbList[id].Fill(label, sourceDirectory, destinationDirectory, isDifferential, priority);
             }
             //Insert a new list if it's not modified
             else
@@ -63,7 +68,7 @@ namespace EasySave.ViewModel
 
 
                 JobBackup newJobBackup = new JobBackup();
-                newJobBackup.Fill(label, sourceDirectory, destinationDirectory, isDifferential);
+                newJobBackup.Fill(label, sourceDirectory, destinationDirectory, isDifferential, priority);
                 newJobBackup.Id = _jbList.Count;
                 _jbList.Add(newJobBackup);
             }

@@ -59,7 +59,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition />
+            <RowDefinition Height="1.3*"/>
             <RowDefinition />
         </Grid.RowDefinitions>
         
@@ -82,6 +82,7 @@
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
             
             <!-- Job backup label -->
@@ -99,7 +100,7 @@
                         <TextBox Name="txtBoxSource" Height="20" Text="{Binding JobBackup.SourceDirectory}" VerticalAlignment="Center" IsReadOnly="True" TextChanged="TxtBoxSourceTextChanged"/>
                     </StackPanel>
                 </DockPanel>
-                <TextBlock Name="sourceDirectoryError" Visibility="Collapsed" Foreground="#a30700"/>
+                <TextBlock Name="sourceDirectoryError" Visibility="Collapsed" Foreground="#a30700" TextWrapping="Wrap"/>
             </StackPanel>
             <!-- Destination Directory -->
             <TextBlock Text="{x:Static language:Strings.jobCreateDestinationDirectory}" Grid.Row="2" VerticalAlignment="Center" Margin="0,0,5,0"/>
@@ -110,13 +111,20 @@
                         <TextBox Name="txtBoxDestination" Height="20" Text="{Binding JobBackup.DestinationDirectory}" VerticalAlignment="Center" IsReadOnly="True" TextChanged="TxtBoxDestinationTextChanged"/>
                     </StackPanel>
                 </DockPanel>
-                <TextBlock Name="destinationDirectoryError" Visibility="Collapsed" Foreground="#a30700"/>
+                <TextBlock Name="destinationDirectoryError" Visibility="Collapsed" Foreground="#a30700" TextWrapping="Wrap"/>
             </StackPanel>
             <!-- Backup Type-->
             <TextBlock Text="{x:Static language:Strings.jobCreateBackupType}" Grid.Row="3" VerticalAlignment="Center"/>
             <ComboBox Name="type" Grid.Row="3" Grid.Column="1" Height="25" SelectedIndex="{Binding SelectedIndex}">
                 <ComboBoxItem Content="{x:Static language:Strings.total}" />
                 <ComboBoxItem Content="{x:Static language:Strings.differential}" />
+            </ComboBox>
+            <!-- Priority -->
+            <TextBlock Text="{x:Static language:Strings.priority}" Grid.Row="4" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <ComboBox Name="comboboxPriority" Grid.Row="4" Grid.Column="1" Height="25" SelectedIndex="{Binding PrioritySelectedIndex}">
+                <ComboBoxItem Content="{x:Static language:Strings.normalPriority}" />
+                <ComboBoxItem Content="{x:Static language:Strings.highPriority}" />
+                <ComboBoxItem Content="{x:Static language:Strings.veryHighPriority}" />
             </ComboBox>
         </Grid>
         

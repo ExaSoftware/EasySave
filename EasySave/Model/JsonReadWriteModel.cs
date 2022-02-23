@@ -75,113 +75,158 @@ namespace EasySave
                 {
                     if (File.Exists(path))
                     {
-                        using FileStream fsDel = new FileStream(path, FileMode.Open, FileAccess.ReadWrite);
-                        fsDel.SetLength(fsDel.Length - 15);
-                        fsDel.Close();
-
-                        using Stream xmlFile = new FileStream(path, FileMode.Append, FileAccess.Write);
-                        using XmlTextWriter xmlwriter = new XmlTextWriter(xmlFile, Encoding.Default)
+                        while(true)
                         {
-                            Formatting = System.Xml.Formatting.Indented
-                        };
+                            try
+                            {
+                                using FileStream fsDel = new FileStream(path, FileMode.Open, FileAccess.ReadWrite);
+                                fsDel.SetLength(fsDel.Length - 15);
+                                fsDel.Close();
+                                fsDel.Dispose();
+                                break;
+                            }
+                            catch(IOException)
+                            {
+                                continue;
+                            }
+                        }
 
-                        xmlwriter.WriteStartElement("Name");
-                        xmlwriter.WriteString(historyLog.Name);
-                        xmlwriter.WriteEndElement();
+                        while (true)
+                        {
+                            try
+                            {
+                                using Stream xmlFile = new FileStream(path, FileMode.Append, FileAccess.Write);
+                                using XmlTextWriter xmlwriter = new XmlTextWriter(xmlFile, Encoding.Default)
+                                {
+                                    Formatting = System.Xml.Formatting.Indented
+                                };
 
-                        xmlwriter.WriteStartElement("SourceFile");
-                        xmlwriter.WriteString(historyLog.SourceFile);
-                        xmlwriter.WriteEndElement();
+                                xmlwriter.WriteStartElement("Name");
+                                xmlwriter.WriteString(historyLog.Name);
+                                xmlwriter.WriteEndElement();
 
-                        xmlwriter.WriteStartElement("TargetFile");
-                        xmlwriter.WriteString(historyLog.TargetFile);
-                        xmlwriter.WriteEndElement();
+                                xmlwriter.WriteStartElement("SourceFile");
+                                xmlwriter.WriteString(historyLog.SourceFile);
+                                xmlwriter.WriteEndElement();
 
-                        xmlwriter.WriteStartElement("FileSize");
-                        xmlwriter.WriteString(historyLog.FileSize.ToString());
-                        xmlwriter.WriteEndElement();
+                                xmlwriter.WriteStartElement("TargetFile");
+                                xmlwriter.WriteString(historyLog.TargetFile);
+                                xmlwriter.WriteEndElement();
 
-                        xmlwriter.WriteStartElement("TransferTime");
-                        xmlwriter.WriteString(historyLog.TransferTime.ToString());
-                        xmlwriter.WriteEndElement();
+                                xmlwriter.WriteStartElement("FileSize");
+                                xmlwriter.WriteString(historyLog.FileSize.ToString());
+                                xmlwriter.WriteEndElement();
 
-                        xmlwriter.WriteStartElement("Time");
-                        xmlwriter.WriteString(historyLog.Time.ToString());
-                        xmlwriter.WriteEndElement();
+                                xmlwriter.WriteStartElement("TransferTime");
+                                xmlwriter.WriteString(historyLog.TransferTime.ToString());
+                                xmlwriter.WriteEndElement();
 
-                        xmlwriter.WriteStartElement("EncryptionTime");
-                        xmlwriter.WriteString(historyLog.EncryptionTime.ToString());
-                        xmlwriter.WriteEndElement();
+                                xmlwriter.WriteStartElement("Time");
+                                xmlwriter.WriteString(historyLog.Time.ToString());
+                                xmlwriter.WriteEndElement();
 
-                        xmlwriter.WriteStartElement("Error");
-                        xmlwriter.WriteString(historyLog.Error.ToString());
-                        xmlwriter.WriteEndElement();
+                                xmlwriter.WriteStartElement("EncryptionTime");
+                                xmlwriter.WriteString(historyLog.EncryptionTime.ToString());
+                                xmlwriter.WriteEndElement();
 
-                        xmlwriter.WriteStartElement("ErrorTitle");
-                        xmlwriter.WriteString(historyLog.ErrorTitle.ToString());
-                        xmlwriter.WriteEndElement();
+                                xmlwriter.WriteStartElement("Error");
+                                xmlwriter.WriteString(historyLog.Error.ToString());
+                                xmlwriter.WriteEndElement();
 
-                        xmlwriter.Close();
+                                xmlwriter.WriteStartElement("ErrorTitle");
+                                xmlwriter.WriteString(historyLog.ErrorTitle.ToString());
+                                xmlwriter.WriteEndElement();
 
-                        using FileStream fs = new FileStream(path, FileMode.Append, FileAccess.Write);
-                        using StreamWriter sw = new StreamWriter(fs);
-                        sw.WriteLine("\n" + "</HistoryLog>");
-                        sw.Close();
+                                xmlwriter.Close();
+                                break;
+                            }
+                            catch (IOException)
+                            {
+                                continue;
+                            }
+
+                        }
+
+                        while (true)
+                        {
+                            try
+                            {
+                                using FileStream fs = new FileStream(path, FileMode.Append, FileAccess.Write);
+                                using StreamWriter sw = new StreamWriter(fs);
+                                sw.WriteLine("\n" + "</HistoryLog>");
+                                sw.Close();
+                                break;
+                            }
+                            catch (IOException)
+                            {
+                                continue;
+                            }
+                        }
                     }
-
                     else
                     {
-                        using Stream xmlFile = new FileStream(path, FileMode.Create, FileAccess.Write);
-                        using XmlTextWriter xmlwriter = new XmlTextWriter(xmlFile, Encoding.Default)
+                        while (true)
                         {
-                            Formatting = System.Xml.Formatting.Indented
-                        };
+                            try
+                            {
+                                using Stream xmlFile = new FileStream(path, FileMode.Create, FileAccess.Write);
+                                using XmlTextWriter xmlwriter = new XmlTextWriter(xmlFile, Encoding.Default)
+                                {
+                                    Formatting = System.Xml.Formatting.Indented
+                                };
 
-                        xmlwriter.WriteStartDocument();
+                                xmlwriter.WriteStartDocument();
 
-                        xmlwriter.WriteStartElement("HistoryLog");
+                                xmlwriter.WriteStartElement("HistoryLog");
 
-                        xmlwriter.WriteStartElement("Name");
-                        xmlwriter.WriteString(historyLog.Name);
-                        xmlwriter.WriteEndElement();
+                                xmlwriter.WriteStartElement("Name");
+                                xmlwriter.WriteString(historyLog.Name);
+                                xmlwriter.WriteEndElement();
 
-                        xmlwriter.WriteStartElement("SourceFile");
-                        xmlwriter.WriteString(historyLog.SourceFile);
-                        xmlwriter.WriteEndElement();
+                                xmlwriter.WriteStartElement("SourceFile");
+                                xmlwriter.WriteString(historyLog.SourceFile);
+                                xmlwriter.WriteEndElement();
 
-                        xmlwriter.WriteStartElement("TargetFile");
-                        xmlwriter.WriteString(historyLog.TargetFile);
-                        xmlwriter.WriteEndElement();
+                                xmlwriter.WriteStartElement("TargetFile");
+                                xmlwriter.WriteString(historyLog.TargetFile);
+                                xmlwriter.WriteEndElement();
 
-                        xmlwriter.WriteStartElement("FileSize");
-                        xmlwriter.WriteString(historyLog.FileSize.ToString());
-                        xmlwriter.WriteEndElement();
+                                xmlwriter.WriteStartElement("FileSize");
+                                xmlwriter.WriteString(historyLog.FileSize.ToString());
+                                xmlwriter.WriteEndElement();
 
-                        xmlwriter.WriteStartElement("TransferTime");
-                        xmlwriter.WriteString(historyLog.TransferTime.ToString());
-                        xmlwriter.WriteEndElement();
+                                xmlwriter.WriteStartElement("TransferTime");
+                                xmlwriter.WriteString(historyLog.TransferTime.ToString());
+                                xmlwriter.WriteEndElement();
 
-                        xmlwriter.WriteStartElement("Time");
-                        xmlwriter.WriteString(historyLog.Time.ToString());
-                        xmlwriter.WriteEndElement();
+                                xmlwriter.WriteStartElement("Time");
+                                xmlwriter.WriteString(historyLog.Time.ToString());
+                                xmlwriter.WriteEndElement();
 
-                        xmlwriter.WriteStartElement("EncryptionTime");
-                        xmlwriter.WriteString(historyLog.EncryptionTime.ToString());
-                        xmlwriter.WriteEndElement();
+                                xmlwriter.WriteStartElement("EncryptionTime");
+                                xmlwriter.WriteString(historyLog.EncryptionTime.ToString());
+                                xmlwriter.WriteEndElement();
 
-                        xmlwriter.WriteStartElement("Error");
-                        xmlwriter.WriteString(historyLog.Error.ToString());
-                        xmlwriter.WriteEndElement();
+                                xmlwriter.WriteStartElement("Error");
+                                xmlwriter.WriteString(historyLog.Error.ToString());
+                                xmlwriter.WriteEndElement();
 
-                        xmlwriter.WriteStartElement("ErrorTitle");
-                        xmlwriter.WriteString(historyLog.ErrorTitle.ToString());
-                        xmlwriter.WriteEndElement();
+                                xmlwriter.WriteStartElement("ErrorTitle");
+                                xmlwriter.WriteString(historyLog.ErrorTitle.ToString());
+                                xmlwriter.WriteEndElement();
 
-                        xmlwriter.WriteEndElement();
+                                xmlwriter.WriteEndElement();
 
-                        xmlwriter.WriteEndDocument();
+                                xmlwriter.WriteEndDocument();
 
-                        xmlwriter.Close();
+                                xmlwriter.Close();
+                                break;
+                            }
+                            catch (IOException)
+                            {
+                                continue;
+                            }
+                        }
                     }
                 }
                 finally
@@ -336,9 +381,12 @@ namespace EasySave
         /// <param name="path"></param>
         public void SaveProgressLoginJsonIfFileExist(ProgressLog pl, string path, int id)
         {
-            using (FileStream fileStream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+            while(true)
             {
-
+                try
+                {
+                    using (FileStream fileStream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+            {
                 JObject jsonFile = null;
                 // jsonFile = JObject.Parse(File.ReadAllText(path));
                 jsonFile = JObject.Parse(ReadText(fileStream));
@@ -387,13 +435,21 @@ namespace EasySave
                     stream.Dispose();
                 }
             }
+                    break;
+                }
+                catch(IOException)
+                {
+                    Thread.Sleep(10);
+                    continue;
+                }
+            }
         }
 
         /// <summary>
-        /// 
+        /// Read all the text in the fileStream.
         /// </summary>
-        /// <param name="stream"></param>
-        /// <returns></returns>
+        /// <param name="stream">The fileStream to read</param>
+        /// <returns>The content of the file i a string.</returns>
         private string ReadText(FileStream stream)
         {
             int totalBytes = (int)stream.Length;
@@ -410,7 +466,7 @@ namespace EasySave
         }
 
         /// <summary>
-        /// Method which read a json file and convert it into a list of list of JobBackup
+        /// Method which read a json file and convert it into a list of list of JobBackup.
         /// </summary>
         /// <returns>The list of JobBackup associate to the json file</returns>
         public ObservableCollection<JobBackup> ReadJobBackup()

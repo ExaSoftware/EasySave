@@ -32,6 +32,11 @@ namespace EasySave
 
         private JsonReadWriteModel _jsonReadWriteModel = new JsonReadWriteModel();
 
+
+        private List<JobBackup> _veryHightPriority = new List<JobBackup>();
+        private List<JobBackup> _hightPriority = new List<JobBackup>();
+        private List<JobBackup> _normalPriority = new List<JobBackup>();
+
         //Define getter / setter
         public ObservableCollection<JobBackup> ListOfJobBackup { get => _listOfJobBackup; set { _listOfJobBackup = value; OnPropertyChanged("ListOfJobBackup"); } }
         public JobBackup Job
@@ -202,12 +207,31 @@ namespace EasySave
 
         }
 
+        /// <summary>
+        /// Sort a list of jobBackup by priority
+        /// </summary>
+        /// <param name="listOfJobBackup"></param>
+        public void SortList(List<JobBackup> listOfJobBackup)
+        {
+            foreach ( JobBackup jobBackup in listOfJobBackup)
+            {
+                if (jobBackup.Priority == 0) _veryHightPriority.Add(jobBackup);
+                else if (jobBackup.Priority == 1) _hightPriority.Add(jobBackup);
+                else _normalPriority.Add(jobBackup);
+            }
+            Task.Run(() =>
+            {
+                Task.Run(() => ExecuteAll(_veryHightPriority)).Wait();
+                Task.Run(() => ExecuteAll(_hightPriority)).Wait();
+                Task.Run(() => ExecuteAll(_normalPriority)).Wait();
+            });
+        }
 
         /// <summary>
         /// Execute all the list of JobBackup with the ExecuteOne method.
         /// </summary>
         /// <remarks>Threads are executed one by one, in the order of the list.</remarks>
-        public void ExecuteAll(List<JobBackup> jbList)
+        private void ExecuteAll(List<JobBackup> jbList)
         {
             Communication comm = new Communication();
             App.ThreadPause = false;

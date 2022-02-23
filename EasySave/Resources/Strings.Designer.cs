@@ -304,6 +304,15 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Élevée.
+        /// </summary>
+        public static string highPriority {
+            get {
+                return ResourceManager.GetString("highPriority", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Travaux de sauvegarde.
         /// </summary>
         public static string jobBackupList {
@@ -399,6 +408,24 @@ namespace EasySave.Resources {
         public static string noError {
             get {
                 return ResourceManager.GetString("noError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Normale.
+        /// </summary>
+        public static string normalPriority {
+            get {
+                return ResourceManager.GetString("normalPriority", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Priorité.
+        /// </summary>
+        public static string priority {
+            get {
+                return ResourceManager.GetString("priority", resourceCulture);
             }
         }
         
@@ -561,6 +588,15 @@ namespace EasySave.Resources {
         public static string valid {
             get {
                 return ResourceManager.GetString("valid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Très élevée.
+        /// </summary>
+        public static string veryHighPriority {
+            get {
+                return ResourceManager.GetString("veryHighPriority", resourceCulture);
             }
         }
         

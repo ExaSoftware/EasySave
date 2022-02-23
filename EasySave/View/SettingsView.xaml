@@ -60,7 +60,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition />
+            <RowDefinition Height="1.2*"/>
             <RowDefinition />
         </Grid.RowDefinitions>
 
@@ -84,6 +84,7 @@
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             
             <!-- Language -->
@@ -104,7 +105,7 @@
             <TextBlock Text="{x:Static language:Strings.extensionFormat}" Grid.Row="2" VerticalAlignment="Center" Margin="0,0,5,0"/>
             <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Vertical" VerticalAlignment="Center">
                 <TextBox Name="txtBoxExtensionsList" Height="20" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Text="{Binding Extensions}" LostFocus="txtBoxExtensionsList_LostFocus" />
-                <TextBlock Name="extensionError" Visibility="Collapsed" Foreground="#a30700"/>
+                <TextBlock Name="extensionError" Visibility="Collapsed" Foreground="#a30700" />
             </StackPanel>
 
             <!-- Log Format -->
@@ -114,9 +115,9 @@
                 <ComboBoxItem Content="{x:Static language:Strings.xml}" />
             </ComboBox>
 
-            <!-- Extensions List -->
+            <!-- Size Limit -->
             <TextBlock Text="{x:Static language:Strings.sizeLimit}" Grid.Row="4" VerticalAlignment="Center" Margin="0,0,5,0"/>
-            <StackPanel Grid.Column="1" Grid.Row="4" Orientation="Vertical" VerticalAlignment="Center">
+            <StackPanel Grid.Column="1" Grid.Row="4" Orientation="Vertical" VerticalAlignment="Center" Height="Auto">
                 <TextBox Name="txtBoxSizeLimit" Height="20" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Text="{Binding SizeLimit}" LostFocus="txtBoxSizeLimit_LostFocus" />
                 <TextBlock Name="sizeLimitError" Visibility="Collapsed" Foreground="#a30700"/>
             </StackPanel>

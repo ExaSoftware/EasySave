@@ -81,7 +81,9 @@ namespace EasySave
                 string sourceDirectory = txtBoxSource.Text;
                 string destinationDirectory = txtBoxDestination.Text;
                 bool isDifferential = (type.SelectedIndex == 1) ? true : false;
-                _createJobViewModel.JobCreation(id, name, sourceDirectory, destinationDirectory, isDifferential);
+                int priority = comboboxPriority.SelectedIndex;
+                _createJobViewModel.JobCreation(id, name, sourceDirectory, destinationDirectory, isDifferential, priority);
+                //int priority = _createJobViewModel.GetPriority(txtBoxPriority.Text);
                 this.NavigationService.GoBack();
             }
 
