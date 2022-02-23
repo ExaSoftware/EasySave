@@ -88,6 +88,7 @@ namespace EasySave
             _destinationDirectory = string.Empty;
             _isDifferential = false;
             _id = id;
+            _priority = 0;
             _isRunning = false;
         }
 
@@ -98,12 +99,13 @@ namespace EasySave
         ///  <param name="SourceDirectory"> the source directory.</param>
         ///  <param name="DestinationDirectory"> the destination directory.</param>
         ///  <param name="IsDifferential"> Define if the save is differential or not.</param>
-        public JobBackup(string label, string sourceDirectory, string destinationDirectory, bool isDifferential)
+        public JobBackup(string label, string sourceDirectory, string destinationDirectory, bool isDifferential, int priority)
         {
             _label = label;
             _sourceDirectory = sourceDirectory;
             _destinationDirectory = destinationDirectory;
             _isDifferential = isDifferential;
+            _priority = priority;
             _isRunning = false;
         }
 
@@ -111,12 +113,13 @@ namespace EasySave
         ///  Change parameters to the default one.
         ///  </summary>
         ///  <remarks>The Id still unchanged.</remarks>
-        public void Fill(string label, string sourceDirectory, string destinationDirectory, bool isDifferential)
+        public void Fill(string label, string sourceDirectory, string destinationDirectory, bool isDifferential, int priority)
         {
             _label = label;
             _sourceDirectory = sourceDirectory;
             _destinationDirectory = destinationDirectory;
             _isDifferential = isDifferential;
+            _priority = priority;
         }
 
         ///  <summary>
