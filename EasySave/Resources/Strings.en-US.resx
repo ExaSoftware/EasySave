@@ -217,7 +217,7 @@
     <value>Label *</value>
   </data>
   <data name="language" xml:space="preserve">
-    <value>Language</value>
+    <value>Language (Effective after the restart)</value>
   </data>
   <data name="lengthLabelError" xml:space="preserve">
     <value>Label doesn't contain more than 30 characters.</value>

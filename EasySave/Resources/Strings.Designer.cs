@@ -367,7 +367,7 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Langue.
+        ///   Recherche une chaîne localisée semblable à Langue (effectif après un redémarrage).
         /// </summary>
         public static string language {
             get {
