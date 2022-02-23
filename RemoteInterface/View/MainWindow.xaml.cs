@@ -37,11 +37,5 @@ namespace RemoteInterface
         {
             frame.Navigate(SettingsView.GetInstance());
         }
-
-        private void Window_Closing(object sender, EventArgs e)
-        {
-            _mainViewModel.StopConnection();
-        }
-
     }
 }

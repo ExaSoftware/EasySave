@@ -88,14 +88,7 @@ namespace RemoteInterface
             get => _errorTitle;
             set => _errorTitle = value;
         }
-        /// <summary>
-        /// Method which call SaveHistoryLog() from LogModel for created a history log file in C:\EasySave\Logs repository
-        /// </summary>
-        /// <returns>True if the history log file have been created False in the opposite case</returns>
-        public override void SaveLog()
-        {
-            _myLogModel.SaveHistoryLog(this);
-        }
+  
 
         public void Fill(string sourceFile, string targetFile, long fileSize, double transfertTime, string error, int encryptionTime)
         {

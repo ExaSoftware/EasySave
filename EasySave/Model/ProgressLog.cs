@@ -180,10 +180,12 @@ namespace EasySave
         }
 
         /// <summary>
-        /// Method which call SaveProgressLog() from LogModel for created a progress log file in C:\EasySave\Logs repository
+        /// Method which call SaveProgressLog() from LogModel for created a progress log file in C:\EasySave\Logs repository, and allow to send it
         /// </summary>
         public override void SaveLog(int id)
         {
+            Communication comm = new Communication();
+            comm.SendUsedJob(this);
             _jsonReadWriteModel.SaveProgressLog(this,id);
         }
 

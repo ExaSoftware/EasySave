@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace RemoteInterface
@@ -13,21 +14,29 @@ namespace RemoteInterface
     class MainViewModel : INotifyPropertyChanged
     {
         //Attributes
+        private ObservableCollection<ProgressLog> _listOfProgressLog = null;
         private ObservableCollection<JobBackup> _listOfJobBackup = null;
-        private Communication _communication;
+        private Task _mainThread = null;
+        private Task _thread1 = null;
+        private Task _thread2 = null;
         private int _selectedIndex;
         private JobBackup _job;
+        private ProgressLog _progressLog;
         private double _totalFilesSizeFormatted;
         private string _jobTypeFormatted;
+
+        //Define getter / setter
+        public ObservableCollection<ProgressLog> ListOfProgressLog { get => _listOfProgressLog; set { _listOfProgressLog = value; OnPropertyChanged("ListOfJobBackup"); } }
+
         //Define getter / setter
         public ObservableCollection<JobBackup> ListOfJobBackup { get => _listOfJobBackup; set { _listOfJobBackup = value; OnPropertyChanged("ListOfJobBackup"); } }
-        public JobBackup Job
+        public ProgressLog PLog
         {
-            get => _job;
+            get => _progressLog;
             set
             {
-                _job = value;
-                OnPropertyChanged("Job");
+                _progressLog = value;
+                OnPropertyChanged("ProgressLog");
             }
         }
 
@@ -68,11 +77,17 @@ namespace RemoteInterface
             }
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         /// <summary>
         /// Constructor of MainViewModel.
         /// </summary>
         public MainViewModel()
-        {
+        {            
             //No job backup selected
             SelectedIndex = -1;
 
@@ -82,23 +97,48 @@ namespace RemoteInterface
         {
         };
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public void CommunicationWithRemoteInterface()
         {
             Communication comm = new Communication();
             comm.LaunchConnection();
-            while (comm.Connected)
-            {
-                comm.receiveJobBackup();
-            }
         }
 
-
-        protected void OnPropertyChanged(string propertyName = null)
+        /*public void receiveContinuously()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+            int count = 0;
+            if (_listOfProgressLog == null ||_listOfProgressLog.Count < 4)
+            {
+                _mainThread = Task.Run(() =>
+                {
+                    Communication comm = new Communication();
+                    _thread1= Task.Run(() =>
+                    {
+                    while (comm.Connected)
+                    {
+                        _listOfProgressLog.Add(comm.receiveProgessLog());
+                    }
+                    });
+                });
+            }
+            else
+            {
+                _mainThread = Task.Run(() =>
+                {
+                    Communication comm = new Communication();
+                    while (comm.Connected)
+                    {
+                        _listOfProgressLog[count]= comm.receiveProgessLog();
+                        count++;
+                        if (count >4)
+                        {
+                            count = 0;       
+                        }
+                    }
+                });
+            }
+        }*/
+
 
         /// <summary>
         /// Resume threads or instanciate a thread and execute the jobBackup in this thread.
@@ -119,17 +159,15 @@ namespace RemoteInterface
             Communication comm = new Communication();
         }
 
-        public void StopConnection()
-        {
-            Communication comm = new Communication();
-            comm.SendStopConnection();
-        }
+  
 
         /// <summary>
         /// Pause all JobBackups threads.
         /// </summary>
         public void Pause()
         {
+            Communication comm = new Communication();
+            comm.SendInformation("Stop");
         }
 
 
@@ -138,6 +176,8 @@ namespace RemoteInterface
         /// </summary>
         public void Stop()
         {
+            Communication comm = new Communication();
+            comm.SendInformation("Reset");
         }
     }
 }

@@ -8,7 +8,7 @@
         xmlns:language="clr-namespace:RemoteInterface.Resources"
         x:Class="RemoteInterface.MainWindow"
         mc:Ignorable="d"
-        Title="{x:Static language:Strings.appTitle}" Height="600" Width="1080" Closing="Window_Closing">
+        Title="{x:Static language:Strings.appTitle}" Height="600" Width="1080">
     <Window.Resources>
 
         <!-- Styles -->

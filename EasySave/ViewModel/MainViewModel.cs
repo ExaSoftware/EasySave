@@ -301,19 +301,21 @@ namespace EasySave.ViewModel
             _mainThreadReceive = Task.Run(() =>
             {
                 Communication comm = new Communication();
-                while (comm.Connected)
+                
+                msg = comm.receiveInformation();
+                if (msg == "play")
                 {
-                    msg = comm.receiveInformation();
-
-                    if (msg == "stop")
-                    {
-                        Pause();
-                    }
-                    if (msg == "reset")
-                    {
-
-                    }
+                    //UnPause();
                 }
+                if (msg == "stop")
+                {
+                    Pause();
+                }
+                if (msg == "reset")
+                {
+                    Stop();
+                }
+                
             });
         }
         /// <summary>

@@ -31,7 +31,8 @@ namespace RemoteInterface
         /// <param name="e"></param>
         private void btnRemoteConnection_Click(object sender, RoutedEventArgs e)
         {
-            //_mainViewModel.CommunicationWithRemoteInterface();
+            _mainViewModel.CommunicationWithRemoteInterface();
+            //_mainViewModel.receiveContinuously();
         }
 
         /// <summary>
@@ -71,16 +72,6 @@ namespace RemoteInterface
                 _mainViewModel.Stop();
             }
         */
-        }
-
-        private void listViewBackups_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (_mainViewModel.SelectedIndex != -1)
-            {
-                //MessageBox.Show(_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Label);
-                MainViewModel vm = this.DataContext as MainViewModel;
-                vm.Job = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex];
-            }
         }
     }
 }

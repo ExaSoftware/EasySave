@@ -11,11 +11,9 @@ namespace EasySave
 {
     class Communication
     {
-        private bool _connected = false;
-        Socket client;
-        Socket newsock;
+        Socket _client;
+        Socket _newsock;
 
-        public bool Connected { get => _connected; set => _connected = value; }
 
         /// <summary>
         /// Create the socket, bind it and start listening on the networ
@@ -26,102 +24,63 @@ namespace EasySave
             IPEndPoint ipep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1050);
 
             // Creation of the socket to connect to the port
-            newsock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            _newsock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             // Bind the socket to the communication point
-            newsock.Bind(ipep);
+            _newsock.Bind(ipep);
 
             //Create a new thread that listen the network and accept the client request
             Thread t = new Thread(new ThreadStart(ListenNetwork));
             t.Start();
-            _connected = true;
         }
-
-        /*
-		// Get information from ProgressLog object
-		void GetProgressLog(ProgressLog pl)
-		{
-			
-		}
-
-		bool stop()
-		{
-			
-		}
-		*/
 
         /// <summary>
         /// Listen the network called by the thread and accept the request of connection
         /// </summary>
         private void ListenNetwork()
         {
-            newsock.Listen(1);
-            client = newsock.Accept();
+            _newsock.Listen(1);
+            _client = _newsock.Accept();
         }
 
-        /// <summary>
-        /// Send the state of the progress 
-        /// </summary>
-        public void SendUsedJob()
-        {
-            //Verify if the connection is established
-            if (_connected)
-            {
-                //Send the list to the client
-                try
-                {
-                    client.Send(Encoding.UTF8.GetBytes("test"));
-                }
-                catch (SocketException exp)
-                {
-                }
-
-            }
-        }
         /// <summary>
         /// Send the state of the progress 
         /// </summary>
         public void SendUsedJob(ProgressLog log)
         {
-        JsonReadWriteModel json = new JsonReadWriteModel();
-        //Verify if the connection is established
-            if (_connected)
-            {
-                string jsonString = json.PrepareLogForRemote(log);
-                MessageBox.Show(jsonString);
-                //Send the list to the client
-                try
-                {
-                    client.Send(Encoding.UTF8.GetBytes(jsonString));
-                }
-                catch (SocketException exp)
-                {
-                }
-            }
-        }
+            JsonReadWriteModel json = new JsonReadWriteModel();
 
-        /// <summary>
-        /// Notify the remote app that the connection will be lost and close the working socket
-        /// </summary>
-        public void SendStopConnection()
-        {
-            //Verify if the connection is established
-            if (_connected)
+            _client.Send(Encoding.UTF8.GetBytes("test"));
+            /*string jsonString = json.PrepareLogForRemote(log);
+            //Send the list to the client
+            try
             {
-                //Send the list to the client
-                try
-                {
-                    client.Send(Encoding.UTF8.GetBytes(_connected.ToString()));
-                    client.Shutdown(SocketShutdown.Both);
-                    newsock.Shutdown(SocketShutdown.Both);
-                    newsock.Close();
-                    client.Close();
-                }
-                catch (SocketException exp)
-                {
-                }
+                _client.Send(Encoding.UTF8.GetBytes(jsonString));
             }
-            _connected = false;
+            catch (SocketException exp)
+            {
+
+            }*/
+            
+        }
+        public string receiveInformation()
+        {
+            //Déclaration d'un buffer de type byte pour enregistrer les données reçues
+            byte[] data = new byte[128];
+
+            //Call receive that get the data and stock it in server
+            //return the number of data received
+            try
+            {
+                int recv = _client.Receive(data);
+            }
+            catch (SocketException exception)
+            {
+            }
+
+            //Change the data received from byte -> string -> ProgressLog
+            return Encoding.UTF8.GetString(data);
+
         }
     }
 }
