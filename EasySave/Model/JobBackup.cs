@@ -388,6 +388,9 @@ namespace EasySave
         }
 
 
+        /// <summary>
+        /// Delete excess files in the destination directory compare to te source directory.
+        /// </summary>
         private void DeleteExcessFile()
         {
             string realDest = Path.Combine(_destinationDirectory, Path.GetFileName(_sourceDirectory));
@@ -433,6 +436,9 @@ namespace EasySave
             }
         }
 
+        /// <summary>
+        /// Delete all the destination directory.
+        /// </summary>
         private void DeleteFiles()
         {
             string realDest = Path.Combine(_destinationDirectory, Path.GetFileName(_sourceDirectory));
