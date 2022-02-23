@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace EasySave
 {
@@ -183,6 +184,29 @@ namespace EasySave
                 jobBackup.Execute();
             }
         };
+
+        private delegate void DelJbMv(JobBackup jobBackup, MainViewModel mainViewModel);
+
+        private DelJbMv GetTotalFileSize = delegate (JobBackup jobBackup, MainViewModel mainViewModel)
+        {
+            long result = 0;
+            mainViewModel.TotalFilesSizeFormatted = result;
+
+            result = jobBackup.TotalFileSize();
+
+            mainViewModel.TotalFilesSizeFormatted = result;
+        };
+
+        /// <summary>
+        /// Actualise the TotalFileSize field
+        /// </summary>
+        /// <param name="jobBackup">The job to get the total file size.</param>
+        public void SetTotalFileSize(JobBackup jobBackup)
+        {
+            //Get the totalFileSize from the VM
+            _ = Task.Run(() => GetTotalFileSize(jobBackup, this));
+
+        }
 
 
         /// <summary>

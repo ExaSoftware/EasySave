@@ -66,6 +66,7 @@ namespace EasySave
         /// <param name="e"></param>
         private void listViewBackups_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+
             //Prevent click on the empty list to avoid an exception
             if (listViewBackups.SelectedItems.Count != 0)
             {
@@ -73,11 +74,11 @@ namespace EasySave
                 //Update the first block
                 id = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Id;
 
-                //Get the totalFileSize from the VM
-                _mainViewModel.TotalFilesSizeFormatted = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].TotalFileSize();
+                _mainViewModel.SetTotalFileSize(_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex]);
 
                 ResourceManager rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
                 _mainViewModel.JobTypeFormatted = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].IsDifferential ? rm.GetString("differential") : rm.GetString("total");
+                
             }
         }
 
