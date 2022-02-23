@@ -53,6 +53,7 @@ namespace EasySave
             set
             {
                 _state = value;
+                new Communication().SendUsedJob(_state);
                 OnPropertyChanged("State");
             }
         }

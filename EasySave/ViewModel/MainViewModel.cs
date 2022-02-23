@@ -170,13 +170,13 @@ namespace EasySave
         //Instanciate the delegate
         readonly Del Execute = delegate (JobBackup jobBackup)
         {
+            Communication comm = new Communication();
             if (App.Configuration.BusinessSoftware != "" || App.Configuration.BusinessSoftware != null)
             {
                 Process[] procName = Process.GetProcessesByName(App.Configuration.BusinessSoftware);
                 if (procName.Length == 0)
                 {
                     jobBackup.Execute();
-
                 }
             }
             else
@@ -231,16 +231,10 @@ namespace EasySave
                     for (i = 0; i < numberOfIteration * 5; i += 5)
                     {
                         _thread1 = Task.Run(() => Execute(jbList[i]));
-                        _threadRemote1 = Task.Run(() => comm.SendUsedJob(jbList[i]));
                         _thread2 = Task.Run(() => Execute(jbList[i++]));
-                        _threadRemote2 = Task.Run(() => comm.SendUsedJob(jbList[i++]));
                         _thread3 = Task.Run(() => Execute(jbList[i + 2]));
-                        _threadRemote3 = Task.Run(() => comm.SendUsedJob(jbList[i + 2]));
                         _thread4 = Task.Run(() => Execute(jbList[i + 3]));
-                        _threadRemote4 = Task.Run(() => comm.SendUsedJob(jbList[i + 3]));
                         _thread5 = Task.Run(() => Execute(jbList[i + 4]));
-                        _threadRemote5 = Task.Run(() => comm.SendUsedJob(jbList[i + 4]));
-
 
                         _thread1.Wait();
                         _thread2.Wait();

@@ -11,7 +11,6 @@ namespace EasySave
 {
     class Communication
     {
-        List<JobBackup> _list;
         private bool _connected = false;
         Socket client;
         Socket newsock;
@@ -75,30 +74,28 @@ namespace EasySave
                 }
                 catch (SocketException exp)
                 {
-                    MessageBox.Show("Problem with da socket");
                 }
 
             }
         }
-            /// <summary>
-            /// Send the state of the progress 
-            /// </summary>
-            public void SendUsedJob(JobBackup job)
+        /// <summary>
+        /// Send the state of the progress 
+        /// </summary>
+        public void SendUsedJob(ProgressLog log)
         {
-            //Verify if the connection is established
+        JsonReadWriteModel json = new JsonReadWriteModel();
+        //Verify if the connection is established
             if (_connected)
             {
-                while (job.IsRunning)
+                string jsonString = json.PrepareLogForRemote(log);
+                MessageBox.Show(jsonString);
+                //Send the list to the client
+                try
                 {
-                    //Send the list to the client
-                    try
-                    {
-                        client.Send(Encoding.UTF8.GetBytes(_list.ToString()));
-                    }
-                    catch (SocketException exp)
-                    {
-                    }
-                    Thread.Sleep(3000);
+                    client.Send(Encoding.UTF8.GetBytes(jsonString));
+                }
+                catch (SocketException exp)
+                {
                 }
             }
         }
