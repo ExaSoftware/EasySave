@@ -25,7 +25,6 @@ namespace RemoteInterface
     public partial class MainWindow : Window
     {
         private MainViewModel _mainViewModel;
-        private static SettingsView _instance;
 
         public MainWindow()
         {
@@ -36,7 +35,7 @@ namespace RemoteInterface
 
         private void btnSettings_Click(object sender, RoutedEventArgs e)
         {
-            frame.Navigate(new SettingsView());
+            frame.Navigate(SettingsView.GetInstance());
         }
 
         private void Window_Closing(object sender, EventArgs e)
@@ -44,14 +43,5 @@ namespace RemoteInterface
             _mainViewModel.StopConnection();
         }
 
-        //prevent spam click when using of goback()
-        public static SettingsView GetInstance()
-        {
-            if (_instance == null)
-            {
-                _instance = new SettingsView();
-            }
-            return _instance;
-        }
     }
 }
