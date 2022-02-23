@@ -247,7 +247,6 @@ namespace EasySave
                                 //var globale
                                 //var local pour by pass
                                 _bigFilesList.Add(destFile);
-
                             }
 
                             if (!(_encryptionExtensionList is null) && new List<string>(_encryptionExtensionList).Contains(fileInfo.Extension) && _encryptionExtensionList[0] != "")
