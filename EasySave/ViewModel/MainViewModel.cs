@@ -217,7 +217,9 @@ namespace EasySave.ViewModel
             _hightPriority = new List<JobBackup>();
             _normalPriority = new List<JobBackup>();
 
-            if(_tokenSource.IsCancellationRequested)
+            unPause();
+
+            if (_tokenSource.IsCancellationRequested)
             {
                 _tokenSource.Dispose();
             }
@@ -245,10 +247,8 @@ namespace EasySave.ViewModel
         /// <remarks>Threads are executed one by one, in the order of the list.</remarks>
         private void ExecuteAll(List<JobBackup> jbList)
         {
-
             if (_mainThread is null || _mainThread.IsCompleted)
             {
-                App.ThreadPause = false;
 
                 _mainThread = Task.Run(() =>
                 {
@@ -292,6 +292,14 @@ namespace EasySave.ViewModel
                 });
 
             }
+        }
+
+        /// <summary>
+        /// Unpause all JobBackups threads.
+        /// </summary>
+        public void unPause()
+        {
+            App.ThreadPause = false;
         }
 
         /// <summary>

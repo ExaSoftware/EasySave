@@ -145,6 +145,7 @@ namespace EasySave
             if (!error)
             {
                 _isRunning = true;
+
                 _encryptionExtensionList = App.Configuration.Extensions;
                 _sizeLimit = App.Configuration.SizeLimit;
 
@@ -165,11 +166,12 @@ namespace EasySave
 
 
         /// <summary>
-        /// 
+        /// Save all indicted files to the destination directory.
         /// </summary>
-        /// <param name="files"></param>
-        /// <param name="saveBigFiles"></param>
-        private int SaveFiles(string[] files, CancellationToken token)
+        /// <param name="files">FIles to copy.</param>
+        /// <remarks>Files must be in Path format with the absolute path.</remarks>
+        /// <returns>0 if finished, 1 if exit has been forced</returns>
+        private void SaveFiles(string[] files, CancellationToken token)
         {
             _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
             ObservableCollection<string> temp = new ObservableCollection<string>();
@@ -192,6 +194,7 @@ namespace EasySave
             {
                 State.Log.Add(string.Format("{0} '{1}' {2} {3}. ", _rm.GetString("executionOf"), Label, _rm.GetString("at"), DateTime.Now.ToString("T")));
             });
+
             //Add the string to conserv it for the final display
             temp.Add(string.Format("{0} '{1}' {2} {3} ", _rm.GetString("executionOf"), Label, _rm.GetString("at"), DateTime.Now.ToString("T")));
 
@@ -222,6 +225,7 @@ namespace EasySave
                 }
             }
 
+            bool aborted = false;
 
             // Copy the files and overwrite destination files if they already exist.
             foreach (string file in files)
@@ -231,7 +235,6 @@ namespace EasySave
                     FileInfo fileInfo = new FileInfo(file);
                     long fileInfoLength = fileInfo.Length;
                     string destFile = file.Replace(_sourceDirectory, realDest);
-
 
                     try
                     {
@@ -314,22 +317,8 @@ namespace EasySave
                     }
                     catch (OperationCanceledException)
                     {
-                        _isRunning = false;
-                        State.State = "END";
-
-                        string result1 = errors == 0
-                            ? string.Format("{0} {1} {2}.     {3}", _rm.GetString("executionAborted"), _rm.GetString("at"), DateTime.Now.ToString("T"), _rm.GetString("noError"))
-                            : string.Format("{0} {1} {2}.     {3} {4}:", _rm.GetString("executionAborted"), _rm.GetString("at"), DateTime.Now.ToString("T"), errors, _rm.GetString("errors"));
-
-                        Application.Current.Dispatcher.Invoke(delegate
-                        {
-                            //Insert the execution finished string at the begin of the list to show
-                            temp.Insert(1, result1);
-                            State.Log = temp;
-                            temp = null;
-                        });
-
-                        return 1;
+                        aborted = true;
+                        break;
                     }
                     catch (Exception e)
                     {
@@ -360,14 +349,33 @@ namespace EasySave
                 else
                 {
                     State.State = "PAUSED";
+                    State.SaveLog(Id);
                     while (App.ThreadPause) { Thread.Sleep(1000); }
                 }
 
             }
+
+            _isRunning = false;
             string result = string.Empty;
-            result = errors == 0
+            
+            if(aborted)
+            {
+                _isRunning = false;
+                State.State = "ABORTED";
+                State.SaveLog(Id);
+
+                result = errors == 0
+                    ? string.Format("{0} {1} {2}.     {3}", _rm.GetString("executionAborted"), _rm.GetString("at"), DateTime.Now.ToString("T"), _rm.GetString("noError"))
+                    : string.Format("{0} {1} {2}.     {3} {4}:", _rm.GetString("executionAborted"), _rm.GetString("at"), DateTime.Now.ToString("T"), errors, _rm.GetString("errors"));
+            }
+            else
+            {
+                State.State = "END";
+
+                result = errors == 0
                 ? string.Format("{0} {1} {2}.     {3}", _rm.GetString("executionFinished"), _rm.GetString("at"), DateTime.Now.ToString("T"), _rm.GetString("noError"))
                 : string.Format("{0} {1} {2}.     {3} {4}:", _rm.GetString("executionFinished"), _rm.GetString("at"), DateTime.Now.ToString("T"), errors, _rm.GetString("errors"));
+            }
 
             Application.Current.Dispatcher.Invoke(delegate
             {
@@ -377,13 +385,12 @@ namespace EasySave
                 temp = null;
             });
 
-            _isRunning = false;
-            State.State = "END";
-
-            return 0;
         }
 
 
+        /// <summary>
+        /// Delete excess files in the destination directory compare to te source directory.
+        /// </summary>
         private void DeleteExcessFile()
         {
             string realDest = Path.Combine(_destinationDirectory, Path.GetFileName(_sourceDirectory));
@@ -429,6 +436,9 @@ namespace EasySave
             }
         }
 
+        /// <summary>
+        /// Delete all the destination directory.
+        /// </summary>
         private void DeleteFiles()
         {
             string realDest = Path.Combine(_destinationDirectory, Path.GetFileName(_sourceDirectory));

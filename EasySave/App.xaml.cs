@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace EasySave
@@ -37,47 +38,37 @@ namespace EasySave
                 _configuration = Init.LoadConfiguration();
             }
 
-            new Thread(() =>
+            //Begin thread to monitor the business software
+            Task.Run(() =>
             {
-                const int time = 5000;
+                const int time = 1000;
 
                 while (true)
                 {
-                    if (Configuration.BusinessSoftware != "" || Configuration.BusinessSoftware != null)
+                    try
                     {
-                        if (ThreadPause)
+                        if (Configuration.BusinessSoftware != "" || Configuration.BusinessSoftware != null)
                         {
-                            Thread.Sleep(time);
-                            continue;
-                        }
-                        else
-                        {
-                            ThreadPause = Process.GetProcessesByName(Configuration.BusinessSoftware).Length != 0;
-                            Thread.Sleep(time);
-                            continue;
+                            if (ThreadPause)
+                            {
+                                Thread.Sleep(time);
+                            }
+                            else
+                            {
+                                ThreadPause = Process.GetProcessesByName(Configuration.BusinessSoftware).Length != 0;
+                            }
                         }
                     }
-                    else
+                    catch { }
+                    finally
                     {
                         Thread.Sleep(time);
-                        continue;
                     }
                 }
-
-            }).Start();
-        }
-        protected override void OnExit(ExitEventArgs e)
-        {
-            Environment.Exit(0);
+            });
         }
 
-        protected void App_Exit(object sender, ExitEventArgs e)
-        {
-            GC.Collect();
-            Thread.CurrentThread.Interrupt();
-            
-        }
+        protected override void OnExit(ExitEventArgs e) => Environment.Exit(0);
 
     }
-
 }

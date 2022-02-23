@@ -70,6 +70,15 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à ANNULÉ.
+        /// </summary>
+        public static string ABORTED {
+            get {
+                return ResourceManager.GetString("ABORTED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à ACTIF.
         /// </summary>
         public static string ACTIVE {
@@ -426,6 +435,15 @@ namespace EasySave.Resources {
         public static string normalPriority {
             get {
                 return ResourceManager.GetString("normalPriority", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à PAUSE.
+        /// </summary>
+        public static string PAUSED {
+            get {
+                return ResourceManager.GetString("PAUSED", resourceCulture);
             }
         }
         
