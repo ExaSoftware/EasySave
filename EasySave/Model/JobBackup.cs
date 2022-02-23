@@ -28,7 +28,6 @@ namespace EasySave
         private int _id;
         private string[] _encryptionExtensionList;
         private ulong _sizeLimit;
-        private List<string> _bigFilesList = new List<string>();
 
         private bool _disposedValue;
 
@@ -179,11 +178,11 @@ namespace EasySave
             //Show message which say that job backup is executing
             App.Current.Dispatcher.Invoke(delegate
             {
-                State.Log.Add(String.Format("{0} '{1}' {2} {3}. ", _rm.GetString("executionOf"), Label, _rm.GetString("at"), DateTime.Now.ToString("T")));
+                State.Log.Add(string.Format("{0} '{1}' {2} {3}. ", _rm.GetString("executionOf"), Label, _rm.GetString("at"), DateTime.Now.ToString("T")));
             });
             //Add the string to conserv it for the final display
-            temp.Add(String.Format("{0} '{1}' {2} {3} ", _rm.GetString("executionOf"), Label, _rm.GetString("at"), DateTime.Now.ToString("T")));
-            
+            temp.Add(string.Format("{0} '{1}' {2} {3} ", _rm.GetString("executionOf"), Label, _rm.GetString("at"), DateTime.Now.ToString("T")));
+
             string realDest = Path.Combine(_destinationDirectory, Path.GetFileName(_sourceDirectory));
 
             if (Monitor.TryEnter(_destinationDirectory, Timeout.Infinite))
@@ -221,23 +220,56 @@ namespace EasySave
                     long fileInfoLength = fileInfo.Length;
                     string destFile = file.Replace(_sourceDirectory, realDest);
 
+
                     try
                     {
                         historyStopwatch.Reset();
 
-                        if (Monitor.TryEnter(file, 10000))
+                        if ((ulong)fileInfo.Length > _sizeLimit && _sizeLimit > 0)
                         {
-                            if ((ulong)fileInfo.Length > _sizeLimit && _sizeLimit > 0)
+                            if (Monitor.TryEnter(App.IsMovingBigFile, Timeout.Infinite))
                             {
-                                if (!App.IsMovingBigFile)
+                                while (true)
                                 {
+                                    if (!App.IsMovingBigFile)
+                                    {
+                                        if (!(_encryptionExtensionList is null) && new List<string>(_encryptionExtensionList).Contains(fileInfo.Extension) && _encryptionExtensionList[0] != "")
+                                        {
+                                            encryptionTime = CypherFile(file, destFile);
+                                            string b = fileInfo.Extension;
+                                        }
+                                        else
+                                        {
+                                            historyStopwatch.Start();
+                                            File.Copy(file, destFile, true);
+                                            historyStopwatch.Stop();
+                                        }
 
+                                        fileTransfered++;
+                                        sizeRemaining -= fileInfo.Length; ;
+
+                                        //Write logs
+                                        Task bigTask = Task.Run(() =>
+                                        {
+                                            progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, _id, (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), sizeRemaining, fileToTranfer, sizeTotal);
+                                            historyLog.Fill(file, destFile, fileInfoLength, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime, _id);
+                                        });
+
+                                        bigTask.Wait();
+                                        bigTask.Dispose();
+                                        State = progressLog;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        Thread.Sleep(10);
+                                        continue;
+                                    }
                                 }
-
-                                //var globale
-                                //var local pour by pass
-                                _bigFilesList.Add(destFile);
                             }
+                        }
+                        else
+                        {
 
                             if (!(_encryptionExtensionList is null) && new List<string>(_encryptionExtensionList).Contains(fileInfo.Extension) && _encryptionExtensionList[0] != "")
                             {
@@ -255,20 +287,20 @@ namespace EasySave
                             sizeRemaining -= fileInfo.Length; ;
 
                             //Write logs
-                            var task = Task.Run(() =>
+                            Task task = Task.Run(() =>
                                 {
                                     progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, _id, (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), sizeRemaining, fileToTranfer, sizeTotal);
                                     historyLog.Fill(file, destFile, fileInfoLength, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime, _id);
-                            });
+                                });
+
                             task.Wait();
                             task.Dispose();
                             State = progressLog;
-                        }
-                        else
-                        {
-                            throw new IOException();
+
                         }
                     }
+
+
                     catch (Exception e)
                     {
                         destFile = Path.Combine(_destinationDirectory, Path.GetFileName(file));
@@ -284,7 +316,7 @@ namespace EasySave
                     }
                     finally
                     {
-                        Monitor.Exit(file);
+
                         //Free memory
                         fileInfo = null;
                         destFile = string.Empty;
@@ -294,6 +326,7 @@ namespace EasySave
                         progressLog.Dispose();
                     }
                 }
+
 
                 // If pause
                 else
@@ -318,7 +351,7 @@ namespace EasySave
                 State.Log = temp;
                 temp = null;
             });
-            
+
             _isRunning = false;
             State.State = "END";
 
