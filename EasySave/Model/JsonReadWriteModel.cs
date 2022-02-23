@@ -72,7 +72,7 @@ namespace EasySave
             if (Monitor.TryEnter(path, 2000))
             {
                 try
-                { 
+                {
                     if (File.Exists(path))
                     {
                         using FileStream fsDel = new FileStream(path, FileMode.Open, FileAccess.ReadWrite);
@@ -86,7 +86,7 @@ namespace EasySave
                         };
 
                         xmlwriter.WriteStartElement("Name");
-                        xmlwriter.WriteString( historyLog.Name);
+                        xmlwriter.WriteString(historyLog.Name);
                         xmlwriter.WriteEndElement();
 
                         xmlwriter.WriteStartElement("SourceFile");
@@ -318,9 +318,9 @@ namespace EasySave
 
                     JObject json = new JObject(new JProperty(pl.Name + " - " + id, newProgressLog));
 
-                    _readWriteLock.EnterWriteLock();
+                    _readWriteLockHs.EnterWriteLock();
                     File.WriteAllText(path, json.ToString());
-                    _readWriteLock.ExitWriteLock();
+                    _readWriteLockHs.ExitWriteLock();
                 }
                 finally
                 {
@@ -336,27 +336,19 @@ namespace EasySave
         /// <param name="path"></param>
         public void SaveProgressLoginJsonIfFileExist(ProgressLog pl, string path, int id)
         {
-            using (FileStream fileStream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))
+            JObject jsonFile = null;
+            if (Monitor.TryEnter(path, 2000))
             {
-
-
-                JObject jsonFile = null;
-                while (true)
+                _readWriteLockHs.EnterReadLock();
+                try
                 {
-                    try
-                    {
-                        fileStream.Lock(0, fileStream.Length);
-                        jsonFile = JObject.Parse(File.ReadAllText(path));
-                        break;
-                    }
-                    catch
-                    {
-                        continue;
-                    }
+                    jsonFile = JObject.Parse(File.ReadAllText(path));
                 }
-
-                    fileStream.Unlock(0, fileStream.Length);
+                finally
+                {
+                    _readWriteLockHs.ExitReadLock();
                     Monitor.Exit(path);
+                }
 
                 if (jsonFile.Property(pl.Name + " - " + id) != null)
                 {
@@ -369,30 +361,26 @@ namespace EasySave
                     progressLogToUpdate["TotalFilesRemaining"] = pl.TotalFilesRemaining;
                     progressLogToUpdate["Progression"] = pl.Progression;
 
-                    while (true)
+                    if (Monitor.TryEnter(path, 3000))
                     {
+                        _readWriteLockHs.EnterWriteLock();
                         try
                         {
-                            fileStream.Lock(0, fileStream.Length);
-                            break;
+                            File.WriteAllText(path, jsonFile.ToString());
                         }
                         catch
                         {
-                            continue;
+
+                        }
+
+                        finally
+                        {
+                            _readWriteLockHs.ExitWriteLock();
+                            Monitor.Exit(path);
                         }
                     }
-
-                    try
-                    {
-                        File.WriteAllText(path, jsonFile.ToString());
-                    }
-                    finally
-                    {
-                        fileStream.Unlock(0, fileStream.Length);
-                        Monitor.Exit(path);
-                    }
-
                 }
+
                 else
                 {
                     JObject newProgressLog = new JObject(
@@ -409,31 +397,17 @@ namespace EasySave
 
                     jsonFile.Add(new JProperty(pl.Name + " - " + id, newProgressLog));
 
-                    while (true)
+                    if (Monitor.TryEnter(path, 3000))
                     {
                         try
                         {
-                            fileStream.Lock(0, fileStream.Length);
-                            break;
+                            File.WriteAllText(path, jsonFile.ToString());
                         }
-                        catch
+                        finally
                         {
-                            continue;
+                            Monitor.Exit(path);
                         }
                     }
-
-                    try
-                    {
-                        File.WriteAllText(path, jsonFile.ToString());
-                    }
-                    finally
-                    {
-                        fileStream.Unlock(0, fileStream.Length);
-                        Monitor.Exit(path);
-                    }
-
-
-
                 }
             }
         }
@@ -479,19 +453,8 @@ namespace EasySave
 
             Directory.CreateDirectory(_DEFAULT_JOB_BACKUP_FILE_PATH);
             string jsonStringJobBackup = JsonConvert.SerializeObject(jobBackupList, Newtonsoft.Json.Formatting.Indented);
+
             File.WriteAllText(String.Format(@"{0}\SavedJobBackup.json", _DEFAULT_JOB_BACKUP_FILE_PATH), jsonStringJobBackup);
-        }
-
-        /// <summary>
-        /// Method which save a list of jobBackup to a json format and return it for the remote
-        /// </summary>
-        /// <param name="jobBackup"></param>
-        public string PrepareJobForRemote(JobBackup jobBackups)
-        {
-
-            Directory.CreateDirectory(_DEFAULT_JOB_BACKUP_FILE_PATH);
-            string jsonStringJobBackup = JsonConvert.SerializeObject(jobBackups, Newtonsoft.Json.Formatting.Indented);
-            return jsonStringJobBackup;
         }
 
         /// <summary>
@@ -510,6 +473,16 @@ namespace EasySave
             {
                 SaveProgressLoginJsonIfFileDoesntExist(myProgressLog, path, id);
             }
+        }
+
+        /// <summary>
+        /// Method which save a progress log to a json format and return it for the remote
+        /// </summary>
+        /// <param name="jobBackup"></param>
+        public string PrepareLogForRemote(ProgressLog log)
+        {
+            string jsonStringLog = JsonConvert.SerializeObject(log, Newtonsoft.Json.Formatting.Indented);
+            return jsonStringLog;
         }
 
     }
