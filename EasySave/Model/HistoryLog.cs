@@ -22,7 +22,7 @@ namespace EasySave
         private string _error;
         [XmlElement(ElementName = "time")]
         /// <summary> Timestamp when the job have been saved </summary>
-        protected string _time;
+        private string _time;
         [XmlElement(ElementName = "encryptionTime")]
         ///<sumary>Necessary time to encrypt the file</summary>
         protected double _encryptionTime;

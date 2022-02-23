@@ -540,7 +540,7 @@ namespace EasySave
         /// <param name="sourceFile">The file to encode. Must be a Path format.</param>
         /// <param name="destFile">The destination file. Must be a Path format.</param>
         /// <returns>The encryption time.</returns>
-        private int CypherFile(String sourceFile, String destFile)
+        private int CypherFile(string sourceFile, string destFile)
         {
             Process process = new Process();
             int time;

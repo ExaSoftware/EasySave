@@ -5,7 +5,6 @@ using System.Xml.Serialization;
 
 namespace EasySave
 {
-    [Serializable]
     [XmlRoot(ElementName = "Log")]
     ///<summary>Public Log class which models a log file</summary>
     public abstract class Log : IDisposable
