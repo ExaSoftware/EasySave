@@ -241,6 +241,15 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Exécution annulée.
+        /// </summary>
+        public static string executionAborted {
+            get {
+                return ResourceManager.GetString("executionAborted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Exécution terminée.
         /// </summary>
         public static string executionFinished {
