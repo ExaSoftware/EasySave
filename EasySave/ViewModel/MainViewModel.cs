@@ -21,7 +21,8 @@ namespace EasySave
         private Task _thread3 = null;
         private Task _thread4 = null;
         private Task _thread5 = null;
-        private Task _mainThread = null;
+        private Task _mainThread = null; 
+        private Task _mainThreadReceive = null;
         private int _selectedIndex;
         private JobBackup _job;
         private double _totalFilesSizeFormatted;
@@ -289,7 +290,27 @@ namespace EasySave
 
             }
         }
+        public void receiveContinuously()
+        {
+            String msg = "";
+            _mainThreadReceive = Task.Run(() =>
+            {
+                Communication comm = new Communication();
+                while (comm.Connected)
+                {
+                    msg = comm.receiveInformation();
 
+                    if (msg == "stop")
+                    {
+                        Pause();
+                    }
+                    if (msg == "reset")
+                    {
+
+                    }
+                }
+            });
+        }
         /// <summary>
         /// Pause all JobBackups threads.
         /// </summary>
@@ -307,14 +328,6 @@ namespace EasySave
             comm.LaunchConnection();
         }
 
-        /// <summary>
-        ///Stop connection to the remote app and warn it
-        /// </summary>
-        public void StopConnection()
-        {
-            Communication comm = new Communication();
-            comm.SendStopConnection();
-        }
         /// <summary>
         /// Stop all JobBackups threads.
         /// </summary>
