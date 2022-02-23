@@ -6,14 +6,15 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 
-namespace EasySave
+namespace EasySave.ViewModel
 {
-    delegate void Del(JobBackup jobBackup);
 
     class MainViewModel : INotifyPropertyChanged
     {
+        //Delegate
+        private delegate void Del(JobBackup jobBackup, CancellationToken token);
+
         //Attributes
         private ObservableCollection<JobBackup> _listOfJobBackup = null;
         private Task _thread1 = null;
@@ -34,9 +35,9 @@ namespace EasySave
         private JsonReadWriteModel _jsonReadWriteModel = new JsonReadWriteModel();
 
 
-        private List<JobBackup> _veryHightPriority = new List<JobBackup>();
-        private List<JobBackup> _hightPriority = new List<JobBackup>();
-        private List<JobBackup> _normalPriority = new List<JobBackup>();
+        private List<JobBackup> _veryHightPriority = null;
+        private List<JobBackup> _hightPriority = null;
+        private List<JobBackup> _normalPriority = null;
 
         //Define getter / setter
         public ObservableCollection<JobBackup> ListOfJobBackup { get => _listOfJobBackup; set { _listOfJobBackup = value; OnPropertyChanged("ListOfJobBackup"); } }
@@ -164,24 +165,24 @@ namespace EasySave
             }
             //Save the list in json
             _jsonReadWriteModel.SaveJobBackup(_listOfJobBackup);
+
         }
 
 
         //Instanciate the delegate
-        readonly Del Execute = delegate (JobBackup jobBackup)
+        private readonly Del Execute = delegate (JobBackup jobBackup, CancellationToken token)
         {
-            Communication comm = new Communication();
             if (App.Configuration.BusinessSoftware != "" || App.Configuration.BusinessSoftware != null)
             {
                 Process[] procName = Process.GetProcessesByName(App.Configuration.BusinessSoftware);
                 if (procName.Length == 0)
                 {
-                    jobBackup.Execute();
+                    jobBackup.Execute(token);
                 }
             }
             else
             {
-                jobBackup.Execute();
+                jobBackup.Execute(token);
             }
         };
 
@@ -214,18 +215,30 @@ namespace EasySave
         /// <param name="listOfJobBackup"></param>
         public void SortList(List<JobBackup> listOfJobBackup)
         {
-            foreach ( JobBackup jobBackup in listOfJobBackup)
+            _veryHightPriority = new List<JobBackup>();
+            _hightPriority = new List<JobBackup>();
+            _normalPriority = new List<JobBackup>();
+
+            if(_tokenSource.IsCancellationRequested)
+            {
+                _tokenSource.Dispose();
+            }
+
+            _tokenSource = new CancellationTokenSource();
+            _token = _tokenSource.Token;
+
+            foreach (JobBackup jobBackup in listOfJobBackup)
             {
                 if (jobBackup.Priority == 0) _veryHightPriority.Add(jobBackup);
                 else if (jobBackup.Priority == 1) _hightPriority.Add(jobBackup);
                 else _normalPriority.Add(jobBackup);
             }
-            Task.Run(() =>
-            {
-                Task.Run(() => ExecuteAll(_veryHightPriority)).Wait();
-                Task.Run(() => ExecuteAll(_hightPriority)).Wait();
-                Task.Run(() => ExecuteAll(_normalPriority)).Wait();
-            });
+            _ = Task.Run(() =>
+              {
+                  Task.Run(() => ExecuteAll(_veryHightPriority)).Wait();
+                  Task.Run(() => ExecuteAll(_hightPriority)).Wait();
+                  Task.Run(() => ExecuteAll(_normalPriority)).Wait();
+              });
         }
 
         /// <summary>
@@ -234,8 +247,6 @@ namespace EasySave
         /// <remarks>Threads are executed one by one, in the order of the list.</remarks>
         private void ExecuteAll(List<JobBackup> jbList)
         {
-            Communication comm = new Communication();
-            App.ThreadPause = false;
 
             if (_mainThread is null || _mainThread.IsCompleted)
             {
@@ -247,13 +258,14 @@ namespace EasySave
                     double numberOfIteration = Math.Round((double)(jbList.Count / 5));
                     int i = 0;
 
+                    //Execute 5 by 5
                     for (i = 0; i < numberOfIteration * 5; i += 5)
                     {
-                        _thread1 = Task.Run(() => Execute(jbList[i]));
-                        _thread2 = Task.Run(() => Execute(jbList[i++]));
-                        _thread3 = Task.Run(() => Execute(jbList[i + 2]));
-                        _thread4 = Task.Run(() => Execute(jbList[i + 3]));
-                        _thread5 = Task.Run(() => Execute(jbList[i + 4]));
+                        _thread1 = Task.Run(() => Execute(jbList[i], _token));
+                        _thread2 = Task.Run(() => Execute(jbList[i++], _token));
+                        _thread3 = Task.Run(() => Execute(jbList[i + 2], _token));
+                        _thread4 = Task.Run(() => Execute(jbList[i + 3], _token));
+                        _thread5 = Task.Run(() => Execute(jbList[i + 4], _token));
 
                         _thread1.Wait();
                         _thread2.Wait();
@@ -261,28 +273,21 @@ namespace EasySave
                         _thread4.Wait();
                         _thread5.Wait();
 
-
                         GC.Collect();
                     }
 
+                    //Execute other tasks
                     for (int a = 0; a < jbList.Count - (int)numberOfIteration; a++)
                     {
                         int b = a;
-                        taskArray[b % 5] = Task.Run(() => Execute(jbList[b]));
+                        taskArray[b % 5] = Task.Run(() => Execute(jbList[b], _token));
                     }
 
                     foreach (Task task in taskArray)
                     {
                         if (!(task is null))
                         {
-                            try
-                            {
-                                task.Wait();
-                            }
-                            catch
-                            {
-                                continue;
-                            }
+                            task.Wait();
                         }
                     }
                     GC.Collect();
@@ -335,7 +340,7 @@ namespace EasySave
         {
             if (!(_mainThread is null))
             {
-
+                _tokenSource.Cancel();
             }
         }
 

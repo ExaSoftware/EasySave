@@ -119,16 +119,9 @@ namespace EasySave
         /// <summary>
         /// Stop all running JobBackup.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
-            //If there is a job backup selected
-            if (listViewBackups.SelectedItems.Count != 0)
-            {
-                _mainViewModel.Stop();
-            }
-            
+            _mainViewModel.Stop();
         }
 
         private void listViewBackups_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -136,7 +129,7 @@ namespace EasySave
             if (_mainViewModel.SelectedIndex != -1)
             {
                 //MessageBox.Show(_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Label);
-                MainViewModel vm = this.DataContext as MainViewModel;
+                MainViewModel vm = DataContext as MainViewModel;
                 vm.Job = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex];
             }
         }
