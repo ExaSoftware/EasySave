@@ -171,6 +171,9 @@
   <data name="errorFile" xml:space="preserve">
     <value>Une erreur est survenue sur ce fichier</value>
   </data>
+  <data name="errors" xml:space="preserve">
+    <value>erreur(s)</value>
+  </data>
   <data name="executionFinished" xml:space="preserve">
     <value>Exécution terminée</value>
   </data>
@@ -221,6 +224,9 @@
   </data>
   <data name="megabyteUnit" xml:space="preserve">
     <value>Mo</value>
+  </data>
+  <data name="noError" xml:space="preserve">
+    <value>Aucune erreur.</value>
   </data>
   <data name="return" xml:space="preserve">
     <value>Retour</value>
