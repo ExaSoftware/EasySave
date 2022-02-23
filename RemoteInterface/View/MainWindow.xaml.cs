@@ -25,6 +25,7 @@ namespace RemoteInterface
     public partial class MainWindow : Window
     {
         private MainViewModel _mainViewModel;
+        private static SettingsView _instance;
 
         public MainWindow()
         {
@@ -41,6 +42,16 @@ namespace RemoteInterface
         private void Window_Closing(object sender, EventArgs e)
         {
             _mainViewModel.StopConnection();
+        }
+
+        //prevent spam click when using of goback()
+        public static SettingsView GetInstance()
+        {
+            if (_instance == null)
+            {
+                _instance = new SettingsView();
+            }
+            return _instance;
         }
     }
 }

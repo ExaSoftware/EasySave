@@ -79,7 +79,7 @@ namespace RemoteInterface.Resources {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à EasySave.
+        ///   Recherche une chaîne localisée semblable à Interface Distante.
         /// </summary>
         public static string appTitle {
             get {
