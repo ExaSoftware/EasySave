@@ -82,6 +82,7 @@ namespace EasySave
                 string destinationDirectory = txtBoxDestination.Text;
                 bool isDifferential = (type.SelectedIndex == 1) ? true : false;
                 _createJobViewModel.JobCreation(id, name, sourceDirectory, destinationDirectory, isDifferential);
+                int priority = _createJobViewModel.GetPriority(txtBoxPriority.Text);
                 this.NavigationService.GoBack();
             }
 
@@ -115,6 +116,7 @@ namespace EasySave
             labelError.Text = ""; labelError.Visibility = Visibility.Collapsed;
             sourceDirectoryError.Text = ""; sourceDirectoryError.Visibility = Visibility.Collapsed;
             destinationDirectoryError.Text = ""; destinationDirectoryError.Visibility = Visibility.Collapsed;
+            priorityError.Text = ""; priorityError.Visibility = Visibility.Collapsed;
         }
 
         /// <summary>
@@ -125,6 +127,7 @@ namespace EasySave
             _createJobViewModel.CheckLabel(label.Text);
             _createJobViewModel.CheckSourceDirectory(txtBoxSource.Text);
             _createJobViewModel.CheckDestinationDirectory(txtBoxDestination.Text, txtBoxSource.Text);
+            _createJobViewModel.CheckPriority(txtBoxPriority.Text);
         }
 
         /// <summary>
@@ -144,6 +147,10 @@ namespace EasySave
                         break;
                     case "destinationDirectoryError":
                         destinationDirectoryError.Text = _createJobViewModel.Errors["destinationDirectoryError"]; destinationDirectoryError.Visibility = Visibility.Visible;
+                        break;
+                    case "priorityError":
+                        priorityError.Text = _createJobViewModel.Errors["priorityError"];
+                        priorityError.Visibility = Visibility.Visible;
                         break;
                 }
             }
@@ -198,6 +205,25 @@ namespace EasySave
                 _createJobViewModel.Errors.Remove("destinationDirectoryError");
             }
 
+        }
+
+        private void PriorityLostFocus(object sender, RoutedEventArgs e)
+        {
+            //Ensure textbox is property loaded
+            if (this.IsLoaded)
+            {
+                //Check and show priority error
+                _createJobViewModel.CheckPriority(txtBoxPriority.Text);
+                if (_createJobViewModel.Errors.ContainsKey("priorityError"))
+                {
+                    priorityError.Text = _createJobViewModel.Errors["priorityError"]; priorityError.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    priorityError.Text = ""; priorityError.Visibility = Visibility.Collapsed;
+                }
+                _createJobViewModel.Errors.Remove("priorityError");
+            }
         }
     }
 }

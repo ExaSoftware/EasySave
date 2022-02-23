@@ -124,5 +124,39 @@ namespace EasySave.ViewModel
                 if (destinationPath.Equals(sourcePath)) _errors.Add("destinationDirectoryError", _rm.GetString("destinationPathEqualsSourcePath"));
             }
         }
+
+        public void CheckPriority(string priority)
+        {
+            if (!String.IsNullOrEmpty(priority))
+            {
+                int prio;
+                try
+                {
+                    prio = int.Parse(priority);
+                    if (prio < 0 || prio > 10)
+                    {
+                        _errors.Add("priorityError", _rm.GetString("priorityError"));
+                    }
+
+                }
+                catch (FormatException)
+                {
+                    _errors.Add("priorityError", _rm.GetString("priorityFormatError"));
+                }
+            }
+        }
+
+        public int GetPriority(string priority)
+        {
+            //If the field is empty, set a default value
+            if (String.IsNullOrEmpty(priority))
+            {
+                return 0;
+            }
+            else
+            {
+                return int.Parse(priority);
+            }
+        }
     }
 }
