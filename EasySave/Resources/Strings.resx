@@ -228,6 +228,15 @@
   <data name="noError" xml:space="preserve">
     <value>Aucune erreur.</value>
   </data>
+  <data name="priority" xml:space="preserve">
+    <value>Priorité (0 n'applique pas de priorité)</value>
+  </data>
+  <data name="priorityError" xml:space="preserve">
+    <value>La priorité doit être comprise entre 0 et 10.</value>
+  </data>
+  <data name="priorityFormatError" xml:space="preserve">
+    <value>La priorité doit être un nombre entier.</value>
+  </data>
   <data name="return" xml:space="preserve">
     <value>Retour</value>
   </data>
