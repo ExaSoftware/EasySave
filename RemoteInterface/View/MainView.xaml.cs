@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Linq;
 using System.Reflection;
 using System.Resources;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace RemoteInterface
 {
@@ -33,26 +25,12 @@ namespace RemoteInterface
         }
 
         /// <summary>
-        /// Method which was executed when a user click on delete button
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnDeleteJob_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-        private void btnAddJob_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        /// <summary>
         /// A user click two time on a job backup to show details
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-
         }
 
         /// <summary>
@@ -65,34 +43,40 @@ namespace RemoteInterface
             //Prevent click on the empty list to avoid an exception
             if (listViewBackups.SelectedItems.Count != 0)
             {
+
+                //Update the first block
                 id = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Id;
-                label.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Label;
-                labelSourceDirectory.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].SourceDirectory;
-                destinationDirectory.Text = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].DestinationDirectory;
+
+                //Get the totalFileSize from the VM
+                _mainViewModel.TotalFilesSizeFormatted = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].TotalFileSize();
+
                 ResourceManager rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
-                if (_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].IsDifferential)
-                {
-                    type.Text = rm.GetString("differential");
-                }
-                else
-                {
-                    type.Text = rm.GetString("total");
-                }
+                _mainViewModel.JobTypeFormatted = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].IsDifferential ? rm.GetString("differential") : rm.GetString("total");
             }
         }
 
         /// <summary>
-        /// Method which was execute when user click on the button to execute the job backups sequentially
+        /// Method which start the all job backup
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void btnExecuteSequentially_Click(object sender, RoutedEventArgs e)
         {
-            _mainViewModel.ExecuteAll();
+            _mainViewModel.ExecuteAll(listViewBackups.SelectedItems.Cast<JobBackup>().ToList());
         }
 
         /// <summary>
-        /// Method which was executed when user click a the play button to launch a job backup
+        /// Method which is executed if the user wants to connect the remote app with EasySave
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnRemoteConnection_Click(object sender, RoutedEventArgs e)
+        {
+            _mainViewModel.CommunicationWithRemoteInterface();
+        }
+
+        /// <summary>
+        /// Method which start the selected job backup when user click on the play button
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -101,9 +85,43 @@ namespace RemoteInterface
             //If there is a job backup selected
             if (listViewBackups.SelectedItems.Count != 0)
             {
-                _mainViewModel.ExecuteOne((JobBackup)listViewBackups.SelectedItem);
+                _mainViewModel.ExecuteAll(listViewBackups.SelectedItems.Cast<JobBackup>().ToList());
+            }
+        }
+
+        /// <summary>
+        /// Turns all running JobBackup in pause state.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnPause_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        /// <summary>
+        /// Stop all running JobBackup.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnStop_Click(object sender, RoutedEventArgs e)
+        {
+            //If there is a job backup selected
+            if (listViewBackups.SelectedItems.Count != 0)
+            {
+                _mainViewModel.Stop();
             }
 
+        }
+
+        private void listViewBackups_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_mainViewModel.SelectedIndex != -1)
+            {
+                //MessageBox.Show(_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Label);
+                MainViewModel vm = this.DataContext as MainViewModel;
+                vm.Job = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex];
+            }
         }
     }
 }
