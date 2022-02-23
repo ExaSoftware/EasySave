@@ -195,6 +195,9 @@
   <data name="french" xml:space="preserve">
     <value>French</value>
   </data>
+  <data name="highPriority" xml:space="preserve">
+    <value>High</value>
+  </data>
   <data name="jobBackupList" xml:space="preserve">
     <value>Job Backups</value>
   </data>
@@ -228,14 +231,11 @@
   <data name="noError" xml:space="preserve">
     <value>No error.</value>
   </data>
+  <data name="normalPriority" xml:space="preserve">
+    <value>Normal</value>
+  </data>
   <data name="priority" xml:space="preserve">
     <value>Priority (0 doesn't apply priority)</value>
-  </data>
-  <data name="priorityError" xml:space="preserve">
-    <value>Priority must be between 0 and 10.</value>
-  </data>
-  <data name="priorityFormatError" xml:space="preserve">
-    <value>Priority must be an integer.</value>
   </data>
   <data name="return" xml:space="preserve">
     <value>Return</value>
@@ -293,6 +293,9 @@
   </data>
   <data name="valid" xml:space="preserve">
     <value>Validate</value>
+  </data>
+  <data name="veryHighPriority" xml:space="preserve">
+    <value>Very High</value>
   </data>
   <data name="xml" xml:space="preserve">
     <value>XML</value>

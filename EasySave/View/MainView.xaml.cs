@@ -89,7 +89,7 @@ namespace EasySave
         /// <param name="e"></param>
         private void btnExecuteSequentially_Click(object sender, RoutedEventArgs e)
         {
-            _mainViewModel.ExecuteAll(listViewBackups.Items.Cast<JobBackup>().ToList());
+            _mainViewModel.SortList(listViewBackups.Items.Cast<JobBackup>().ToList());
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace EasySave
             //If there is a job backup selected
             if (listViewBackups.SelectedItems.Count != 0)
             {
-                _mainViewModel.ExecuteAll(listViewBackups.SelectedItems.Cast<JobBackup>().ToList());
+                _mainViewModel.SortList(listViewBackups.SelectedItems.Cast<JobBackup>().ToList());
             }
         }
 
