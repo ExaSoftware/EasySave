@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
-using System.Text;
 using System.Text.Json;
-using System.Threading;
 
 namespace RemoteInterface
 {
@@ -12,6 +8,10 @@ namespace RemoteInterface
     {
         //Attributes for the configuration of the software
         private String _language;
+        private String _businessSoftware;
+        private String[] _extensions;
+        private string _logFormat;
+        private ulong _sizeLimit;
 
         private static Configuration _instance;
         public const String DEFAULT_CONFIG_FILE_PATH = @"C:\EasySave\Configuration.json";
@@ -23,6 +23,9 @@ namespace RemoteInterface
                 _language = value;
             }
         }
+
+        public string LogFormat { get => _logFormat; set => _logFormat = value; }
+        public ulong SizeLimit { get => _sizeLimit; set => _sizeLimit = value; }
 
         /// <summary>
         /// Serialize and save Configuration object in json file
