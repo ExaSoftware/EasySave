@@ -447,10 +447,10 @@ namespace EasySave
         }
 
         /// <summary>
-        /// 
+        /// Read all the text in the fileStream.
         /// </summary>
-        /// <param name="stream"></param>
-        /// <returns></returns>
+        /// <param name="stream">The fileStream to read</param>
+        /// <returns>The content of the file i a string.</returns>
         private string ReadText(FileStream stream)
         {
             int totalBytes = (int)stream.Length;
