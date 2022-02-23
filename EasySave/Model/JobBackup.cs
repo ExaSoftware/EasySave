@@ -29,6 +29,7 @@ namespace EasySave
         private string[] _encryptionExtensionList;
         private ulong _sizeLimit;
         private List<string> _bigFilesList = new List<string>();
+        private int _priority;
 
         private bool _disposedValue;
 
@@ -59,6 +60,15 @@ namespace EasySave
         }
 
         public bool IsRunning { get => _isRunning; set => _isRunning = value; }
+        public int Priority 
+        {
+            get => _priority;
+            set
+            {
+                _priority = value;
+                OnPropertyChanged("Priority");
+            }  
+        }
 
         ///  <summary> 
         ///  Default constructor to use in serialization.

@@ -403,6 +403,33 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Priorité (0 n&apos;applique pas de priorité).
+        /// </summary>
+        public static string priority {
+            get {
+                return ResourceManager.GetString("priority", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à La priorité doit être comprise entre 0 et 10..
+        /// </summary>
+        public static string priorityError {
+            get {
+                return ResourceManager.GetString("priorityError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à La priorité doit être un nombre entier..
+        /// </summary>
+        public static string priorityFormatError {
+            get {
+                return ResourceManager.GetString("priorityFormatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Format de sauvegarde du fichier de log quotidien.
         /// </summary>
         public static string SaveLogFormat {
