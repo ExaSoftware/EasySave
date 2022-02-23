@@ -453,8 +453,19 @@ namespace EasySave
 
             Directory.CreateDirectory(_DEFAULT_JOB_BACKUP_FILE_PATH);
             string jsonStringJobBackup = JsonConvert.SerializeObject(jobBackupList, Newtonsoft.Json.Formatting.Indented);
-
             File.WriteAllText(String.Format(@"{0}\SavedJobBackup.json", _DEFAULT_JOB_BACKUP_FILE_PATH), jsonStringJobBackup);
+        }
+
+        /// <summary>
+        /// Method which save a list of jobBackup to a json format and return it for the remote
+        /// </summary>
+        /// <param name="jobBackup"></param>
+        public string PrepareJobForRemote(JobBackup jobBackups)
+        {
+
+            Directory.CreateDirectory(_DEFAULT_JOB_BACKUP_FILE_PATH);
+            string jsonStringJobBackup = JsonConvert.SerializeObject(jobBackups, Newtonsoft.Json.Formatting.Indented);
+            return jsonStringJobBackup;
         }
 
         /// <summary>

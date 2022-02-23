@@ -99,7 +99,7 @@ namespace EasySave
         private void btnPlay_Click(object sender, RoutedEventArgs e)
         {
             //If there is a job backup selected
-            if (listViewBackups.SelectedItems.Count != 0)
+            if(listViewBackups.SelectedItems.Count != 0)
             {
                 _mainViewModel.ExecuteAll(listViewBackups.SelectedItems.Cast<JobBackup>().ToList());
             }
