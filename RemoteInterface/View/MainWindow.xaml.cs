@@ -35,12 +35,13 @@ namespace RemoteInterface
 
         private void btnSettings_Click(object sender, RoutedEventArgs e)
         {
-            frame.Navigate(new SettingsView());
+            frame.Navigate(SettingsView.GetInstance());
         }
 
         private void Window_Closing(object sender, EventArgs e)
         {
             _mainViewModel.StopConnection();
         }
+
     }
 }

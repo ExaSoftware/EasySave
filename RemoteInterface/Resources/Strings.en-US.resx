@@ -121,7 +121,7 @@
     <value>Active</value>
   </data>
   <data name="appTitle" xml:space="preserve">
-    <value>EasySave</value>
+    <value>Remote Interface</value>
   </data>
   <data name="boxDetailTitle" xml:space="preserve">
     <value>Detail</value>
@@ -193,7 +193,10 @@
     <value>Label *</value>
   </data>
   <data name="language" xml:space="preserve">
-    <value>Language</value>
+    <value>Language (effective after a restart)</value>
+  </data>
+  <data name="megabyteUnit" xml:space="preserve">
+    <value>MB</value>
   </data>
   <data name="remoteInterface" xml:space="preserve">
     <value>Remote Interface</value>
