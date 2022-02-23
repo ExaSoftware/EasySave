@@ -51,7 +51,7 @@ namespace EasySave
                 if (jsonFile.Property(name) != null)
                 {
                     File.WriteAllText(path, jsonFile.ToString());
-                    jsonFile.Remove(name);
+                    _ = jsonFile.Remove(name);
                 }
             }
         }
