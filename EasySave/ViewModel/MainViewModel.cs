@@ -21,12 +21,6 @@ namespace EasySave
         private Task _thread3 = null;
         private Task _thread4 = null;
         private Task _thread5 = null;
-        private Task _threadRemote = null;
-        private Task _threadRemote1 = null;
-        private Task _threadRemote2 = null;
-        private Task _threadRemote3 = null;
-        private Task _threadRemote4 = null;
-        private Task _threadRemote5 = null;
         private Task _mainThread = null;
         private int _selectedIndex;
         private JobBackup _job;
