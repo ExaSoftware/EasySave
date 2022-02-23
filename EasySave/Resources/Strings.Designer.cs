@@ -304,6 +304,15 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Élevée.
+        /// </summary>
+        public static string highPriority {
+            get {
+                return ResourceManager.GetString("highPriority", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Travaux de sauvegarde.
         /// </summary>
         public static string jobBackupList {
@@ -403,29 +412,20 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Priorité (0 n&apos;applique pas de priorité).
+        ///   Recherche une chaîne localisée semblable à Normale.
+        /// </summary>
+        public static string normalPriority {
+            get {
+                return ResourceManager.GetString("normalPriority", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Priorité.
         /// </summary>
         public static string priority {
             get {
                 return ResourceManager.GetString("priority", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à La priorité doit être comprise entre 0 et 10..
-        /// </summary>
-        public static string priorityError {
-            get {
-                return ResourceManager.GetString("priorityError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à La priorité doit être un nombre entier..
-        /// </summary>
-        public static string priorityFormatError {
-            get {
-                return ResourceManager.GetString("priorityFormatError", resourceCulture);
             }
         }
         
@@ -588,6 +588,15 @@ namespace EasySave.Resources {
         public static string valid {
             get {
                 return ResourceManager.GetString("valid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Très élevée.
+        /// </summary>
+        public static string veryHighPriority {
+            get {
+                return ResourceManager.GetString("veryHighPriority", resourceCulture);
             }
         }
         
