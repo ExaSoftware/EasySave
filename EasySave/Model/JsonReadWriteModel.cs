@@ -318,9 +318,9 @@ namespace EasySave
 
                     JObject json = new JObject(new JProperty(pl.Name + " - " + id, newProgressLog));
 
-                    _readWriteLockHs.EnterWriteLock();
+                    _readWriteLock.EnterWriteLock();
                     File.WriteAllText(path, json.ToString());
-                    _readWriteLockHs.ExitWriteLock();
+                    _readWriteLock.ExitWriteLock();
                 }
                 finally
                 {
@@ -336,19 +336,12 @@ namespace EasySave
         /// <param name="path"></param>
         public void SaveProgressLoginJsonIfFileExist(ProgressLog pl, string path, int id)
         {
-            JObject jsonFile = null;
-            if (Monitor.TryEnter(path, 2000))
+            using (FileStream fileStream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
             {
-                _readWriteLockHs.EnterReadLock();
-                try
-                {
-                    jsonFile = JObject.Parse(File.ReadAllText(path));
-                }
-                finally
-                {
-                    _readWriteLockHs.ExitReadLock();
-                    Monitor.Exit(path);
-                }
+
+                JObject jsonFile = null;
+                // jsonFile = JObject.Parse(File.ReadAllText(path));
+                jsonFile = JObject.Parse(ReadText(fileStream));
 
                 if (jsonFile.Property(pl.Name + " - " + id) != null)
                 {
@@ -361,26 +354,14 @@ namespace EasySave
                     progressLogToUpdate["TotalFilesRemaining"] = pl.TotalFilesRemaining;
                     progressLogToUpdate["Progression"] = pl.Progression;
 
-                    if (Monitor.TryEnter(path, 3000))
-                    {
-                        _readWriteLockHs.EnterWriteLock();
-                        try
-                        {
-                            File.WriteAllText(path, jsonFile.ToString());
-                        }
-                        catch
-                        {
+                    fileStream.SetLength(0);
+                    StreamWriter stream = new StreamWriter(fileStream);
+                    stream.Write(jsonFile.ToString());
 
-                        }
-
-                        finally
-                        {
-                            _readWriteLockHs.ExitWriteLock();
-                            Monitor.Exit(path);
-                        }
-                    }
+                    stream.Close();
+                    fileStream.Close();
+                    stream.Dispose();
                 }
-
                 else
                 {
                     JObject newProgressLog = new JObject(
@@ -397,19 +378,35 @@ namespace EasySave
 
                     jsonFile.Add(new JProperty(pl.Name + " - " + id, newProgressLog));
 
-                    if (Monitor.TryEnter(path, 3000))
-                    {
-                        try
-                        {
-                            File.WriteAllText(path, jsonFile.ToString());
-                        }
-                        finally
-                        {
-                            Monitor.Exit(path);
-                        }
-                    }
+                    fileStream.SetLength(0);
+                    StreamWriter stream = new StreamWriter(fileStream);
+                    stream.WriteLine(jsonFile.ToString());
+
+                    stream.Close();
+                    fileStream.Close();
+                    stream.Dispose();
                 }
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        private string ReadText(FileStream stream)
+        {
+            int totalBytes = (int)stream.Length;
+            byte[] bytes = new byte[totalBytes];
+            int bytesRead = 0;
+
+            while (bytesRead < totalBytes)
+            {
+                int len = stream.Read(bytes, bytesRead, totalBytes);
+                bytesRead += len;
+            }
+
+            return Encoding.UTF8.GetString(bytes);
         }
 
         /// <summary>
