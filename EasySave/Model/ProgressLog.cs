@@ -184,8 +184,9 @@ namespace EasySave
         /// </summary>
         public override void SaveLog(int id)
         {
-            Communication comm = new Communication();
-            comm.SendUsedJob(this);
+            /*Communication comm = new Communication();
+            comm.SendUsedJob(this);*/
+            Communication.SendInformation(this);
             _jsonReadWriteModel.SaveProgressLog(this,id);
         }
 

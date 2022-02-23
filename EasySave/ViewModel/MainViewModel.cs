@@ -110,7 +110,8 @@ namespace EasySave.ViewModel
             _tokenSource = new CancellationTokenSource();
             _token = _tokenSource.Token;
 
-            CommunicationWithRemoteInterface();
+            Communication.LaunchConnection();
+            //CommunicationWithRemoteInterface();
         }
 
         /// <summary>
@@ -295,9 +296,9 @@ namespace EasySave.ViewModel
 
             }
         }
-        public void receiveContinuously()
+        /*public void receiveContinuously()
         {
-            String msg = "";
+            /*String msg = "";
             _mainThreadReceive = Task.Run(() =>
             {
                 Communication comm = new Communication();
@@ -317,7 +318,7 @@ namespace EasySave.ViewModel
                 }
                 
             });
-        }
+        }*/
         /// <summary>
         /// Pause all JobBackups threads.
         /// </summary>
@@ -331,8 +332,8 @@ namespace EasySave.ViewModel
         /// </summary>
         public void CommunicationWithRemoteInterface()
         {
-            Communication comm = new Communication();
-            comm.LaunchConnection();
+            /*Communication comm = new Communication();
+            comm.LaunchConnection();*/
         }
 
         /// <summary>

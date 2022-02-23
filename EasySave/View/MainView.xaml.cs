@@ -1,7 +1,13 @@
 ﻿using EasySave.ViewModel;
+using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Resources;
+using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -15,6 +21,9 @@ namespace EasySave
     {
         private MainViewModel _mainViewModel;
         private int id;
+
+        Socket _client;
+        Socket _newsock;
         /// <summary>
         /// Constructor of the view
         /// </summary>
@@ -23,7 +32,49 @@ namespace EasySave
             _mainViewModel = new MainViewModel();
             DataContext = _mainViewModel;
             InitializeComponent();
+            //Creation of a communication point between the local IP address and the port
+            /*IPEndPoint ipep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 2222);
+
+            // Creation of the socket to connect to the port
+            _newsock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+            // Bind the socket to the communication point
+            _newsock.Bind(ipep);
+
+            //Create a new thread that listen the network and accept the client request
+            Thread t = new Thread(new ThreadStart(ListenNetwork));
+            t.Start();*/
         }
+
+        /*private void ListenNetwork()
+        {
+            _newsock.Listen(1);
+            _client = _newsock.Accept();
+            IPEndPoint socketEndPoint = (IPEndPoint)_client.RemoteEndPoint;
+            Trace.WriteLine(String.Format("Client connected: {0}:{1}", socketEndPoint.Address, socketEndPoint.Port));
+            while (true)
+            {
+                byte[] data = new byte[128];
+
+                //appel de la méthode receive qui reçoit les données envoyées par le serveur et les stocker 
+                //dans le tableau data, elle renvoie le nombre d'octet reçus
+                try
+                {
+                    int recv = _client.Receive(data);
+                }
+                catch (SocketException exception)
+                {
+                    Trace.WriteLine(exception.Message);
+                }
+
+
+                //transcodage de data en string
+                String mg = (Encoding.UTF8.GetString(data));
+                //affichage des données recues dans le label label1
+                Trace.WriteLine(mg);
+            }
+
+        }*/
 
         /// <summary>
         /// Method which was executed when a user click on delete button
@@ -99,9 +150,19 @@ namespace EasySave
         /// <param name="e"></param>
         private void btnPlay_Click(object sender, RoutedEventArgs e)
         {
-            //If there is a job backup selected
-            if(listViewBackups.SelectedItems.Count != 0)
+            /*try
             {
+                _client.Send(Encoding.UTF8.GetBytes("test"));
+            }
+            catch (SocketException exp)
+            {
+                Trace.WriteLine(exp.Message);
+
+            }*/
+            //If there is a job backup selected
+            if (listViewBackups.SelectedItems.Count != 0)
+            {
+                //Communication.SendTest();
                 _mainViewModel.SortList(listViewBackups.SelectedItems.Cast<JobBackup>().ToList());
             }
         }

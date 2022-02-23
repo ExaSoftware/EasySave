@@ -29,7 +29,7 @@ namespace RemoteInterface
         public MainWindow()
         {
             InitializeComponent();
-            _mainViewModel = new MainViewModel();
+            //_mainViewModel = new MainViewModel();
             frame.Navigate(new MainView());
         }
 

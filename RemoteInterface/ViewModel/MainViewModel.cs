@@ -90,6 +90,7 @@ namespace RemoteInterface
         {            
             //No job backup selected
             SelectedIndex = -1;
+            Communication.LaunchConnection();
 
         }
         //Instanciate the delegate
@@ -98,11 +99,11 @@ namespace RemoteInterface
         };
 
 
-        public void CommunicationWithRemoteInterface()
+        /*public void CommunicationWithRemoteInterface()
         {
             Communication comm = new Communication();
             comm.LaunchConnection();
-        }
+        }*/
 
         /*public void receiveContinuously()
         {
@@ -146,7 +147,7 @@ namespace RemoteInterface
         /// <param name="jobBackup">The JobBackup to execute.</param>
         public void ExecuteOne(JobBackup jobBackup)
         {
-            Communication comm = new Communication();
+            //Communication comm = new Communication();
         }
 
 
@@ -156,7 +157,7 @@ namespace RemoteInterface
         /// <remarks>Threads are executed one by one, in the order of the list.</remarks>
         public void ExecuteAll(List<JobBackup> jbList)
         {
-            Communication comm = new Communication();
+            //Communication comm = new Communication();
         }
 
   
@@ -166,8 +167,8 @@ namespace RemoteInterface
         /// </summary>
         public void Pause()
         {
-            Communication comm = new Communication();
-            comm.SendInformation("Stop");
+            /*Communication comm = new Communication();
+            comm.SendInformation("Stop");*/
         }
 
 
@@ -176,8 +177,8 @@ namespace RemoteInterface
         /// </summary>
         public void Stop()
         {
-            Communication comm = new Communication();
-            comm.SendInformation("Reset");
+            /*Communication comm = new Communication();
+            comm.SendInformation("Reset");*/
         }
     }
 }
