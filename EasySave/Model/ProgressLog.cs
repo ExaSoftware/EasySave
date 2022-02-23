@@ -26,7 +26,7 @@ namespace EasySave.Object
         private string _stateFormatted;
         private ObservableCollection<string> _log = new ObservableCollection<string>();
         private JsonReadWriteModel _jsonReadWriteModel = new JsonReadWriteModel();
-
+        public event PropertyChangedEventHandler PropertyChanged;
         ResourceManager _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
 
         /// <summary>
@@ -134,8 +134,6 @@ namespace EasySave.Object
                 OnPropertyChanged("StateFormatted");
             }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged(string propertyName = null)
         {
