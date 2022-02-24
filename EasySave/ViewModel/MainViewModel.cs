@@ -326,7 +326,7 @@ namespace EasySave.ViewModel
                         for (int a = (int)numberOfIteration; a < jbList.Count; a++)
                         {
                             int b = a;
-                            progressArray[b % 5] = !(jbList[b] is null) ? jbList[b].State : progressArray[0];
+                            progressArray[b % 5] = !(jbList[b] is null) ? jbList[b].State : progressArray[b % 5];
                         }
 
                         //Send progressArray
