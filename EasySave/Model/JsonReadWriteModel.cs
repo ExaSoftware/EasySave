@@ -35,7 +35,7 @@ namespace EasySave
 
             if (App.Configuration.LogFormat.Equals("json")) SaveHistoryLoginJson(myHistoryLog, path, id);
 
-            else SaveHistoryLogInXml(myHistoryLog, path,id);
+            else SaveHistoryLogInXml(myHistoryLog, path, id);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace EasySave
                 {
                     if (File.Exists(path))
                     {
-                        while(true)
+                        while (true)
                         {
                             try
                             {
@@ -79,7 +79,7 @@ namespace EasySave
                                 fsDel.Dispose();
                                 break;
                             }
-                            catch(IOException)
+                            catch (IOException)
                             {
                                 continue;
                             }
@@ -375,63 +375,63 @@ namespace EasySave
         /// <param name="path"></param>
         private void SaveProgressLoginJsonIfFileExist(ProgressLog pl, string path, int id)
         {
-            while(true)
+            while (true)
             {
                 try
                 {
                     using (FileStream fileStream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
-            {
-                JObject jsonFile = null;
-                // jsonFile = JObject.Parse(File.ReadAllText(path));
-                jsonFile = JObject.Parse(ReadText(fileStream));
+                    {
+                        JObject jsonFile = null;
+                        // jsonFile = JObject.Parse(File.ReadAllText(path));
+                        jsonFile = JObject.Parse(ReadText(fileStream));
 
-                if (jsonFile.Property(pl.Name + " - " + id) != null)
-                {
-                    JObject progressLogToUpdate = (JObject)jsonFile[pl.Name + " - " + id];
-                    progressLogToUpdate["SourceFile"] = pl.SourceFile;
-                    progressLogToUpdate["TargetFile"] = pl.TargetFile;
-                    progressLogToUpdate["State"] = pl.State;
-                    progressLogToUpdate["TotalFilesToCopy"] = pl.TotalFilesToCopy;
-                    progressLogToUpdate["TotalFilesSize"] = pl.TotalFilesSize;
-                    progressLogToUpdate["TotalFilesRemaining"] = pl.TotalFilesRemaining;
-                    progressLogToUpdate["Progression"] = pl.Progression;
+                        if (jsonFile.Property(pl.Name + " - " + id) != null)
+                        {
+                            JObject progressLogToUpdate = (JObject)jsonFile[pl.Name + " - " + id];
+                            progressLogToUpdate["SourceFile"] = pl.SourceFile;
+                            progressLogToUpdate["TargetFile"] = pl.TargetFile;
+                            progressLogToUpdate["State"] = pl.State;
+                            progressLogToUpdate["TotalFilesToCopy"] = pl.TotalFilesToCopy;
+                            progressLogToUpdate["TotalFilesSize"] = pl.TotalFilesSize;
+                            progressLogToUpdate["TotalFilesRemaining"] = pl.TotalFilesRemaining;
+                            progressLogToUpdate["Progression"] = pl.Progression;
 
-                    fileStream.SetLength(0);
-                    StreamWriter stream = new StreamWriter(fileStream);
-                    stream.Write(jsonFile.ToString());
+                            fileStream.SetLength(0);
+                            StreamWriter stream = new StreamWriter(fileStream);
+                            stream.Write(jsonFile.ToString());
 
-                    stream.Close();
-                    fileStream.Close();
-                    stream.Dispose();
-                }
-                else
-                {
-                    JObject newProgressLog = new JObject(
+                            stream.Close();
+                            fileStream.Close();
+                            stream.Dispose();
+                        }
+                        else
+                        {
+                            JObject newProgressLog = new JObject(
 
-                    new JProperty("Name", pl.Name),
-                    new JProperty("SourceFile", pl.SourceFile),
-                    new JProperty("TargetFile", pl.TargetFile),
-                    new JProperty("State", pl.State),
-                    new JProperty("TotalFilesToCopy", pl.TotalFilesToCopy),
-                    new JProperty("TotalFilesSize", pl.TotalFilesRemaining),
-                    new JProperty("TotalFilesRemaining", pl.TotalFilesRemaining),
-                    new JProperty("Progression", pl.Progression)
-                    );
+                            new JProperty("Name", pl.Name),
+                            new JProperty("SourceFile", pl.SourceFile),
+                            new JProperty("TargetFile", pl.TargetFile),
+                            new JProperty("State", pl.State),
+                            new JProperty("TotalFilesToCopy", pl.TotalFilesToCopy),
+                            new JProperty("TotalFilesSize", pl.TotalFilesRemaining),
+                            new JProperty("TotalFilesRemaining", pl.TotalFilesRemaining),
+                            new JProperty("Progression", pl.Progression)
+                            );
 
-                    jsonFile.Add(new JProperty(pl.Name + " - " + id, newProgressLog));
+                            jsonFile.Add(new JProperty(pl.Name + " - " + id, newProgressLog));
 
-                    fileStream.SetLength(0);
-                    StreamWriter stream = new StreamWriter(fileStream);
-                    stream.WriteLine(jsonFile.ToString());
+                            fileStream.SetLength(0);
+                            StreamWriter stream = new StreamWriter(fileStream);
+                            stream.WriteLine(jsonFile.ToString());
 
-                    stream.Close();
-                    fileStream.Close();
-                    stream.Dispose();
-                }
-            }
+                            stream.Close();
+                            fileStream.Close();
+                            stream.Dispose();
+                        }
+                    }
                     break;
                 }
-                catch(IOException)
+                catch (IOException)
                 {
                     Thread.Sleep(10);
                     continue;
