@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EasySave.Object;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -14,6 +15,7 @@ namespace EasySave.ViewModel
     {
         //Delegate
         private delegate void Del(JobBackup jobBackup, CancellationToken token);
+        private delegate void DelegateComm(List<JobBackup> jobBackupsList, int u);
 
         //Attributes
         private ObservableCollection<JobBackup> _listOfJobBackup = null;
@@ -220,6 +222,8 @@ namespace EasySave.ViewModel
             _hightPriority = new List<JobBackup>();
             _normalPriority = new List<JobBackup>();
 
+            //if(_mainThread.Status.Equals(TaskStatus.Running))
+
             unPause();
 
             if (_tokenSource.IsCancellationRequested)
@@ -227,16 +231,13 @@ namespace EasySave.ViewModel
                 _tokenSource.Dispose();
             }
 
-            _tokenSource = new CancellationTokenSource();
-            _token = _tokenSource.Token;
-
             foreach (JobBackup jobBackup in listOfJobBackup)
             {
                 if (jobBackup.Priority == 0) _veryHightPriority.Add(jobBackup);
                 else if (jobBackup.Priority == 1) _hightPriority.Add(jobBackup);
                 else _normalPriority.Add(jobBackup);
             }
-            _ = Task.Run(() =>
+            _mainThread = Task.Run(() =>
               {
                   Task.Run(() => ExecuteAll(_veryHightPriority)).Wait();
                   Task.Run(() => ExecuteAll(_hightPriority)).Wait();
@@ -250,51 +251,108 @@ namespace EasySave.ViewModel
         /// <remarks>Threads are executed one by one, in the order of the list.</remarks>
         private void ExecuteAll(List<JobBackup> jbList)
         {
-            if (_mainThread is null || _mainThread.IsCompleted)
+            _tokenSource = new CancellationTokenSource();
+            _token = _tokenSource.Token;
+
+            Task[] taskArray = new Task[] { _thread1, _thread2, _thread3, _thread4, _thread5 };
+
+            double numberOfIteration = Math.Round((double)(jbList.Count / 5));
+            int i = 0;
+
+            //Execute 5 by 5
+            for (i = 0; i < numberOfIteration * 5; i += 5)
             {
+                _thread1 = Task.Run(() => Execute(jbList[i], _token));
+                _thread2 = Task.Run(() => Execute(jbList[i++], _token));
+                _thread3 = Task.Run(() => Execute(jbList[i + 2], _token));
+                _thread4 = Task.Run(() => Execute(jbList[i + 3], _token));
+                _thread5 = Task.Run(() => Execute(jbList[i + 4], _token));
 
-                _mainThread = Task.Run(() =>
+                CancellationTokenSource remoteTokenSource = new CancellationTokenSource();
+                CancellationToken remoteToken = remoteTokenSource.Token;
+
+                Task.Run(() =>
                 {
-                    Task[] taskArray = new Task[] { _thread1, _thread2, _thread3, _thread4, _thread5 };
-                    double numberOfIteration = Math.Round((double)(jbList.Count / 5));
-                    int i = 0;
-
-                    //Execute 5 by 5
-                    for (i = 0; i < numberOfIteration * 5; i += 5)
+                    while (true)
                     {
-                        _thread1 = Task.Run(() => Execute(jbList[i], _token));
-                        _thread2 = Task.Run(() => Execute(jbList[i++], _token));
-                        _thread3 = Task.Run(() => Execute(jbList[i + 2], _token));
-                        _thread4 = Task.Run(() => Execute(jbList[i + 3], _token));
-                        _thread5 = Task.Run(() => Execute(jbList[i + 4], _token));
-
-                        _thread1.Wait();
-                        _thread2.Wait();
-                        _thread3.Wait();
-                        _thread4.Wait();
-                        _thread5.Wait();
-
-                        GC.Collect();
-                    }
-
-                    //Execute other tasks
-                    for (int a = 0; a < jbList.Count - (int)numberOfIteration; a++)
-                    {
-                        int b = a;
-                        taskArray[b % 5] = Task.Run(() => Execute(jbList[b], _token));
-                    }
-
-                    foreach (Task task in taskArray)
-                    {
-                        if (!(task is null))
+                        ProgressLog[] progressArray = new ProgressLog[5];
+                        try
                         {
-                            task.Wait();
+                            remoteToken.ThrowIfCancellationRequested();
+
+                            progressArray[0] = !(jbList[i] is null) ? jbList[i].State : progressArray[0];
+                            progressArray[1] = !(jbList[i++] is null) ? jbList[i++].State : progressArray[1];
+                            progressArray[2] = !(jbList[i + 2] is null) ? jbList[i + 2].State : progressArray[2];
+                            progressArray[3] = !(jbList[i + 3] is null) ? jbList[i + 3].State : progressArray[3];
+                            progressArray[4] = !(jbList[i + 4] is null) ? jbList[i + 4].State : progressArray[4];
+
+                            //Send progressArray
+                            Thread.Sleep(5000);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            break;
                         }
                     }
-                    GC.Collect();
                 });
 
+                _thread1.Wait();
+                _thread2.Wait();
+                _thread3.Wait();
+                _thread4.Wait();
+                _thread5.Wait();
+
+                remoteTokenSource.Cancel();
+                remoteTokenSource.Dispose();
+                GC.Collect();
             }
+
+            //Execute other tasks
+            for (int a = (int)numberOfIteration; a < jbList.Count; a++)
+            {
+                int b = a;
+                taskArray[b] = Task.Run(() => Execute(jbList[b], _token));
+            }
+
+            CancellationTokenSource remoteTokenSource2 = new CancellationTokenSource();
+            CancellationToken remoteToken2 = remoteTokenSource2.Token;
+
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    ProgressLog[] progressArray = new ProgressLog[5];
+                    try
+                    {
+                        remoteToken2.ThrowIfCancellationRequested();
+
+                        for (int a = (int)numberOfIteration; a < jbList.Count; a++)
+                        {
+                            int b = a;
+                            progressArray[b % 5] = !(jbList[b] is null) ? jbList[b].State : progressArray[0];
+                        }
+
+                        //Send progressArray
+                        Thread.Sleep(5000);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        break;
+                    }
+                }
+            });
+
+            foreach (Task task in taskArray)
+            {
+                if (!(task is null))
+                {
+                    task.Wait();
+                }
+            }
+
+            remoteTokenSource2.Cancel();
+            remoteTokenSource2.Dispose();
+            GC.Collect();
         }
         /*public void receiveContinuously()
         {
@@ -332,7 +390,7 @@ namespace EasySave.ViewModel
         /// </summary>
         public void Pause()
         {
-            App.ThreadPause = true;
+            App.ThreadPause = App.ThreadPause ? false : true;
         }
 
         /// <summary>
@@ -349,7 +407,7 @@ namespace EasySave.ViewModel
         /// </summary>
         public void Stop()
         {
-            if (!(_mainThread is null))
+            if (!(_mainThread is null) && _mainThread.Status.Equals(TaskStatus.Running))
             {
                 _tokenSource.Cancel();
             }
