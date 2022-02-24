@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -32,9 +34,14 @@ namespace RemoteInterface
             t.Start();
 
         }
-        
         public static void Listen()
         {
+            List<ProgressLog> progress;
+            ObservableCollection<ProgressLog> test = new ObservableCollection<ProgressLog>();
+            for (int i = 0; i < 5; i++)
+            {
+                test.Add(new ProgressLog());
+            }
             while (true)
             {
                 byte[] data = new byte[4096];
@@ -54,18 +61,24 @@ namespace RemoteInterface
 
                 //transcodage de data en string
                 //String mg = (Encoding.UTF8.GetString(data));
-                receiveProgessLog(data);
+                progress = receiveProgessLog(data);
+                
+
+
+                Trace.WriteLine(test[0].Progression);
                 //affichage des données recues dans le label label1
                 //MessageBox.Show(mg);
                 //Trace.WriteLine(mg);
             }
 
         }
-        public static void receiveProgessLog(byte[] data)
+        public static List<ProgressLog> receiveProgessLog(byte[] data)
         {
             JsonReadWriteModel jsonRWM = new JsonReadWriteModel();
-            ProgressLog progress = jsonRWM.ReadProgressLog((Encoding.UTF8.GetString(data)));
-            Trace.WriteLine(String.Format("{0} {1} {2} {3}", progress.Name, progress.State, progress.TotalFilesRemaining, progress.Progression, Environment.NewLine));
+            List<ProgressLog> progress = jsonRWM.ReadProgressLog((Encoding.UTF8.GetString(data)));
+            Trace.WriteLine(progress[0]);
+            /*Trace.WriteLine(String.Format("{0} {1} {2} {3}", progress.Name, progress.State, progress.TotalFilesRemaining, progress.Progression, Environment.NewLine));*/
+            return progress;
             //Déclaration d'un buffer de type byte pour enregistrer les données reçues
             /*byte[] data = new byte[128];*/
 

@@ -449,9 +449,9 @@ namespace RemoteInterface
         /// Method which read a json file and convert it into a list of list of JobBackup
         /// </summary>
         /// <returns>The list of JobBackup associate to the json file</returns>
-        public ProgressLog ReadProgressLog(string message)
+        public List<ProgressLog> ReadProgressLog(string message)
         {
-            return JsonConvert.DeserializeObject<ProgressLog>(message);
+            return JsonConvert.DeserializeObject<List<ProgressLog>>(message);
         }
 
 

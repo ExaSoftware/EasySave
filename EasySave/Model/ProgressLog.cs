@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Resources;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace EasySave
 {
@@ -186,7 +187,7 @@ namespace EasySave
         {
             /*Communication comm = new Communication();
             comm.SendUsedJob(this);*/
-            Communication.SendInformation(this);
+            //Communication.SendInformation(this);
             _jsonReadWriteModel.SaveProgressLog(this,id);
         }
 

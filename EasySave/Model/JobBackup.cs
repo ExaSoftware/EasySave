@@ -186,6 +186,7 @@ namespace EasySave
             HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0, 0);
             State = progressLog;
 
+            //Communication.SendInformation(this.Label);
             //Show message which say that job backup is executing
             App.Current.Dispatcher.Invoke(delegate
             {

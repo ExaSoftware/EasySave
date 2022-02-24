@@ -67,10 +67,28 @@ namespace EasySave
             }
         }
 
-        public static void SendInformation(ProgressLog progress)
+        public static void SendInformation(List<ProgressLog> progressList)
+        {
+            JsonReadWriteModel json = new JsonReadWriteModel();
+            string jsonString = json.PrepareLogForRemote(progressList);
+            if (_client.Connected)
+            {
+                try
+                {
+                    _client.Send(Encoding.UTF8.GetBytes(jsonString));
+                }
+                catch (SocketException exp)
+                {
+                    Trace.WriteLine(exp.Message);
+
+                }
+            }
+        }
+        /*public static void SendInformation(ProgressLog progress)
         {
             JsonReadWriteModel json = new JsonReadWriteModel();
             string jsonString = json.PrepareLogForRemote(progress);
+            Thread.Sleep(100);
             if (_client.Connected)
             {
                 try
@@ -84,7 +102,7 @@ namespace EasySave
                 }
             }
             
-        }
+        }*/
         /// <summary>
         /// Send the state of the progress 
         /// </summary>

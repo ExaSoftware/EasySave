@@ -22,7 +22,7 @@ namespace EasySave.ViewModel
         private Task _thread3 = null;
         private Task _thread4 = null;
         private Task _thread5 = null;
-        private Task _mainThread = null; 
+        private Task _mainThread = null;
         private Task _mainThreadReceive = null;
         private int _selectedIndex;
         private JobBackup _job;
@@ -220,7 +220,7 @@ namespace EasySave.ViewModel
             _hightPriority = new List<JobBackup>();
             _normalPriority = new List<JobBackup>();
 
-            if(_tokenSource.IsCancellationRequested)
+            if (_tokenSource.IsCancellationRequested)
             {
                 _tokenSource.Dispose();
             }
@@ -241,7 +241,23 @@ namespace EasySave.ViewModel
                   Task.Run(() => ExecuteAll(_normalPriority)).Wait();
               });
         }
+        private delegate void DelegateComm(List<JobBackup> jobBackupsList, int u);
 
+        private DelegateComm GetState(List<JobBackup> jobBackupsList, int u)
+        {
+            List<ProgressLog> progressList = new List<ProgressLog>();
+
+            while (true)
+            {
+                progressList[0] = jobBackupsList[u].State;
+                progressList[1] = jobBackupsList[u++].State;
+                progressList[2] = jobBackupsList[u + 2].State;
+                progressList[3] = jobBackupsList[u + 3].State;
+                progressList[4] = jobBackupsList[u + 4].State;
+
+                Thread.Sleep(1000);
+            }
+        }
         /// <summary>
         /// Execute all the list of JobBackup with the ExecuteOne method.
         /// </summary>
@@ -260,7 +276,7 @@ namespace EasySave.ViewModel
                     int i = 0;
 
                     //Execute 5 by 5
-                    for (i = 0; i < numberOfIteration * 5; i += 5)
+                    for (i = 0; i <= numberOfIteration * 5; i += 5)
                     {
                         _thread1 = Task.Run(() => Execute(jbList[i], _token));
                         _thread2 = Task.Run(() => Execute(jbList[i++], _token));
@@ -268,12 +284,15 @@ namespace EasySave.ViewModel
                         _thread4 = Task.Run(() => Execute(jbList[i + 3], _token));
                         _thread5 = Task.Run(() => Execute(jbList[i + 4], _token));
 
+                        //Task task = Task.Run(() => GetState(jbList, i));
+
                         _thread1.Wait();
                         _thread2.Wait();
                         _thread3.Wait();
                         _thread4.Wait();
                         _thread5.Wait();
 
+                        //task.Dispose();
                         GC.Collect();
                     }
 
