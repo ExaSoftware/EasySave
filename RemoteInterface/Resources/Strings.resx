@@ -117,196 +117,121 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ABORTED" xml:space="preserve">
-    <value>ABORTED</value>
-  </data>
-  <data name="ACTIVE" xml:space="preserve">
-    <value>ACTIVE</value>
+  <data name="active" xml:space="preserve">
+    <value>Actif</value>
   </data>
   <data name="appTitle" xml:space="preserve">
-    <value>EasySave</value>
-  </data>
-  <data name="at" xml:space="preserve">
-    <value>at</value>
+    <value>Interface Distante</value>
   </data>
   <data name="boxDetailTitle" xml:space="preserve">
-    <value>Detail</value>
+    <value>Détails</value>
   </data>
   <data name="boxExecutionTitle" xml:space="preserve">
-    <value>Execution</value>
+    <value>Exécution</value>
   </data>
   <data name="boxLogTitle" xml:space="preserve">
-    <value>Logs</value>
+    <value>Journal</value>
   </data>
   <data name="businessSoftware" xml:space="preserve">
-    <value>Business software</value>
+    <value>Logiciel métier</value>
   </data>
   <data name="cancel" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Annuler</value>
   </data>
   <data name="createJobViewTitle" xml:space="preserve">
-    <value>Create or update a job backup</value>
+    <value>Créer ou modifier un travail de sauvegarde</value>
   </data>
   <data name="destinationDirectory" xml:space="preserve">
-    <value>Destination directory:</value>
+    <value>Répertoire de destination :</value>
   </data>
   <data name="destinationPathEqualsSourcePath" xml:space="preserve">
-    <value>Destination directory must be different of the source directory.</value>
+    <value>Le répertoire de destination doit être différent du répertoire source.</value>
   </data>
   <data name="differential" xml:space="preserve">
-    <value>Differential</value>
+    <value>Différentielle</value>
   </data>
   <data name="emptyDestinationDirectoryError" xml:space="preserve">
-    <value>Destination directory is required.</value>
+    <value>Le répertoire de destination est obligatoire.</value>
   </data>
   <data name="emptyLabelError" xml:space="preserve">
-    <value>Label is required.</value>
+    <value>Le label est obligatoire</value>
   </data>
   <data name="emptySourceDirectoryError" xml:space="preserve">
-    <value>Source directory is required.</value>
-  </data>
-  <data name="END" xml:space="preserve">
-    <value>END</value>
+    <value>Le répertoire source est obligatoire.</value>
   </data>
   <data name="english" xml:space="preserve">
-    <value>English</value>
-  </data>
-  <data name="errorFile" xml:space="preserve">
-    <value>An occured with this file</value>
-  </data>
-  <data name="errors" xml:space="preserve">
-    <value>error(s)</value>
-  </data>
-  <data name="executionAborted" xml:space="preserve">
-    <value>Execution aborted</value>
-  </data>
-  <data name="executionFinished" xml:space="preserve">
-    <value>Execution finished</value>
-  </data>
-  <data name="executionOf" xml:space="preserve">
-    <value>Execution of</value>
-  </data>
-  <data name="extensionFormat" xml:space="preserve">
-    <value>Extension list of files to cypher (ex : .pdf, .docx,...)</value>
+    <value>Anglais</value>
   </data>
   <data name="extensionFormatError" xml:space="preserve">
-    <value>The extension list format is not respected. Please use this format: .png;.pdf;.xlsx</value>
+    <value>Le format de la liste des extensions n'est pas respectée. Merci d'utiliser ce format : .png;.pdf;.xlsx</value>
   </data>
   <data name="filesLeftToCopy" xml:space="preserve">
-    <value>Number of files remaining</value>
+    <value>Nombre de fichiers restants</value>
   </data>
   <data name="finish" xml:space="preserve">
-    <value>End</value>
+    <value>Terminé</value>
   </data>
   <data name="french" xml:space="preserve">
-    <value>French</value>
-  </data>
-  <data name="highPriority" xml:space="preserve">
-    <value>High</value>
+    <value>Français</value>
   </data>
   <data name="jobBackupList" xml:space="preserve">
-    <value>Job Backups</value>
+    <value>Travaux de sauvegarde</value>
   </data>
   <data name="jobCreateBackupType" xml:space="preserve">
-    <value>Backup type</value>
+    <value>Type de sauvegarde</value>
   </data>
   <data name="jobCreateDestinationDirectory" xml:space="preserve">
-    <value>Destination Directory *</value>
+    <value>Répertoire de destination *</value>
   </data>
   <data name="jobCreateSourceDirectory" xml:space="preserve">
-    <value>Source Directory *</value>
+    <value>Répertoire source *</value>
   </data>
   <data name="jobType" xml:space="preserve">
-    <value>Backup type:</value>
-  </data>
-  <data name="json" xml:space="preserve">
-    <value>JSON</value>
+    <value>Type de sauvegarde :</value>
   </data>
   <data name="label" xml:space="preserve">
     <value>Label *</value>
   </data>
   <data name="language" xml:space="preserve">
-    <value>Language (Effective after the restart)</value>
-  </data>
-  <data name="lengthLabelError" xml:space="preserve">
-    <value>Label doesn't contain more than 30 characters.</value>
+    <value>Langue (effectif après un redémarrage)</value>
   </data>
   <data name="megabyteUnit" xml:space="preserve">
-    <value>MB</value>
+    <value>Mo</value>
   </data>
-  <data name="noError" xml:space="preserve">
-    <value>No error.</value>
-  </data>
-  <data name="normalPriority" xml:space="preserve">
-    <value>Normal</value>
-  </data>
-  <data name="PAUSED" xml:space="preserve">
-    <value>PAUSED</value>
-  </data>
-  <data name="priority" xml:space="preserve">
-    <value>Priority (0 doesn't apply priority)</value>
+  <data name="remoteInterface" xml:space="preserve">
+    <value>Interface à Distance</value>
   </data>
   <data name="return" xml:space="preserve">
-    <value>Return</value>
-  </data>
-  <data name="SaveLogFormat" xml:space="preserve">
-    <value>Save format of daily log</value>
+    <value>Retour</value>
   </data>
   <data name="settings" xml:space="preserve">
-    <value>Settings</value>
+    <value>Paramètres</value>
   </data>
   <data name="singleInstance" xml:space="preserve">
-    <value>An instance of EasySave is already running...</value>
-  </data>
-  <data name="sizeLimit" xml:space="preserve">
-    <value>Minimum size (in KB) to prevent concurrent file transfer</value>
+    <value>Une instance d'EasySave est déjà en cours d'exécution...</value>
   </data>
   <data name="sourceDirectory" xml:space="preserve">
-    <value>Source directory:</value>
+    <value>Répertoire source :</value>
   </data>
   <data name="sourceDirectoryNotExistsError" xml:space="preserve">
-    <value>Source directory doesn't exist.</value>
+    <value>Le répertoire source n'existe pas.</value>
   </data>
   <data name="state" xml:space="preserve">
-    <value>State</value>
-  </data>
-  <data name="toolTipAddButton" xml:space="preserve">
-    <value>Create a job backup</value>
-  </data>
-  <data name="toolTipDeleteButton" xml:space="preserve">
-    <value>Delete the selected job backup</value>
-  </data>
-  <data name="toolTipExecuteAllButton" xml:space="preserve">
-    <value>Launch all job backups 5 by 5</value>
-  </data>
-  <data name="toolTipPauseButton" xml:space="preserve">
-    <value>Pause job backups in progress</value>
-  </data>
-  <data name="toolTipPlayButton" xml:space="preserve">
-    <value>Launch or resume a job backup</value>
-  </data>
-  <data name="toolTipStopButton" xml:space="preserve">
-    <value>Stop job backups in progress</value>
+    <value>État</value>
   </data>
   <data name="total" xml:space="preserve">
-    <value>Total</value>
+    <value>Totale</value>
   </data>
   <data name="totalFilesSize" xml:space="preserve">
-    <value>Total files size:</value>
+    <value>Taille total des fichiers :</value>
   </data>
   <data name="totalFilesToCopy" xml:space="preserve">
-    <value>Number of total files to copy</value>
+    <value>Nombre total de fichiers à copier</value>
   </data>
   <data name="totalSizeRemaining" xml:space="preserve">
-    <value>Size remaining</value>
+    <value>Taille restante</value>
   </data>
   <data name="valid" xml:space="preserve">
-    <value>Validate</value>
-  </data>
-  <data name="veryHighPriority" xml:space="preserve">
-    <value>Very High</value>
-  </data>
-  <data name="xml" xml:space="preserve">
-    <value>XML</value>
+    <value>Valider</value>
   </data>
 </root>

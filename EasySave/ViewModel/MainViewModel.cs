@@ -1,51 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
-using System.Resources;
+using System.Linq;
 using System.Threading;
-using System.Windows;
+using System.Threading.Tasks;
 
 namespace EasySave.ViewModel
 {
-    delegate void Del(JobBackup jobBackup);
 
     class MainViewModel : INotifyPropertyChanged
     {
+        //Delegate
+        private delegate void Del(JobBackup jobBackup, CancellationToken token);
+        private delegate void DelegateComm(List<JobBackup> jobBackupsList, int u);
+
         //Attributes
-        private List<JobBackup> _listOfJobBackup = null;
-        private Thread _thread = null;
-        private Thread _thread1 = null;
-        private Thread _thread2 = null;
-        private Thread _thread3 = null;
-        private Thread _thread4 = null;
-        private Thread _thread5 = null;
-        private Thread _mainThread = null;
+        private ObservableCollection<JobBackup> _listOfJobBackup = null;
+        private Task _thread1 = null;
+        private Task _thread2 = null;
+        private Task _thread3 = null;
+        private Task _thread4 = null;
+        private Task _thread5 = null;
+        private Task _mainThread = null;
         private int _selectedIndex;
         private JobBackup _job;
         private double _totalFilesSizeFormatted;
         private string _jobTypeFormatted;
+
+        private CancellationTokenSource _tokenSource;
+        private CancellationToken _token;
+
+        private JsonReadWriteModel _jsonReadWriteModel = new JsonReadWriteModel();
+
+
+        private List<JobBackup> _veryHightPriority = null;
+        private List<JobBackup> _hightPriority = null;
+        private List<JobBackup> _normalPriority = null;
+
         //Define getter / setter
-        public List<JobBackup> ListOfJobBackup { get => _listOfJobBackup; set => _listOfJobBackup = value; }
-        public JobBackup Job 
+        public ObservableCollection<JobBackup> ListOfJobBackup { get => _listOfJobBackup; set { _listOfJobBackup = value; OnPropertyChanged("ListOfJobBackup"); } }
+        public JobBackup Job
         {
             get => _job;
             set
             {
                 _job = value;
                 OnPropertyChanged("Job");
-            } 
+            }
         }
 
-        public double TotalFilesSizeFormatted 
+        public double TotalFilesSizeFormatted
         {
             get
             {
                 //Convert in MO
                 return (double)Math.Round(_totalFilesSizeFormatted / 1048576, 2);
-            } 
+            }
             set
             {
                 _totalFilesSizeFormatted = value;
@@ -53,14 +66,14 @@ namespace EasySave.ViewModel
             }
         }
 
-        public int SelectedIndex 
+        public int SelectedIndex
         {
             get => _selectedIndex;
-            set 
+            set
             {
                 _selectedIndex = value;
                 OnPropertyChanged("SelectedIndex");
-            }  
+            }
         }
 
         public string JobTypeFormatted
@@ -68,7 +81,7 @@ namespace EasySave.ViewModel
             get
             {
                 return _jobTypeFormatted;
-            } 
+            }
             set
             {
                 _jobTypeFormatted = value;
@@ -76,20 +89,35 @@ namespace EasySave.ViewModel
             }
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
         /// <summary>
         /// Constructor of MainViewModel.
         /// </summary>
         public MainViewModel()
         {
             //Read the list in the json
-            
-            _listOfJobBackup = JsonReadWriteModel.ReadJobBackup();
+
+            _listOfJobBackup = _jsonReadWriteModel.ReadJobBackup();
 
             //No job backup selected
             SelectedIndex = -1;
 
+            _tokenSource = new CancellationTokenSource();
+            _token = _tokenSource.Token;
+
+            Communication.LaunchConnection();
         }
 
+        public MainViewModel(int i)
+        {
+
+        }
         /// <summary>
         /// Delete the selected save in the list of JobBackup
         /// </summary>
@@ -108,7 +136,7 @@ namespace EasySave.ViewModel
                         if (_listOfJobBackup.Count == 1)
                         {
                             //Remove the progressLog in json link to this jobBackup
-                            File.Delete(@"C:\EasySave\Logs\ProgressLog.json");
+                            if (Directory.Exists(@"C:\EasySave\Logs\")) File.Delete(@"C:\EasySave\Logs\ProgressLog.json");
                             _listOfJobBackup.Remove(item);
                             _listOfJobBackup.Clear();
                             item.Dispose();
@@ -119,7 +147,7 @@ namespace EasySave.ViewModel
                         else
                         {
                             //Remove the progressLog in json link to this jobBackup
-                            JsonReadWriteModel.DeleteProgressLogInJson(item.Label);
+                            _jsonReadWriteModel.DeleteProgressLogInJson(item.Label);
 
                             //Remove the Job Backup from the list
                             _listOfJobBackup.Remove(item);
@@ -141,128 +169,230 @@ namespace EasySave.ViewModel
 
             }
             //Save the list in json
-            JsonReadWriteModel.SaveJobBackup(_listOfJobBackup);
-            
+            _jsonReadWriteModel.SaveJobBackup(_listOfJobBackup);
+
         }
 
+
         //Instanciate the delegate
-        readonly Del Execute = delegate (JobBackup jobBackup)
+        private readonly Del Execute = delegate (JobBackup jobBackup, CancellationToken token)
         {
             if (App.Configuration.BusinessSoftware != "" || App.Configuration.BusinessSoftware != null)
             {
                 Process[] procName = Process.GetProcessesByName(App.Configuration.BusinessSoftware);
                 if (procName.Length == 0)
                 {
-                    jobBackup.Execute();
+                    jobBackup.Execute(token);
                 }
             }
             else
             {
-                jobBackup.Execute();
+                jobBackup.Execute(token);
             }
         };
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName = null)
+        private delegate void DelJbMv(JobBackup jobBackup, MainViewModel mainViewModel);
+
+        private DelJbMv GetTotalFileSize = delegate (JobBackup jobBackup, MainViewModel mainViewModel)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            long result = 0;
+            mainViewModel.TotalFilesSizeFormatted = result;
+
+            result = jobBackup.TotalFileSize();
+
+            mainViewModel.TotalFilesSizeFormatted = result;
+        };
+
+        /// <summary>
+        /// Actualise the TotalFileSize field
+        /// </summary>
+        /// <param name="jobBackup">The job to get the total file size.</param>
+        public void SetTotalFileSize(JobBackup jobBackup)
+        {
+            //Get the totalFileSize from the VM
+            _ = Task.Run(() => GetTotalFileSize(jobBackup, this));
+
         }
 
         /// <summary>
-        /// Resume threads or instanciate a thread and execute the jobBackup in this thread.
+        /// Sort a list of jobBackup by priority
         /// </summary>
-        /// <param name="jobBackup">The JobBackup to execute.</param>
-        public void ExecuteOne(JobBackup jobBackup)
+        /// <param name="listOfJobBackup"></param>
+        public void SortList(List<JobBackup> listOfJobBackup)
         {
+            _veryHightPriority = new List<JobBackup>();
+            _hightPriority = new List<JobBackup>();
+            _normalPriority = new List<JobBackup>();
 
-            Job = jobBackup;
-            SelectedIndex = Job.Id;
-            _mainThread = new Thread(() =>
+            //if(_mainThread.Status.Equals(TaskStatus.Running))
+
+            unPause();
+
+            if (_tokenSource.IsCancellationRequested)
             {
-                _thread = new Thread(() => Execute(jobBackup));
-                _thread.Start();
-            });
-            _mainThread.Start();
-        }
+                _tokenSource.Dispose();
+            }
 
+            foreach (JobBackup jobBackup in listOfJobBackup)
+            {
+                if (jobBackup.Priority == 0) _veryHightPriority.Add(jobBackup);
+                else if (jobBackup.Priority == 1) _hightPriority.Add(jobBackup);
+                else _normalPriority.Add(jobBackup);
+            }
+            _mainThread = Task.Run(() =>
+              {
+                  Task.Run(() => ExecuteAll(_veryHightPriority)).Wait();
+                  Task.Run(() => ExecuteAll(_hightPriority)).Wait();
+                  Task.Run(() => ExecuteAll(_normalPriority)).Wait();
+              });
+        }
 
         /// <summary>
         /// Execute all the list of JobBackup with the ExecuteOne method.
         /// </summary>
         /// <remarks>Threads are executed one by one, in the order of the list.</remarks>
-        public void ExecuteAll()
+        private void ExecuteAll(List<JobBackup> jbList)
         {
-            if (_mainThread is null || !_mainThread.IsAlive)
+            _tokenSource = new CancellationTokenSource();
+            _token = _tokenSource.Token;
+
+            Task[] taskArray = new Task[] { _thread1, _thread2, _thread3, _thread4, _thread5 };
+
+            double numberOfIteration = Math.Round((double)(jbList.Count / 5));
+            int i = 0;
+
+            //Execute 5 by 5
+            for (i = 0; i < numberOfIteration * 5; i += 5)
             {
-                _mainThread = new Thread(() =>
+                _thread1 = Task.Run(() => Execute(jbList[i], _token));
+                _thread2 = Task.Run(() => Execute(jbList[i++], _token));
+                _thread3 = Task.Run(() => Execute(jbList[i + 2], _token));
+                _thread4 = Task.Run(() => Execute(jbList[i + 3], _token));
+                _thread5 = Task.Run(() => Execute(jbList[i + 4], _token));
+
+                CancellationTokenSource remoteTokenSource = new CancellationTokenSource();
+                CancellationToken remoteToken = remoteTokenSource.Token;
+
+                Task.Run(() =>
                 {
-                    List<Thread> threadList = new List<Thread>() { _thread1, _thread2, _thread3, _thread4, _thread5 };
-                    double numberOfIteration = Math.Round((double)(_listOfJobBackup.Count / 5));
-                    int i = 0;
-
-                    for (i = 0; i < numberOfIteration * 5; i += 5)
+                    while (true)
                     {
-                        _thread1 = new Thread(() => Execute(_listOfJobBackup[i]));
-                        _thread2 = new Thread(() => Execute(_listOfJobBackup[i++]));
-                        _thread3 = new Thread(() => Execute(_listOfJobBackup[i + 2]));
-                        _thread4 = new Thread(() => Execute(_listOfJobBackup[i + 3]));
-                        _thread5 = new Thread(() => Execute(_listOfJobBackup[i + 4]));
-
-                        _thread1.Start();
-                        _thread2.Start();
-                        _thread3.Start();
-                        _thread4.Start();
-                        _thread5.Start();
-
-                        _thread1.Join();
-                        _thread2.Join();
-                        _thread3.Join();
-                        _thread4.Join();
-                        _thread5.Join();
-                    }
-
-                    for (int a = 0; a < _listOfJobBackup.Count; a++)
-                    {
-                        int b = a;
-                        threadList[b % 5] = new Thread(() => Execute(_listOfJobBackup[b]));
-                        threadList[b % 5].Start();
-                    }
-
-                    foreach (Thread thread in threadList)
-                    {
-                        if (!(thread is null))
+                        ProgressLog[] progressArray = new ProgressLog[5];
+                        progressArray[0] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                        progressArray[1] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                        progressArray[2] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                        progressArray[3] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                        progressArray[4] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                        try
                         {
-                            thread.Join();
+
+                            progressArray[0] = !(jbList[i] is null) ? jbList[i].State : progressArray[0];
+                            progressArray[1] = !(jbList[i++] is null) ? jbList[i++].State : progressArray[1];
+                            progressArray[2] = !(jbList[i + 2] is null) ? jbList[i + 2].State : progressArray[2];
+                            progressArray[3] = !(jbList[i + 3] is null) ? jbList[i + 3].State : progressArray[3];
+                            progressArray[4] = !(jbList[i + 4] is null) ? jbList[i + 4].State : progressArray[4];
+
+                            //Send progressArray
+                            Communication.SendInformation(progressArray);
+                            Thread.Sleep(500);
+                            remoteToken.ThrowIfCancellationRequested();
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            break;
                         }
                     }
-
                 });
-                _mainThread.Start();
-            }
-        }
 
+                _thread1.Wait();
+                _thread2.Wait();
+                _thread3.Wait();
+                _thread4.Wait();
+                _thread5.Wait();
+
+                remoteTokenSource.Cancel();
+                remoteTokenSource.Dispose();
+                GC.Collect();
+            }
+
+            //Execute other tasks
+            for (int a = (int)numberOfIteration; a < jbList.Count; a++)
+            {
+                int b = a;
+                taskArray[b] = Task.Run(() => Execute(jbList[b], _token));
+            }
+
+            CancellationTokenSource remoteTokenSource2 = new CancellationTokenSource();
+            CancellationToken remoteToken2 = remoteTokenSource2.Token;
+
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    ProgressLog[] progressArray = new ProgressLog[5];
+                    progressArray[0] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                    progressArray[1] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                    progressArray[2] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                    progressArray[3] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                    progressArray[4] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                    try
+                    {
+
+                        for (int a = (int)numberOfIteration; a < jbList.Count; a++)
+                        {
+                            int b = a;
+                            progressArray[b % 5] = !(jbList[b] is null) ? jbList[b].State : progressArray[b % 5];
+                        }
+
+                        //Send progressArray
+                        Communication.SendInformation(progressArray);
+                        Thread.Sleep(500);
+                        remoteToken2.ThrowIfCancellationRequested();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        break;
+                    }
+                }
+            });
+
+            foreach (Task task in taskArray)
+            {
+                if (!(task is null))
+                {
+                    task.Wait();
+                }
+            }
+
+            remoteTokenSource2.Cancel();
+            remoteTokenSource2.Dispose();
+            GC.Collect();
+        }
+      
+        /// <summary>
+        /// Unpause all JobBackups threads.
+        /// </summary>
+        public void unPause()
+        {
+            App.ThreadPause = false;
+        }
 
         /// <summary>
         /// Pause all JobBackups threads.
         /// </summary>
         public void Pause()
         {
-
+            App.ThreadPause = App.ThreadPause ? false : true;
         }
-
 
         /// <summary>
         /// Stop all JobBackups threads.
         /// </summary>
         public void Stop()
         {
-            try
+            if (!(_mainThread is null) && _mainThread.Status.Equals(TaskStatus.Running))
             {
-                _mainThread.Abort();
-            }
-            catch
-            {
-
+                _tokenSource.Cancel();
             }
         }
 

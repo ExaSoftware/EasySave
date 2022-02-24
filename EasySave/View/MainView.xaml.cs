@@ -1,6 +1,13 @@
 ﻿using EasySave.ViewModel;
+using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Resources;
+using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,7 +27,7 @@ namespace EasySave
         public MainView()
         {
             _mainViewModel = new MainViewModel();
-            this.DataContext = _mainViewModel;
+            DataContext = _mainViewModel;
             InitializeComponent();
         }
 
@@ -34,14 +41,12 @@ namespace EasySave
             if (listViewBackups.SelectedItems.Count != 0)
             {
                 _mainViewModel.DeleteSave(id);
-                listViewBackups.ItemsSource = null;
-                listViewBackups.ItemsSource = _mainViewModel.ListOfJobBackup;
             }
         }
         private void btnAddJob_Click(object sender, RoutedEventArgs e)
         {
             //When we want add a job backup, there is no need to pass a job as parameter
-            CreateJobView addJobView = new CreateJobView(new CreateJobViewModel());
+            CreateJobView addJobView = new CreateJobView(new CreateJobViewModel(_mainViewModel.ListOfJobBackup));
             this.NavigationService.Navigate(addJobView);
         }
 
@@ -55,7 +60,7 @@ namespace EasySave
             //Prevent click on the empty list to avoid an exception
             if (listViewBackups.SelectedItems.Count != 0 && !_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].IsRunning)
             {
-                CreateJobView editJobView = new CreateJobView(new CreateJobViewModel((JobBackup)listViewBackups.SelectedItem));
+                CreateJobView editJobView = new CreateJobView(new CreateJobViewModel((JobBackup)listViewBackups.SelectedItem, _mainViewModel.ListOfJobBackup));
                 this.NavigationService.Navigate(editJobView);
             }
         }
@@ -67,6 +72,7 @@ namespace EasySave
         /// <param name="e"></param>
         private void listViewBackups_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+
             //Prevent click on the empty list to avoid an exception
             if (listViewBackups.SelectedItems.Count != 0)
             {
@@ -74,11 +80,11 @@ namespace EasySave
                 //Update the first block
                 id = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Id;
 
-                //Get the totalFileSize from the VM
-                _mainViewModel.TotalFilesSizeFormatted = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].TotalFileSize();
+                _mainViewModel.SetTotalFileSize(_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex]);
 
                 ResourceManager rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
                 _mainViewModel.JobTypeFormatted = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].IsDifferential ? rm.GetString("differential") : rm.GetString("total");
+                
             }
         }
 
@@ -89,7 +95,7 @@ namespace EasySave
         /// <param name="e"></param>
         private void btnExecuteSequentially_Click(object sender, RoutedEventArgs e)
         {
-            _mainViewModel.ExecuteAll();
+            _mainViewModel.SortList(listViewBackups.Items.Cast<JobBackup>().ToList());
         }
 
         /// <summary>
@@ -102,7 +108,8 @@ namespace EasySave
             //If there is a job backup selected
             if (listViewBackups.SelectedItems.Count != 0)
             {
-                _mainViewModel.ExecuteOne((JobBackup)listViewBackups.SelectedItem);
+                //Communication.SendTest();
+                _mainViewModel.SortList(listViewBackups.SelectedItems.Cast<JobBackup>().ToList());
             }
         }
 
@@ -113,22 +120,15 @@ namespace EasySave
         /// <param name="e"></param>
         private void btnPause_Click(object sender, RoutedEventArgs e)
         {
-            
+            _mainViewModel.Pause();
         }
 
         /// <summary>
         /// Stop all running JobBackup.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
-            //If there is a job backup selected
-            if (listViewBackups.SelectedItems.Count != 0)
-            {
-                _mainViewModel.Stop();
-            }
-            
+            _mainViewModel.Stop();
         }
 
         private void listViewBackups_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -136,10 +136,9 @@ namespace EasySave
             if (_mainViewModel.SelectedIndex != -1)
             {
                 //MessageBox.Show(_mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex].Label);
-                MainViewModel vm = this.DataContext as MainViewModel;
+                MainViewModel vm = DataContext as MainViewModel;
                 vm.Job = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex];
             }
-
         }
     }
 }

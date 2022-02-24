@@ -80,10 +80,10 @@ namespace EasySave
                 string name = label.Text;
                 string sourceDirectory = txtBoxSource.Text;
                 string destinationDirectory = txtBoxDestination.Text;
-                bool isDifferential = false;
-                if (type.SelectedIndex == 0) isDifferential = false;
-                if (type.SelectedIndex == 1) isDifferential = true;
-                _createJobViewModel.JobCreation(id, name, sourceDirectory, destinationDirectory, isDifferential);
+                bool isDifferential = (type.SelectedIndex == 1) ? true : false;
+                int priority = comboboxPriority.SelectedIndex;
+                _createJobViewModel.JobCreation(id, name, sourceDirectory, destinationDirectory, isDifferential, priority);
+                //int priority = _createJobViewModel.GetPriority(txtBoxPriority.Text);
                 this.NavigationService.GoBack();
             }
 

@@ -4,14 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-        xmlns:local="clr-namespace:EasySave"
-        xmlns:language="clr-namespace:EasySave.Resources"
-        x:Class="EasySave.MainWindow"
+        xmlns:local="clr-namespace:RemoteInterface"
+        xmlns:language="clr-namespace:RemoteInterface.Resources"
+        x:Class="RemoteInterface.MainWindow"
         mc:Ignorable="d"
-        Title="{x:Static language:Strings.appTitle}" Height="600" Width="1080"
-        MinHeight="600" MinWidth="800">
+        Title="{x:Static language:Strings.appTitle}" Height="600" Width="1080">
     <Window.Resources>
-        
+
         <!-- Styles -->
         <Style TargetType="{x:Type Button}" x:Key="settingsButton">
             <Setter Property="Background" Value="Transparent"/>
@@ -40,18 +39,18 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="211*"/>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
-        <Grid Grid.Row="0" Background="#a30700">
+        <Grid Grid.Row="0" Background="#a30700" Grid.ColumnSpan="3">
             <Image Source="/easysave_logo.png" Height="80" Width="200" HorizontalAlignment="Left" Margin="20,5"/>
-            <!--<TextBlock Text="{x:Static language:Strings.appTitle}" Margin="20" FontFamily="Agency FB" FontSize="36" HorizontalAlignment="Left" Foreground="White"/>-->
+            <TextBlock Text="{x:Static language:Strings.appTitle}" HorizontalAlignment="Center" FontSize="24" Foreground="#FFFFFF" FontWeight="Bold" VerticalAlignment="Center"/>
             <Button Name="btnSettings" HorizontalAlignment="Right" Margin="20,0" Content="{iconPacks:Material Height=50, Kind=Cog, Width=50}" Height="64" Width="Auto" Click="btnSettings_Click" BorderThickness="0" Style="{StaticResource settingsButton}"/>
         </Grid>
-        <Grid Grid.Row="1">
-            
+        <Grid Grid.Row="1" Grid.ColumnSpan="3">
             <!-- Content loaded dynamically according to the page -->
             <Frame Grid.Column="1" Name="frame" NavigationUIVisibility="Hidden" Background="#fff"/>
-            
         </Grid>
     </Grid>
 </Window>

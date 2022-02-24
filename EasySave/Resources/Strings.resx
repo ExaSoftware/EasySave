@@ -117,11 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="active" xml:space="preserve">
-    <value>Actif</value>
+  <data name="ABORTED" xml:space="preserve">
+    <value>ANNULÉ</value>
+  </data>
+  <data name="ACTIVE" xml:space="preserve">
+    <value>ACTIF</value>
   </data>
   <data name="appTitle" xml:space="preserve">
     <value>EasySave</value>
+  </data>
+  <data name="at" xml:space="preserve">
+    <value>à</value>
   </data>
   <data name="boxDetailTitle" xml:space="preserve">
     <value>Détails</value>
@@ -159,11 +165,20 @@
   <data name="emptySourceDirectoryError" xml:space="preserve">
     <value>Le répertoire source est obligatoire.</value>
   </data>
+  <data name="END" xml:space="preserve">
+    <value>TERMINÉ</value>
+  </data>
   <data name="english" xml:space="preserve">
     <value>Anglais</value>
   </data>
   <data name="errorFile" xml:space="preserve">
     <value>Une erreur est survenue sur ce fichier</value>
+  </data>
+  <data name="errors" xml:space="preserve">
+    <value>erreur(s)</value>
+  </data>
+  <data name="executionAborted" xml:space="preserve">
+    <value>Exécution annulée</value>
   </data>
   <data name="executionFinished" xml:space="preserve">
     <value>Exécution terminée</value>
@@ -185,6 +200,9 @@
   </data>
   <data name="french" xml:space="preserve">
     <value>Français</value>
+  </data>
+  <data name="highPriority" xml:space="preserve">
+    <value>Élevée</value>
   </data>
   <data name="jobBackupList" xml:space="preserve">
     <value>Travaux de sauvegarde</value>
@@ -208,10 +226,25 @@
     <value>Label *</value>
   </data>
   <data name="language" xml:space="preserve">
-    <value>Langue</value>
+    <value>Langue (effectif après un redémarrage)</value>
+  </data>
+  <data name="lengthLabelError" xml:space="preserve">
+    <value>Le label ne doit pas contenir plus de 30 caractères.</value>
   </data>
   <data name="megabyteUnit" xml:space="preserve">
     <value>Mo</value>
+  </data>
+  <data name="noError" xml:space="preserve">
+    <value>Aucune erreur.</value>
+  </data>
+  <data name="normalPriority" xml:space="preserve">
+    <value>Normale</value>
+  </data>
+  <data name="PAUSED" xml:space="preserve">
+    <value>PAUSE</value>
+  </data>
+  <data name="priority" xml:space="preserve">
+    <value>Priorité</value>
   </data>
   <data name="return" xml:space="preserve">
     <value>Retour</value>
@@ -237,6 +270,24 @@
   <data name="state" xml:space="preserve">
     <value>État</value>
   </data>
+  <data name="toolTipAddButton" xml:space="preserve">
+    <value>Créer un travail de sauvegarde</value>
+  </data>
+  <data name="toolTipDeleteButton" xml:space="preserve">
+    <value>Supprimer le travail de sauvegarde sélectionné</value>
+  </data>
+  <data name="toolTipExecuteAllButton" xml:space="preserve">
+    <value>Lancer tous les travaux de sauvegarde 5 par 5</value>
+  </data>
+  <data name="toolTipPauseButton" xml:space="preserve">
+    <value>Mettre en pause le ou les travaux en cours</value>
+  </data>
+  <data name="toolTipPlayButton" xml:space="preserve">
+    <value>Démarrer ou reprendre un travail de sauvegarde</value>
+  </data>
+  <data name="toolTipStopButton" xml:space="preserve">
+    <value>Arrêter le ou les travaux de sauvegarde en cours</value>
+  </data>
   <data name="total" xml:space="preserve">
     <value>Totale</value>
   </data>
@@ -251,6 +302,9 @@
   </data>
   <data name="valid" xml:space="preserve">
     <value>Valider</value>
+  </data>
+  <data name="veryHighPriority" xml:space="preserve">
+    <value>Très élevée</value>
   </data>
   <data name="xml" xml:space="preserve">
     <value>XML</value>

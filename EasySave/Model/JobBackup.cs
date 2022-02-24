@@ -1,13 +1,15 @@
-﻿using EasySave.Object;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.ComponentModel;
 using System.Threading;
-using System.Text;
 using System.Resources;
 using System.Reflection;
+using System.Windows;
+using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using Newtonsoft.Json;
 
 namespace EasySave
 {
@@ -24,12 +26,14 @@ namespace EasySave
         private Boolean _isDifferential;
         private int _id;
         private string[] _encryptionExtensionList;
-        private string[] _priorityExtensionList;
-        private bool _disposedValue;
-        private ProgressLog _state;
-        private bool _isRunning;
+        private ulong _sizeLimit;
         private int _priority;
+
+        private bool _disposedValue;
+
+        private ProgressLog _state;
         private ResourceManager _rm;
+        private bool _isRunning;
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName = null)
@@ -43,6 +47,7 @@ namespace EasySave
         public bool IsDifferential { get => _isDifferential; set => _isDifferential = value; }
         public string Label { get => _label; set => _label = value; }
         public int Id { get => _id; set => _id = value; }
+        [JsonIgnore]
         public ProgressLog State
         {
             get => _state;
@@ -54,11 +59,23 @@ namespace EasySave
         }
 
         public bool IsRunning { get => _isRunning; set => _isRunning = value; }
+        public int Priority
+        {
+            get => _priority;
+            set
+            {
+                _priority = value;
+                OnPropertyChanged("Priority");
+            }
+        }
 
         ///  <summary> 
         ///  Default constructor to use in serialization.
         ///  </summary>
-        public JobBackup() { }
+        public JobBackup()
+        {
+            _isRunning = false;
+        }
 
         /// <summary>
         /// Create a JobBackup with default parameters.
@@ -70,8 +87,9 @@ namespace EasySave
             _sourceDirectory = string.Empty;
             _destinationDirectory = string.Empty;
             _isDifferential = false;
-            _priority = 0;
             _id = id;
+            _priority = 0;
+            _isRunning = false;
         }
 
         ///  <summary>
@@ -81,39 +99,43 @@ namespace EasySave
         ///  <param name="SourceDirectory"> the source directory.</param>
         ///  <param name="DestinationDirectory"> the destination directory.</param>
         ///  <param name="IsDifferential"> Define if the save is differential or not.</param>
-        public JobBackup(string label, string sourceDirectory, string destinationDirectory, bool isDifferential)
+        public JobBackup(string label, string sourceDirectory, string destinationDirectory, bool isDifferential, int priority)
         {
             _label = label;
             _sourceDirectory = sourceDirectory;
             _destinationDirectory = destinationDirectory;
             _isDifferential = isDifferential;
+            _priority = priority;
+            _isRunning = false;
         }
 
         ///  <summary>
         ///  Change parameters to the default one.
         ///  </summary>
         ///  <remarks>The Id still unchanged.</remarks>
-        public void Fill(string label, string sourceDirectory, string destinationDirectory, bool isDifferential)
+        public void Fill(string label, string sourceDirectory, string destinationDirectory, bool isDifferential, int priority)
         {
             _label = label;
             _sourceDirectory = sourceDirectory;
             _destinationDirectory = destinationDirectory;
             _isDifferential = isDifferential;
+            _priority = priority;
         }
 
         ///  <summary>
         ///  Execute the save according to attributes.
         ///  </summary>
         ///  <remarks>Use it whether differential or not.</remarks>
-        public void Execute()
+        public void Execute(CancellationToken token)
         {
+
             bool error = false;
 
             if (!Directory.Exists(_destinationDirectory))
             {
                 try
                 {
-                    Directory.CreateDirectory(_destinationDirectory);
+                    _ = Directory.CreateDirectory(_destinationDirectory);
                 }
                 catch (Exception)
                 {
@@ -123,245 +145,334 @@ namespace EasySave
 
             if (!error)
             {
+                _isRunning = true;
+
                 _encryptionExtensionList = App.Configuration.Extensions;
+                _sizeLimit = App.Configuration.SizeLimit;
 
                 if (_isDifferential)
                 {
-                    DoDifferentialSave();
+                    SaveFiles(FindFilesForDifferentialSave(), token);
+                    DeleteExcessFile();
                 }
                 else
                 {
-                    SaveAllFiles();
+                    DeleteFiles();
+                    SaveFiles(Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories), token);
                 }
+
+                _isRunning = false;
             }
         }
 
-        ///  <summary>
-        ///  Save all files from _sourceDirectory to _destDirectory.
-        ///  </summary>
-        ///  <remarks>This method delete all the destination directory before saving files</remarks>
-        private void SaveAllFiles()
+
+        /// <summary>
+        /// Save all indicted files to the destination directory.
+        /// </summary>
+        /// <param name="files">FIles to copy.</param>
+        /// <remarks>Files must be in Path format with the absolute path.</remarks>
+        /// <returns>0 if finished, 1 if exit has been forced</returns>
+        private void SaveFiles(string[] files, CancellationToken token)
         {
-            _isRunning = true;
             _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
-            StringBuilder logSb = new StringBuilder();
-            logSb.AppendLine(String.Format("{0} {1}", _rm.GetString("executionOf"), this.Label));
+            ObservableCollection<string> temp = new ObservableCollection<string>();
 
             int encryptionTime = 0;
-            try
-            {
-                if (Monitor.TryEnter(_destinationDirectory, Timeout.Infinite))
-                {
-                    //Delete all files
-                    Directory.Delete(_destinationDirectory, true);
-                    //Restart from zero. 
-                    Directory.CreateDirectory(_destinationDirectory);
-
-                    //Creation of all sub directories
-                    foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
-                    {
-                        Directory.CreateDirectory(path.Replace(_sourceDirectory, _destinationDirectory));
-                    }
-
-                }
-            }
-            finally
-            {
-                Monitor.Exit(_destinationDirectory);
-            }
-
-
-            string[] files = Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories);
             int fileTransfered = 0;                 //Incease each file transfered
             int fileToTranfer = files.Length;       //Ammount of file to transfer
             long sizeTotal = TotalFileSize(files);
             long sizeRemaining = sizeTotal;
+            int errors = 0;
 
             // Setup objects
             Stopwatch historyStopwatch = new Stopwatch();
             ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered, sizeTotal);
             HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0, 0);
             State = progressLog;
-            State.Log = logSb.ToString();
+
+            //Communication.SendInformation(this.Label);
+            //Show message which say that job backup is executing
+            App.Current.Dispatcher.Invoke(delegate
+            {
+                State.Log.Add(string.Format("{0} '{1}' {2} {3}. ", _rm.GetString("executionOf"), Label, _rm.GetString("at"), DateTime.Now.ToString("T")));
+            });
+
+            //Add the string to conserv it for the final display
+            temp.Add(string.Format("{0} '{1}' {2} {3} ", _rm.GetString("executionOf"), Label, _rm.GetString("at"), DateTime.Now.ToString("T")));
+
+            string realDest = Path.Combine(_destinationDirectory, Path.GetFileName(_sourceDirectory));
+
+            if (Monitor.TryEnter(_destinationDirectory, Timeout.Infinite))
+            {
+                try
+                {
+                    //Delete all files if it's not differential
+                    if (Directory.Exists(realDest) && !_isDifferential)
+                    {
+                        Directory.Delete(realDest, true);
+                    }
+
+                    //Restart from zero. 
+                    _ = Directory.CreateDirectory(realDest);
+
+                    //Creation of all sub directories
+                    foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
+                    {
+                        _ = Directory.CreateDirectory(path.Replace(_sourceDirectory, realDest));
+                    }
+                }
+                finally
+                {
+                    Monitor.Exit(_destinationDirectory);
+                }
+            }
+
+            bool aborted = false;
 
             // Copy the files and overwrite destination files if they already exist.
             foreach (string file in files)
             {
-                FileInfo fileInfo = new FileInfo(file);
-                long fileInfoLength = fileInfo.Length;
-                string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
-
-                try
-                {
-                    historyStopwatch.Reset();
-
-                    if (!(_encryptionExtensionList is null) && new List<string>(_encryptionExtensionList).Contains(fileInfo.Extension) && _encryptionExtensionList[0] != "")
-                    {
-                        encryptionTime = CypherFile(file, destFile);
-                        string b = fileInfo.Extension;
-                    }
-                    else
-                    {
-                        historyStopwatch.Start();
-                        File.Copy(file, destFile, true);
-                        historyStopwatch.Stop();
-                    }
-                    fileTransfered++;
-                    sizeRemaining -= fileInfoLength;
-
-                    //Write logs
-                    progressLog.Fill(file, destFile, (fileToTranfer - fileTransfered), (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), _id, sizeRemaining);
-                    historyLog.Fill(file, destFile, fileInfoLength, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
-                    State = progressLog;
-                }
-                catch (Exception e)
-                {
-                    string fileName = Path.GetFileName(file);
-                    destFile = Path.Combine(_destinationDirectory, fileName);
-                    historyLog.Error = e.StackTrace;
-                    historyLog.Fill(file, destFile, 0, -1, e.GetType().Name, -1);
-
-                    //Show errors on file to the view
-                    logSb.AppendLine(String.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
-                    State.Log = logSb.ToString();
-                    historyLog.Dispose();
-                    progressLog.Dispose();
-                }
-                finally
-                {
-                    //Free memory
-                    fileInfo = null;
-                    destFile = string.Empty;
-
-                    //dispose history and progress log
-                    historyLog.Dispose();
-                    progressLog.Dispose();
-                }
-            }
-
-            logSb.AppendLine(_rm.GetString("executionFinished"));
-            State.Log = logSb.ToString();
-            logSb = null;
-            _isRunning = false;
-        }
-
-        /// <summary> 
-        /// Save all differents files between _sourceDirectory and _destDirectory to _destDirectory.
-        /// </summary>
-        /// <remarks>This method ignores deleted files.</remarks>
-        private void DoDifferentialSave()
-        {
-            _isRunning = true;
-            _rm = new ResourceManager("EasySave.Resources.Strings", Assembly.GetExecutingAssembly());
-
-            StringBuilder logSb = new StringBuilder();
-            logSb.AppendLine(String.Format("{0} {1}", _rm.GetString("executionOf"), this.Label));
-
-            int encryptionTime;
-
-            String[] files = FindFilesForDifferentialSave();
-
-            //Creation of all sub directories
-            foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
-            {
-                Directory.CreateDirectory(path.Replace(_sourceDirectory, _destinationDirectory));
-            }
-
-            int fileTransfered = 0;                 //Ammount of file transfered
-            int fileToTranfer = files.Length;       //Ammount of file to transfer
-            long sizeTotal = TotalFileSize(files);  //Total file size in octet
-            long sizeRemaining = sizeTotal;
-
-            Stopwatch historyStopwatch = new Stopwatch();
-            ProgressLog progressLog = new ProgressLog(_label, "", "", "ACTIVE", fileToTranfer, sizeTotal, fileToTranfer - fileTransfered, sizeRemaining);
-            HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0, 0);
-
-            //Affect progressLog to state attribute of JobBackup and update log string
-            State = progressLog;
-            State.Log = logSb.ToString();
-
-            foreach (String file in files)
-            {
-                try
+                if (!App.ThreadPause)
                 {
                     FileInfo fileInfo = new FileInfo(file);
+                    long fileInfoLength = fileInfo.Length;
+                    string destFile = file.Replace(_sourceDirectory, realDest);
 
-                    // Creation of the destFile
-                    string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
-
-                    if (!(_encryptionExtensionList is null) && new List<String>(_encryptionExtensionList).Contains(fileInfo.Extension) && _encryptionExtensionList[0] != "")
+                    try
                     {
-                        encryptionTime = CypherFile(file, destFile);
-                    }
-                    else
-                    {
-                        encryptionTime = 0;
+                        token.ThrowIfCancellationRequested();
                         historyStopwatch.Reset();
-                        historyStopwatch.Start();
 
-                        File.Copy(file, destFile, true);
+                        if ((ulong)fileInfo.Length > _sizeLimit && _sizeLimit > 0)
+                        {
+                            if (Monitor.TryEnter(App.IsMovingBigFile, Timeout.Infinite))
+                            {
+                                while (true)
+                                {
+                                    if (!App.IsMovingBigFile)
+                                    {
+                                        if (!(_encryptionExtensionList is null) && new List<string>(_encryptionExtensionList).Contains(fileInfo.Extension) && _encryptionExtensionList[0] != "")
+                                        {
+                                            encryptionTime = CypherFile(file, destFile);
+                                            string b = fileInfo.Extension;
+                                        }
+                                        else
+                                        {
+                                            historyStopwatch.Start();
+                                            File.Copy(file, destFile, true);
+                                            historyStopwatch.Stop();
+                                        }
 
-                        historyStopwatch.Stop();
+                                        fileTransfered++;
+                                        sizeRemaining -= fileInfo.Length; ;
+
+                                        //Write logs
+                                        Task bigTask = Task.Run(() =>
+                                        {
+                                            progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, _id, (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), sizeRemaining, fileToTranfer, sizeTotal);
+                                            historyLog.Fill(file, destFile, fileInfoLength, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime, _id);
+                                        });
+
+                                        bigTask.Wait();
+                                        bigTask.Dispose();
+                                        State = progressLog;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        Thread.Sleep(10);
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+
+                            if (!(_encryptionExtensionList is null) && new List<string>(_encryptionExtensionList).Contains(fileInfo.Extension) && _encryptionExtensionList[0] != "")
+                            {
+                                encryptionTime = CypherFile(file, destFile);
+                                string b = fileInfo.Extension;
+                            }
+                            else
+                            {
+                                historyStopwatch.Start();
+                                File.Copy(file, destFile, true);
+                                historyStopwatch.Stop();
+                            }
+
+                            fileTransfered++;
+                            sizeRemaining -= fileInfo.Length; ;
+
+                            //Write logs
+                            Task task = Task.Run(() =>
+                                {
+                                    progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, _id, (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), sizeRemaining, fileToTranfer, sizeTotal);
+                                    historyLog.Fill(file, destFile, fileInfoLength, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime, _id);
+                                });
+
+                            task.Wait();
+                            task.Dispose();
+                            State = progressLog;
+
+                        }
                     }
+                    catch (OperationCanceledException)
+                    {
+                        aborted = true;
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        destFile = Path.Combine(_destinationDirectory, Path.GetFileName(file));
+                        fileTransfered++;
 
-                    fileTransfered++;
-                    sizeRemaining -= fileInfo.Length;
+                        historyLog.Error = e.StackTrace;
+                        historyLog.Fill(file, destFile, 0, -1, e.GetType().Name, -1, _id);
 
-                    progressLog.Fill(file, destFile, fileToTranfer - fileTransfered, (int)(100 - ((double)sizeRemaining / sizeTotal * 100)), _id, sizeRemaining);
-                    historyLog.Fill(file, destFile, fileInfo.Length, historyStopwatch.Elapsed.TotalMilliseconds, "", encryptionTime);
+                        //Add error to the temp list
+                        errors++;
+                        temp.Add(string.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
+                        progressLog.Dispose();
+                    }
+                    finally
+                    {
+                        //Free memory
+                        fileInfo = null;
+                        destFile = string.Empty;
+
+                        //dispose history and progress log
+                        historyLog.Dispose();
+                        progressLog.Dispose();
+                    }
                 }
-                catch (Exception e)
+                // If pause
+                //Edit state log status to paused
+                else
                 {
-                    string fileName = Path.GetFileName(file);
-                    string destFile = Path.Combine(_destinationDirectory, fileName);
-
-                    historyLog.Error = e.StackTrace;
-                    historyLog.Fill(file, destFile, 0, -1, file, -1);
-
-                    logSb.AppendLine(String.Format("{0} ==> {1}", _rm.GetString("errorFile"), file));
-                    State.Log = logSb.ToString();
-
-                    historyLog.Dispose();
-                    progressLog.Dispose();
+                    State.State = "PAUSED";
+                    State.SaveLog(Id);
+                    while (App.ThreadPause) { Thread.Sleep(1000); }
                 }
+
             }
+
+            _isRunning = false;
+            string result = string.Empty;
+            
+            if(aborted)
+            {
+                _isRunning = false;
+                State.State = "ABORTED";
+                State.SaveLog(Id);
+
+                result = errors == 0
+                    ? string.Format("{0} {1} {2}.     {3}", _rm.GetString("executionAborted"), _rm.GetString("at"), DateTime.Now.ToString("T"), _rm.GetString("noError"))
+                    : string.Format("{0} {1} {2}.     {3} {4}:", _rm.GetString("executionAborted"), _rm.GetString("at"), DateTime.Now.ToString("T"), errors, _rm.GetString("errors"));
+            }
+            else
+            {
+                State.State = "END";
+
+                result = errors == 0
+                ? string.Format("{0} {1} {2}.     {3}", _rm.GetString("executionFinished"), _rm.GetString("at"), DateTime.Now.ToString("T"), _rm.GetString("noError"))
+                : string.Format("{0} {1} {2}.     {3} {4}:", _rm.GetString("executionFinished"), _rm.GetString("at"), DateTime.Now.ToString("T"), errors, _rm.GetString("errors"));
+            }
+
+            Application.Current.Dispatcher.Invoke(delegate
+            {
+                //Insert the execution finished string at the begin of the list to show
+                temp.Insert(1, result);
+                State.Log = temp;
+                temp = null;
+            });
+
+        }
+
+
+        /// <summary>
+        /// Delete excess files in the destination directory compare to te source directory.
+        /// </summary>
+        private void DeleteExcessFile()
+        {
+            string realDest = Path.Combine(_destinationDirectory, Path.GetFileName(_sourceDirectory));
 
             //Delete excess directories
             foreach (string path in Directory.GetDirectories(_destinationDirectory, "*", SearchOption.AllDirectories))
             {
-                if (!Directory.Exists(path.Replace(_destinationDirectory, _sourceDirectory)) && Directory.Exists(path))
+                if (!Directory.Exists(path.Replace(realDest, _sourceDirectory)) && Directory.Exists(path))
                 {
                     try
                     {
                         Directory.Delete(path, true);
                     }
-                    catch { }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    continue;
                 }
             }
 
             //Delete excess files
             foreach (string path in Directory.GetFiles(_destinationDirectory, "*", SearchOption.AllDirectories))
             {
-                if (!File.Exists(path.Replace(_destinationDirectory, _sourceDirectory)) && File.Exists(path))
+                if (!File.Exists(path.Replace(realDest, _sourceDirectory)) && File.Exists(path))
                 {
                     try
                     {
                         File.Delete(path);
                     }
-                    catch { }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    continue;
                 }
             }
+        }
 
-            //Show logs
-            logSb.AppendLine(_rm.GetString("executionFinished"));
-            State.Log = logSb.ToString();
-            logSb = null;
-            _isRunning = false;
+        /// <summary>
+        /// Delete all the destination directory.
+        /// </summary>
+        private void DeleteFiles()
+        {
+            string realDest = Path.Combine(_destinationDirectory, Path.GetFileName(_sourceDirectory));
 
-            //Reset progressLog
-            progressLog.Reset(_id);
-            historyLog.Dispose();
-            progressLog.Dispose();
+            try
+            {
+                if (Monitor.TryEnter(_destinationDirectory, 60000))
+                {
+                    //Delete all files
+                    if (Directory.Exists(realDest))
+                    {
+                        Directory.Delete(realDest, true);
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                Monitor.Exit(_destinationDirectory);
+
+                //Restart from zero. 
+                _ = Directory.CreateDirectory(realDest);
+
+                //Creation of all sub directories
+                foreach (string path in Directory.GetDirectories(_sourceDirectory, "*", SearchOption.AllDirectories))
+                {
+                    _ = Directory.CreateDirectory(path.Replace(_sourceDirectory, realDest));
+                }
+            }
         }
 
         /// <summary>
@@ -404,10 +515,10 @@ namespace EasySave
         /// <returns>A list of diferent files between source and dest directories.</returns>
         private string[] FindFilesForDifferentialSave()
         {
-            List<String> filesToSave = new List<string>();
-            String[] filesInDirectory = Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories);
+            List<string> filesToSave = new List<string>();
+            string[] filesInDirectory = Directory.GetFiles(_sourceDirectory, "*", SearchOption.AllDirectories);
 
-            foreach (String file in filesInDirectory)
+            foreach (string file in filesInDirectory)
             {
                 // Creation of the destFile
                 string destFile = file.Replace(_sourceDirectory, _destinationDirectory);
@@ -441,12 +552,12 @@ namespace EasySave
         /// <param name="sourceFile">The file to encode. Must be a Path format.</param>
         /// <param name="destFile">The destination file. Must be a Path format.</param>
         /// <returns>The encryption time.</returns>
-        private int CypherFile(String sourceFile, String destFile)
+        private int CypherFile(string sourceFile, string destFile)
         {
             Process process = new Process();
             int time;
 
-            process.StartInfo.FileName = @"C:\EasySave\CryptoSoft\bin\Debug\netcoreapp3.1\CryptoSoft.exe";
+            process.StartInfo.FileName = String.Format("{0}{1}", AppDomain.CurrentDomain.BaseDirectory, @"CryptoSoft\CryptoSoft.exe");
             process.StartInfo.Arguments = String.Format("\"{0}\" \"{1}\"", sourceFile, destFile);
             Trace.WriteLine(process.StartInfo.Arguments);
             process.StartInfo.UseShellExecute = false;

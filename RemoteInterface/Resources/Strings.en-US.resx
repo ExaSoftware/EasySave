@@ -117,17 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ABORTED" xml:space="preserve">
-    <value>ABORTED</value>
-  </data>
-  <data name="ACTIVE" xml:space="preserve">
-    <value>ACTIVE</value>
+  <data name="active" xml:space="preserve">
+    <value>Active</value>
   </data>
   <data name="appTitle" xml:space="preserve">
-    <value>EasySave</value>
-  </data>
-  <data name="at" xml:space="preserve">
-    <value>at</value>
+    <value>Remote Interface</value>
   </data>
   <data name="boxDetailTitle" xml:space="preserve">
     <value>Detail</value>
@@ -165,29 +159,8 @@
   <data name="emptySourceDirectoryError" xml:space="preserve">
     <value>Source directory is required.</value>
   </data>
-  <data name="END" xml:space="preserve">
-    <value>END</value>
-  </data>
   <data name="english" xml:space="preserve">
     <value>English</value>
-  </data>
-  <data name="errorFile" xml:space="preserve">
-    <value>An occured with this file</value>
-  </data>
-  <data name="errors" xml:space="preserve">
-    <value>error(s)</value>
-  </data>
-  <data name="executionAborted" xml:space="preserve">
-    <value>Execution aborted</value>
-  </data>
-  <data name="executionFinished" xml:space="preserve">
-    <value>Execution finished</value>
-  </data>
-  <data name="executionOf" xml:space="preserve">
-    <value>Execution of</value>
-  </data>
-  <data name="extensionFormat" xml:space="preserve">
-    <value>Extension list of files to cypher (ex : .pdf, .docx,...)</value>
   </data>
   <data name="extensionFormatError" xml:space="preserve">
     <value>The extension list format is not respected. Please use this format: .png;.pdf;.xlsx</value>
@@ -200,9 +173,6 @@
   </data>
   <data name="french" xml:space="preserve">
     <value>French</value>
-  </data>
-  <data name="highPriority" xml:space="preserve">
-    <value>High</value>
   </data>
   <data name="jobBackupList" xml:space="preserve">
     <value>Job Backups</value>
@@ -219,47 +189,26 @@
   <data name="jobType" xml:space="preserve">
     <value>Backup type:</value>
   </data>
-  <data name="json" xml:space="preserve">
-    <value>JSON</value>
-  </data>
   <data name="label" xml:space="preserve">
     <value>Label *</value>
   </data>
   <data name="language" xml:space="preserve">
-    <value>Language (Effective after the restart)</value>
-  </data>
-  <data name="lengthLabelError" xml:space="preserve">
-    <value>Label doesn't contain more than 30 characters.</value>
+    <value>Language (effective after a restart)</value>
   </data>
   <data name="megabyteUnit" xml:space="preserve">
     <value>MB</value>
   </data>
-  <data name="noError" xml:space="preserve">
-    <value>No error.</value>
-  </data>
-  <data name="normalPriority" xml:space="preserve">
-    <value>Normal</value>
-  </data>
-  <data name="PAUSED" xml:space="preserve">
-    <value>PAUSED</value>
-  </data>
-  <data name="priority" xml:space="preserve">
-    <value>Priority (0 doesn't apply priority)</value>
+  <data name="remoteInterface" xml:space="preserve">
+    <value>Remote Interface</value>
   </data>
   <data name="return" xml:space="preserve">
     <value>Return</value>
-  </data>
-  <data name="SaveLogFormat" xml:space="preserve">
-    <value>Save format of daily log</value>
   </data>
   <data name="settings" xml:space="preserve">
     <value>Settings</value>
   </data>
   <data name="singleInstance" xml:space="preserve">
     <value>An instance of EasySave is already running...</value>
-  </data>
-  <data name="sizeLimit" xml:space="preserve">
-    <value>Minimum size (in KB) to prevent concurrent file transfer</value>
   </data>
   <data name="sourceDirectory" xml:space="preserve">
     <value>Source directory:</value>
@@ -269,24 +218,6 @@
   </data>
   <data name="state" xml:space="preserve">
     <value>State</value>
-  </data>
-  <data name="toolTipAddButton" xml:space="preserve">
-    <value>Create a job backup</value>
-  </data>
-  <data name="toolTipDeleteButton" xml:space="preserve">
-    <value>Delete the selected job backup</value>
-  </data>
-  <data name="toolTipExecuteAllButton" xml:space="preserve">
-    <value>Launch all job backups 5 by 5</value>
-  </data>
-  <data name="toolTipPauseButton" xml:space="preserve">
-    <value>Pause job backups in progress</value>
-  </data>
-  <data name="toolTipPlayButton" xml:space="preserve">
-    <value>Launch or resume a job backup</value>
-  </data>
-  <data name="toolTipStopButton" xml:space="preserve">
-    <value>Stop job backups in progress</value>
   </data>
   <data name="total" xml:space="preserve">
     <value>Total</value>
@@ -302,11 +233,5 @@
   </data>
   <data name="valid" xml:space="preserve">
     <value>Validate</value>
-  </data>
-  <data name="veryHighPriority" xml:space="preserve">
-    <value>Very High</value>
-  </data>
-  <data name="xml" xml:space="preserve">
-    <value>XML</value>
   </data>
 </root>
