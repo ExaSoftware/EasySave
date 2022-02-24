@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace EasySave.Resources {
+namespace RemoteInterface.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace EasySave.Resources {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("EasySave.Resources.Strings", typeof(Strings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RemoteInterface.Resources.Strings", typeof(Strings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -70,38 +70,20 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à ANNULÉ.
+        ///   Recherche une chaîne localisée semblable à Actif.
         /// </summary>
-        public static string ABORTED {
+        public static string active {
             get {
-                return ResourceManager.GetString("ABORTED", resourceCulture);
+                return ResourceManager.GetString("active", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à ACTIF.
-        /// </summary>
-        public static string ACTIVE {
-            get {
-                return ResourceManager.GetString("ACTIVE", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à EasySave.
+        ///   Recherche une chaîne localisée semblable à Interface Distante.
         /// </summary>
         public static string appTitle {
             get {
                 return ResourceManager.GetString("appTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à à.
-        /// </summary>
-        public static string at {
-            get {
-                return ResourceManager.GetString("at", resourceCulture);
             }
         }
         
@@ -214,74 +196,11 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à TERMINÉ.
-        /// </summary>
-        public static string END {
-            get {
-                return ResourceManager.GetString("END", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Anglais.
         /// </summary>
         public static string english {
             get {
                 return ResourceManager.GetString("english", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Une erreur est survenue sur ce fichier.
-        /// </summary>
-        public static string errorFile {
-            get {
-                return ResourceManager.GetString("errorFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à erreur(s).
-        /// </summary>
-        public static string errors {
-            get {
-                return ResourceManager.GetString("errors", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Exécution annulée.
-        /// </summary>
-        public static string executionAborted {
-            get {
-                return ResourceManager.GetString("executionAborted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Exécution terminée.
-        /// </summary>
-        public static string executionFinished {
-            get {
-                return ResourceManager.GetString("executionFinished", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Exécution de.
-        /// </summary>
-        public static string executionOf {
-            get {
-                return ResourceManager.GetString("executionOf", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Liste des extensions des fichiers à chiffrer (ex : .pdf, .docx,...).
-        /// </summary>
-        public static string extensionFormat {
-            get {
-                return ResourceManager.GetString("extensionFormat", resourceCulture);
             }
         }
         
@@ -318,15 +237,6 @@ namespace EasySave.Resources {
         public static string french {
             get {
                 return ResourceManager.GetString("french", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Élevée.
-        /// </summary>
-        public static string highPriority {
-            get {
-                return ResourceManager.GetString("highPriority", resourceCulture);
             }
         }
         
@@ -376,15 +286,6 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à JSON.
-        /// </summary>
-        public static string json {
-            get {
-                return ResourceManager.GetString("json", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Label *.
         /// </summary>
         public static string label {
@@ -403,15 +304,6 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Le label ne doit pas contenir plus de 30 caractères..
-        /// </summary>
-        public static string lengthLabelError {
-            get {
-                return ResourceManager.GetString("lengthLabelError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Mo.
         /// </summary>
         public static string megabyteUnit {
@@ -421,47 +313,11 @@ namespace EasySave.Resources {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Aucune erreur..
+        ///   Recherche une chaîne localisée semblable à Interface à Distance.
         /// </summary>
-        public static string noError {
+        public static string remoteInterface {
             get {
-                return ResourceManager.GetString("noError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Normale.
-        /// </summary>
-        public static string normalPriority {
-            get {
-                return ResourceManager.GetString("normalPriority", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à PAUSE.
-        /// </summary>
-        public static string PAUSED {
-            get {
-                return ResourceManager.GetString("PAUSED", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Priorité.
-        /// </summary>
-        public static string priority {
-            get {
-                return ResourceManager.GetString("priority", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Format de sauvegarde du fichier de log quotidien.
-        /// </summary>
-        public static string SaveLogFormat {
-            get {
-                return ResourceManager.GetString("SaveLogFormat", resourceCulture);
+                return ResourceManager.GetString("remoteInterface", resourceCulture);
             }
         }
         
@@ -480,15 +336,6 @@ namespace EasySave.Resources {
         public static string singleInstance {
             get {
                 return ResourceManager.GetString("singleInstance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Taille minimale (en Ko) d&apos;interdiction de transfert simultané de fichiers.
-        /// </summary>
-        public static string sizeLimit {
-            get {
-                return ResourceManager.GetString("sizeLimit", resourceCulture);
             }
         }
         
@@ -516,60 +363,6 @@ namespace EasySave.Resources {
         public static string state {
             get {
                 return ResourceManager.GetString("state", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Créer un travail de sauvegarde.
-        /// </summary>
-        public static string toolTipAddButton {
-            get {
-                return ResourceManager.GetString("toolTipAddButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Supprimer le travail de sauvegarde sélectionné.
-        /// </summary>
-        public static string toolTipDeleteButton {
-            get {
-                return ResourceManager.GetString("toolTipDeleteButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Lancer tous les travaux de sauvegarde 5 par 5.
-        /// </summary>
-        public static string toolTipExecuteAllButton {
-            get {
-                return ResourceManager.GetString("toolTipExecuteAllButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Mettre en pause le ou les travaux en cours.
-        /// </summary>
-        public static string toolTipPauseButton {
-            get {
-                return ResourceManager.GetString("toolTipPauseButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Démarrer ou reprendre un travail de sauvegarde.
-        /// </summary>
-        public static string toolTipPlayButton {
-            get {
-                return ResourceManager.GetString("toolTipPlayButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Arrêter le ou les travaux de sauvegarde en cours.
-        /// </summary>
-        public static string toolTipStopButton {
-            get {
-                return ResourceManager.GetString("toolTipStopButton", resourceCulture);
             }
         }
         
@@ -615,24 +408,6 @@ namespace EasySave.Resources {
         public static string valid {
             get {
                 return ResourceManager.GetString("valid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Très élevée.
-        /// </summary>
-        public static string veryHighPriority {
-            get {
-                return ResourceManager.GetString("veryHighPriority", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à XML.
-        /// </summary>
-        public static string xml {
-            get {
-                return ResourceManager.GetString("xml", resourceCulture);
             }
         }
     }

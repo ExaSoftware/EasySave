@@ -1,10 +1,10 @@
-﻿using EasySave.Object;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -111,8 +111,13 @@ namespace EasySave.ViewModel
             _tokenSource = new CancellationTokenSource();
             _token = _tokenSource.Token;
 
+            Communication.LaunchConnection();
         }
 
+        public MainViewModel(int i)
+        {
+
+        }
         /// <summary>
         /// Delete the selected save in the list of JobBackup
         /// </summary>
@@ -273,9 +278,13 @@ namespace EasySave.ViewModel
                     while (true)
                     {
                         ProgressLog[] progressArray = new ProgressLog[5];
+                        progressArray[0] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                        progressArray[1] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                        progressArray[2] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                        progressArray[3] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                        progressArray[4] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
                         try
                         {
-                            remoteToken.ThrowIfCancellationRequested();
 
                             progressArray[0] = !(jbList[i] is null) ? jbList[i].State : progressArray[0];
                             progressArray[1] = !(jbList[i++] is null) ? jbList[i++].State : progressArray[1];
@@ -284,7 +293,9 @@ namespace EasySave.ViewModel
                             progressArray[4] = !(jbList[i + 4] is null) ? jbList[i + 4].State : progressArray[4];
 
                             //Send progressArray
-                            Thread.Sleep(5000);
+                            Communication.SendInformation(progressArray);
+                            Thread.Sleep(500);
+                            remoteToken.ThrowIfCancellationRequested();
                         }
                         catch (OperationCanceledException)
                         {
@@ -319,9 +330,13 @@ namespace EasySave.ViewModel
                 while (true)
                 {
                     ProgressLog[] progressArray = new ProgressLog[5];
+                    progressArray[0] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                    progressArray[1] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                    progressArray[2] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                    progressArray[3] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                    progressArray[4] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
                     try
                     {
-                        remoteToken2.ThrowIfCancellationRequested();
 
                         for (int a = (int)numberOfIteration; a < jbList.Count; a++)
                         {
@@ -330,7 +345,9 @@ namespace EasySave.ViewModel
                         }
 
                         //Send progressArray
-                        Thread.Sleep(5000);
+                        Communication.SendInformation(progressArray);
+                        Thread.Sleep(500);
+                        remoteToken2.ThrowIfCancellationRequested();
                     }
                     catch (OperationCanceledException)
                     {
@@ -351,7 +368,7 @@ namespace EasySave.ViewModel
             remoteTokenSource2.Dispose();
             GC.Collect();
         }
-
+      
         /// <summary>
         /// Unpause all JobBackups threads.
         /// </summary>

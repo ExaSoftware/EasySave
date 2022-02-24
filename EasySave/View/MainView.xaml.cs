@@ -1,7 +1,13 @@
 ﻿using EasySave.ViewModel;
+using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Resources;
+using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -102,6 +108,7 @@ namespace EasySave
             //If there is a job backup selected
             if (listViewBackups.SelectedItems.Count != 0)
             {
+                //Communication.SendTest();
                 _mainViewModel.SortList(listViewBackups.SelectedItems.Cast<JobBackup>().ToList());
             }
         }
@@ -132,7 +139,6 @@ namespace EasySave
                 MainViewModel vm = DataContext as MainViewModel;
                 vm.Job = _mainViewModel.ListOfJobBackup[listViewBackups.SelectedIndex];
             }
-
         }
     }
 }

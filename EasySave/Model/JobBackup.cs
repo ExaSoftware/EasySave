@@ -1,5 +1,4 @@
-﻿using EasySave.Object;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -10,6 +9,7 @@ using System.Reflection;
 using System.Windows;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
+using Newtonsoft.Json;
 
 namespace EasySave
 {
@@ -47,6 +47,7 @@ namespace EasySave
         public bool IsDifferential { get => _isDifferential; set => _isDifferential = value; }
         public string Label { get => _label; set => _label = value; }
         public int Id { get => _id; set => _id = value; }
+        [JsonIgnore]
         public ProgressLog State
         {
             get => _state;
@@ -189,6 +190,7 @@ namespace EasySave
             HistoryLog historyLog = new HistoryLog(_label, "", "", 0, 0, 0);
             State = progressLog;
 
+            //Communication.SendInformation(this.Label);
             //Show message which say that job backup is executing
             App.Current.Dispatcher.Invoke(delegate
             {

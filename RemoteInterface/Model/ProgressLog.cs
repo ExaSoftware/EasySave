@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reflection;
 using System.Resources;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace EasySave
+namespace RemoteInterface
 {
     public class ProgressLog : Log, INotifyPropertyChanged
     {
@@ -47,6 +47,11 @@ namespace EasySave
             _totalFilesSize = totalFilesSize;
             _totalFilesRemaining = totalFilesRemaining;
             _sizeRemaining = sizeRemaining;
+        }
+
+        public ProgressLog()
+        {
+
         }
         public string State
         {
@@ -114,7 +119,7 @@ namespace EasySave
         }
 
         public ObservableCollection<string> Log
-        { 
+        {
             get => _log;
             set
             {
@@ -129,8 +134,8 @@ namespace EasySave
             {
                 return _rm.GetString(State);
             }
-            set 
-            { 
+            set
+            {
                 _stateFormatted = value;
                 OnPropertyChanged("StateFormatted");
             }
@@ -150,7 +155,7 @@ namespace EasySave
         /// <param name="progression"></param>
         /// <param name="id"></param>
         /// <param name="sizeRemaining"></param>
-        public void Fill(string file, string destFile, int totalFilesRemaining, int id, int progression, long sizeRemaining,int totalFilesToCopy, long totalFilesSize)
+        public void Fill(string file, string destFile, int totalFilesRemaining, int id, int progression, long sizeRemaining, int totalFilesToCopy, long totalFilesSize)
         {
             _state = "ACTIVE";
             this._sourceFile = file;
@@ -178,17 +183,6 @@ namespace EasySave
             this._sizeRemaining = 0;
             this._progression = 100;
             this.SaveLog(id);
-        }
-
-        /// <summary>
-        /// Method which call SaveProgressLog() from LogModel for created a progress log file in C:\EasySave\Logs repository, and allow to send it
-        /// </summary>
-        public override void SaveLog(int id)
-        {
-            /*Communication comm = new Communication();
-            comm.SendUsedJob(this);*/
-            //Communication.SendInformation(this);
-            _jsonReadWriteModel.SaveProgressLog(this,id);
         }
 
         protected override void Dispose(bool disposing)

@@ -1,0 +1,521 @@
+﻿<Page x:Class="RemoteInterface.MainView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+      xmlns:local="clr-namespace:RemoteInterface"
+      xmlns:language="clr-namespace:RemoteInterface.Resources"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="DetailView"
+      Background="White">
+    <Page.Resources>
+
+        <!-- Styles -->
+        <!--Generic button style-->
+        <Style TargetType="{x:Type Button}" x:Key="buttonStyle">
+            <Setter Property="Padding" Value="20" />
+            <Setter Property="Background" Value="#423b36"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" Padding="3" CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="Cursor" Value="Hand" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Play button style -->
+        <Style TargetType="{x:Type Button}" x:Key="playButton" BasedOn="{StaticResource buttonStyle}">
+            <Setter Property="Foreground" Value="LightBlue"/>
+            <Setter Property="Margin" Value="10,0" />
+            <Setter Property="Height" Value="Auto" />
+        </Style>
+
+        <!-- Pause button style -->
+        <Style TargetType="{x:Type Button}" x:Key="pauseButton" BasedOn="{StaticResource buttonStyle}">
+            <Setter Property="Foreground" Value="Orange"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+        </Style>
+
+        <!-- Stop button style -->
+        <Style TargetType="{x:Type Button}" x:Key="stopButton" BasedOn="{StaticResource buttonStyle}">
+            <Setter Property="Foreground" Value="Red"/>
+            <Setter Property="Margin" Value="0,0,20,0"/>
+        </Style>
+
+        <!-- Connect button style -->
+        <Style TargetType="{x:Type Button}" x:Key="connectButton" BasedOn="{StaticResource buttonStyle}">
+            <Setter Property="Foreground" Value="Magenta"/>
+        </Style>
+    </Page.Resources>
+
+    <!-- Content -->
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <!--<RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>-->
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="20" Grid.Row="0" HorizontalAlignment="Right">
+            <Button Content="{iconPacks:Material Kind=LanConnect, Height=24, Width=24}" Name="btnRemoteConnection" Height="Auto" Width="Auto" Style="{StaticResource connectButton}" Click="btnRemoteConnection_Click" />
+            <Button Content="{iconPacks:FontAwesome Kind=PlaySolid, Height=24, Width=24}"  Style="{StaticResource playButton}" Name="btnPlay" Click="btnPlay_Click"/>
+            <Button Content="{iconPacks:FontAwesome Kind=PauseSolid, Height=24, Width=24}" Style="{StaticResource pauseButton}" Name="btnPause" Click="btnPause_Click"/>
+            <Button Content="{iconPacks:FontAwesome Kind=StopSolid, Height=24, Width=24}" Style="{StaticResource stopButton}" Name="btnStop" Click="btnStop_Click" />
+        </StackPanel>
+
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" Grid.Row="1" CanContentScroll="True">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <!-- JobBackup 1-->
+                <Grid Width="Auto" Height="Auto" Margin="20,0,20,0" Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Box title -->
+                    <Border BorderThickness="1" BorderBrush="#423b36" Padding="6" Background="#423b36" CornerRadius="5, 5, 0, 0">
+                        <TextBlock Foreground="White" Text="{Binding Pl1Name, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Border>
+
+                    <!-- Box content -->
+                    <Border Grid.Row="1" BorderThickness="1,0,1,1" BorderBrush="#423b36" Padding="6" CornerRadius="0, 0, 5, 5">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="0.5*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Total files to copy -->
+                            <TextBlock Text="{x:Static language:Strings.totalFilesToCopy}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0"  VerticalAlignment="Center" TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding Pl1TotalFilesToCopy, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"/>
+                            <!-- Number of files remaining to copy -->
+                            <TextBlock Text="{x:Static language:Strings.filesLeftToCopy}" HorizontalAlignment="Center" Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding Pl1TotalFilesRemaining, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"/>
+                            <!-- Size remaining -->
+                            <TextBlock Text="{x:Static language:Strings.totalSizeRemaining}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Grid.Column="2" TextWrapping="Wrap"/>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} {1}">
+                                        <Binding Path="Pl1SizeRemaining" UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding Source="{x:Static language:Strings.megabyteUnit}" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                            <!-- State -->
+                            <TextBlock Text="{x:Static language:Strings.state}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Pl1State}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="1" VerticalAlignment="Top"/>
+                            <!-- Progress bar -->
+                            <Grid Grid.Row="2" Grid.ColumnSpan="4" Margin="10,10,10,10">
+                                <ProgressBar  Height="20" Value="{Binding Pl1Progression, UpdateSourceTrigger=PropertyChanged}" Maximum="100" Minimum="0" Name="progressStatus"/>
+                                <TextBlock Text="{Binding ElementName=progressStatus, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Grid>
+
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- Job Backup 2-->
+                <Grid Width="Auto" Height="Auto" Margin="20,40,20,0" Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Box title -->
+                    <Border BorderThickness="1" BorderBrush="#423b36" Padding="6" Background="#423b36" CornerRadius="5, 5, 0, 0">
+                        <TextBlock Foreground="White" Text="{Binding Pl2Name, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Border>
+
+                    <!-- Box content -->
+                    <Border Grid.Row="1" BorderThickness="1,0,1,1" BorderBrush="#423b36" Padding="6" CornerRadius="0, 0, 5, 5">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="0.5*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Total files to copy -->
+                            <TextBlock Text="{x:Static language:Strings.totalFilesToCopy}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0"  VerticalAlignment="Center" TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding Pl2TotalFilesToCopy, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"/>
+                            <!-- Number of files remaining to copy -->
+                            <TextBlock Text="{x:Static language:Strings.filesLeftToCopy}" HorizontalAlignment="Center" Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding Pl2TotalFilesRemaining, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"/>
+                            <!-- Size remaining -->
+                            <TextBlock Text="{x:Static language:Strings.totalSizeRemaining}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Grid.Column="2" TextWrapping="Wrap"/>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} {1}">
+                                        <Binding Path="Pl2SizeRemaining" UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding Source="{x:Static language:Strings.megabyteUnit}" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                            <!-- State -->
+                            <TextBlock Text="{x:Static language:Strings.state}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Pl2State}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="1" VerticalAlignment="Top"/>
+                            <!-- Progress bar -->
+                            <Grid Grid.Row="2" Grid.ColumnSpan="4" Margin="10,10,10,10">
+                                <ProgressBar  Height="20" Value="{Binding Pl2Progression, UpdateSourceTrigger=PropertyChanged}" Maximum="100" Minimum="0" Name="progressStatus2"/>
+                                <TextBlock Text="{Binding ElementName=progressStatus2, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Grid>
+
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- Job Backup 3-->
+                <Grid Width="Auto" Height="Auto" Margin="20,40,20,0" Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Box title -->
+                    <Border BorderThickness="1" BorderBrush="#423b36" Padding="6" Background="#423b36" CornerRadius="5, 5, 0, 0">
+                        <TextBlock Foreground="White" Text="{Binding Pl3Name, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Border>
+
+                    <!-- Box content -->
+                    <Border Grid.Row="1" BorderThickness="1,0,1,1" BorderBrush="#423b36" Padding="6" CornerRadius="0, 0, 5, 5">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="0.5*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Total files to copy -->
+                            <TextBlock Text="{x:Static language:Strings.totalFilesToCopy}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0"  VerticalAlignment="Center" TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding Pl3TotalFilesToCopy, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"/>
+                            <!-- Number of files remaining to copy -->
+                            <TextBlock Text="{x:Static language:Strings.filesLeftToCopy}" HorizontalAlignment="Center" Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding Pl3TotalFilesRemaining, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"/>
+                            <!-- Size remaining -->
+                            <TextBlock Text="{x:Static language:Strings.totalSizeRemaining}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Grid.Column="2" TextWrapping="Wrap"/>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} {1}">
+                                        <Binding Path="Pl3SizeRemaining" UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding Source="{x:Static language:Strings.megabyteUnit}" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                            <!-- State -->
+                            <TextBlock Text="{x:Static language:Strings.state}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Pl3State}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="1" VerticalAlignment="Top"/>
+                            <!-- Progress bar -->
+                            <Grid Grid.Row="2" Grid.ColumnSpan="4" Margin="10,10,10,10">
+                                <ProgressBar  Height="20" Value="{Binding Pl3Progression, UpdateSourceTrigger=PropertyChanged}" Maximum="100" Minimum="0" Name="progressStatus3"/>
+                                <TextBlock Text="{Binding ElementName=progressStatus3, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Grid>
+
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- Job Backup 4-->
+                <Grid Width="Auto" Height="Auto" Margin="20,40,20,0" Grid.Row="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Box title -->
+                    <Border BorderThickness="1" BorderBrush="#423b36" Padding="6" Background="#423b36" CornerRadius="5, 5, 0, 0">
+                        <TextBlock Foreground="White" Text="{Binding Pl4Name, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Border>
+
+                    <!-- Box content -->
+                    <Border Grid.Row="1" BorderThickness="1,0,1,1" BorderBrush="#423b36" Padding="6" CornerRadius="0, 0, 5, 5">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="0.5*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Total files to copy -->
+                            <TextBlock Text="{x:Static language:Strings.totalFilesToCopy}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0"  VerticalAlignment="Center" TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding Pl4TotalFilesToCopy, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"/>
+                            <!-- Number of files remaining to copy -->
+                            <TextBlock Text="{x:Static language:Strings.filesLeftToCopy}" HorizontalAlignment="Center" Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding Pl4TotalFilesRemaining, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"/>
+                            <!-- Size remaining -->
+                            <TextBlock Text="{x:Static language:Strings.totalSizeRemaining}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Grid.Column="2" TextWrapping="Wrap"/>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} {1}">
+                                        <Binding Path="Pl4SizeRemaining" UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding Source="{x:Static language:Strings.megabyteUnit}" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                            <!-- State -->
+                            <TextBlock Text="{x:Static language:Strings.state}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Pl4State}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="1" VerticalAlignment="Top"/>
+                            <!-- Progress bar -->
+                            <Grid Grid.Row="2" Grid.ColumnSpan="4" Margin="10,10,10,10">
+                                <ProgressBar  Height="20" Value="{Binding Pl4Progression, UpdateSourceTrigger=PropertyChanged}" Maximum="100" Minimum="0" Name="progressStatus4"/>
+                                <TextBlock Text="{Binding ElementName=progressStatus4, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Grid>
+
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- Job Backup 5-->
+                <Grid Width="Auto" Height="Auto" Margin="20,40,20,0" Grid.Row="4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Box title -->
+                    <Border BorderThickness="1" BorderBrush="#423b36" Padding="6" Background="#423b36" CornerRadius="5, 5, 0, 0">
+                        <TextBlock Foreground="White" Text="{Binding Pl5Name, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Border>
+
+                    <!-- Box content -->
+                    <Border Grid.Row="1" BorderThickness="1,0,1,1" BorderBrush="#423b36" Padding="6" CornerRadius="0, 0, 5, 5">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="0.5*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Total files to copy -->
+                            <TextBlock Text="{x:Static language:Strings.totalFilesToCopy}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0"  VerticalAlignment="Center" TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding Pl5TotalFilesToCopy, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"/>
+                            <!-- Number of files remaining to copy -->
+                            <TextBlock Text="{x:Static language:Strings.filesLeftToCopy}" HorizontalAlignment="Center" Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding Pl5TotalFilesRemaining, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"/>
+                            <!-- Size remaining -->
+                            <TextBlock Text="{x:Static language:Strings.totalSizeRemaining}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Grid.Column="2" TextWrapping="Wrap"/>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} {1}">
+                                        <Binding Path="Pl5SizeRemaining" UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding Source="{x:Static language:Strings.megabyteUnit}" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                            <!-- State -->
+                            <TextBlock Text="{x:Static language:Strings.state}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Pl5State}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="1" VerticalAlignment="Top"/>
+                            <!-- Progress bar -->
+                            <Grid Grid.Row="2" Grid.ColumnSpan="4" Margin="10,10,10,10">
+                                <ProgressBar  Height="20" Value="{Binding Pl5Progression, UpdateSourceTrigger=PropertyChanged}" Maximum="100" Minimum="0" Name="progressStatus5"/>
+                                <TextBlock Text="{Binding ElementName=progressStatus5, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Grid>
+
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+        
+        <!-- Box of job backup list -->
+        <!--<Grid Width="Auto" Height="Auto" Grid.Row="0" Grid.Column="0" Margin="20,20,0,20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Border BorderThickness="1" BorderBrush="#423b36" Padding="6" Background="#423b36" CornerRadius="5, 5, 0, 0">
+                <TextBlock Foreground="White" Text="{x:Static language:Strings.jobBackupList}"/>
+            </Border>
+            <Border Grid.Row="1" BorderThickness="1,0,1,1" BorderBrush="#423b36" Padding="6" CornerRadius="0, 0, 5, 5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="{iconPacks:Material Kind=LanConnect, Height=24, Width=24}" Name="btnRemoteConnection" Height="Auto" Width="Auto" Style="{StaticResource sequentiallyExecutionButton}" Click="btnRemoteConnection_Click" />
+                        <Button Content="{iconPacks:Material Kind=AnimationPlayOutline, Height=24, Width=24}" Name="btnExecuteSequentially" Height="Auto" Width="Auto" Style="{StaticResource sequentiallyExecutionButton}" Click="btnExecuteSequentially_Click" />
+                    </StackPanel>
+                    <Rectangle Fill="#a30700" Grid.Row="1" Height="5" Margin="0,5,0,0"/>
+                    <ListView Grid.Row="2" BorderThickness="0" ItemsSource="{Binding ListOfJobBackup}" MouseDoubleClick="ListView_MouseDoubleClick" Name="listViewBackups" MouseLeftButtonUp="listViewBackups_MouseLeftButtonUp">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <WrapPanel>
+                                    <TextBlock Text="{Binding Label}" />
+                                </WrapPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </Border>
+        </Grid>
+        <Grid Grid.Column="1" Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            Box job backup Detail 
+            <Grid Width="Auto" Height="Auto"  Grid.Row="0" Margin="0,0,0,20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border BorderThickness="1" BorderBrush="#423b36" Padding="6" Background="#423b36" CornerRadius="5, 5, 0, 0">
+                    <TextBlock Foreground="White" Text="" Name="label"/>
+                </Border>
+                <Border Grid.Row="1" BorderThickness="1,0,1,1" BorderBrush="#423b36" Padding="6" CornerRadius="0, 0, 5, 5">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{x:Static language:Strings.sourceDirectory}" Grid.Row="0" Grid.Column="0"/>
+                        <TextBlock Text="{x:Static language:Strings.destinationDirectory}" Grid.Row="1" Grid.Column="0" />
+                        <TextBlock Text="{x:Static language:Strings.jobType}" Grid.Row="2" Grid.Column="0" />
+                        <TextBlock Text="{x:Static language:Strings.totalFilesSize}" Grid.Row="3" Grid.Column="0" />
+                        <TextBlock Text="" Grid.Row="0" Grid.Column="1"  Margin="5,0,0,0" Name="labelSourceDirectory"/>
+                        <TextBlock Text="" Grid.Row="1" Grid.Column="1" Margin="5,0,0,0" Name="destinationDirectory"/>
+                        <TextBlock Text="" Grid.Row="2" Grid.Column="1" Margin="5,0,0,0" Name="type"/>
+                        <TextBlock Text="28 Mo" Grid.Row="3" Grid.Column="1" Margin="5,0,0,0" Name="totalFileSize"/>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            Box with execution details
+            <Grid Width="Auto" Height="Auto"  Grid.Row="1" Margin="0,0,0,20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border BorderThickness="1" BorderBrush="#423b36" Padding="6" Background="#423b36" CornerRadius="5, 5, 0, 0">
+                    <TextBlock Foreground="White" Text="{x:Static language:Strings.boxExecutionTitle}"/>
+                </Border>
+                <Border Grid.Row="1" BorderThickness="1,0,1,1" BorderBrush="#423b36" Padding="6" CornerRadius="0, 0, 5, 5">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="0.5*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Vertical" Margin="0,0,0,0" Grid.Column="0">
+                            <TextBlock Text="{x:Static language:Strings.totalFilesToCopy}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" Margin="0,0,0,0" Grid.Column="1">
+                            <TextBlock Text="{x:Static language:Strings.filesLeftToCopy}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" Margin="0,0,0,0" Grid.Column="2">
+                            <TextBlock Text="{x:Static language:Strings.totalSizeRemaining}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" Margin="0,0,0,0" Grid.Column="3">
+                            <TextBlock Text="{x:Static language:Strings.state}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <ProgressBar Grid.Row="1" Grid.ColumnSpan="3" Height="15" Margin="0,10,10,0"/>
+                        <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.Row="1" Margin="0,10,0,0" HorizontalAlignment="Center">
+                            <Button Content="{iconPacks:FontAwesome Kind=PlaySolid, Height=24, Width=24}" Margin="10,0" Height="Auto" Style="{StaticResource playButton}" Name="btnPlay" Click="btnPlay_Click"/>
+                            <Button Content="{iconPacks:FontAwesome Kind=PauseSolid, Height=24, Width=24}" Margin="0,0,10,0" Height="Auto" Style="{StaticResource pauseButton}"/>
+                            <Button Content="{iconPacks:FontAwesome Kind=StopSolid, Height=24, Width=24}" Margin="0,0,10,0" Height="Auto" Style="{StaticResource stopButton}" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            Box with logs
+            <Grid Width="Auto" Height="Auto"  Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border BorderThickness="1" BorderBrush="#423b36" Padding="6" Background="#423b36" CornerRadius="5, 5, 0, 0">
+                    <TextBlock Foreground="White" Text="{x:Static language:Strings.boxLogTitle}"/>
+                </Border>
+                <Border Grid.Row="1" BorderThickness="1,0,1,1" BorderBrush="#423b36" Padding="6" CornerRadius="0, 0, 5, 5">
+                    <ScrollViewer>
+                        Use of textbox in readonly to allow user to select log text (i.e make some research on web)
+                        <TextBox Name="txtBlockLogs" IsReadOnly="True" BorderThickness="0">
+
+                        </TextBox>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+        </Grid>-->
+    </Grid>
+</Page>
