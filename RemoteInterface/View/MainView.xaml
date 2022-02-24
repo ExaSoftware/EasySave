@@ -101,7 +101,7 @@
 
                     <!-- Box title -->
                     <Border BorderThickness="1" BorderBrush="#423b36" Padding="6" Background="#423b36" CornerRadius="5, 5, 0, 0">
-                        <TextBlock Foreground="White" Text="{x:Static language:Strings.boxExecutionTitle}"/>
+                        <TextBlock Foreground="White" Text="{Binding Pl1Name, UpdateSourceTrigger=PropertyChanged}"/>
                     </Border>
 
                     <!-- Box content -->
@@ -121,26 +121,26 @@
 
                             <!-- Total files to copy -->
                             <TextBlock Text="{x:Static language:Strings.totalFilesToCopy}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0"  VerticalAlignment="Center" TextWrapping="Wrap"/>
-                            <TextBlock Text="{Binding Job.State.TotalFilesToCopy, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"/>
+                            <TextBlock Text="{Binding Pl1TotalFilesToCopy, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"/>
                             <!-- Number of files remaining to copy -->
                             <TextBlock Text="{x:Static language:Strings.filesLeftToCopy}" HorizontalAlignment="Center" Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap"/>
-                            <TextBlock Text="{Binding Job.State.TotalFilesRemaining, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"/>
+                            <TextBlock Text="{Binding Pl1TotalFilesRemaining, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"/>
                             <!-- Size remaining -->
                             <TextBlock Text="{x:Static language:Strings.totalSizeRemaining}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Grid.Column="2" TextWrapping="Wrap"/>
                             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0} {1}">
-                                        <Binding Path="Job.State.SizeRemainingFormatted" UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding Path="Pl1SizeRemaining" UpdateSourceTrigger="PropertyChanged" />
                                         <Binding Source="{x:Static language:Strings.megabyteUnit}" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
                             <!-- State -->
                             <TextBlock Text="{x:Static language:Strings.state}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="0" VerticalAlignment="Center"/>
-                            <TextBlock Text="{Binding Job.State.StateFormatted}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="1" VerticalAlignment="Top"/>
+                            <TextBlock Text="{Binding Pl1State}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="1" VerticalAlignment="Top"/>
                             <!-- Progress bar -->
                             <Grid Grid.Row="2" Grid.ColumnSpan="4" Margin="10,10,10,10">
-                                <ProgressBar  Height="20" Value="{Binding Job.State.Progression, UpdateSourceTrigger=PropertyChanged}" Maximum="100" Minimum="0" Name="progressStatus"/>
+                                <ProgressBar  Height="20" Value="{Binding Pl1Progression, UpdateSourceTrigger=PropertyChanged}" Maximum="100" Minimum="0" Name="progressStatus"/>
                                 <TextBlock Text="{Binding ElementName=progressStatus, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Grid>
 
@@ -157,7 +157,7 @@
 
                     <!-- Box title -->
                     <Border BorderThickness="1" BorderBrush="#423b36" Padding="6" Background="#423b36" CornerRadius="5, 5, 0, 0">
-                        <TextBlock Foreground="White" Text="{x:Static language:Strings.boxExecutionTitle}"/>
+                        <TextBlock Foreground="White" Text="{Binding Pl2Name, UpdateSourceTrigger=PropertyChanged}"/>
                     </Border>
 
                     <!-- Box content -->
@@ -177,27 +177,27 @@
 
                             <!-- Total files to copy -->
                             <TextBlock Text="{x:Static language:Strings.totalFilesToCopy}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0"  VerticalAlignment="Center" TextWrapping="Wrap"/>
-                            <TextBlock Text="{Binding Job.State.TotalFilesToCopy, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"/>
+                            <TextBlock Text="{Binding Pl2TotalFilesToCopy, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"/>
                             <!-- Number of files remaining to copy -->
                             <TextBlock Text="{x:Static language:Strings.filesLeftToCopy}" HorizontalAlignment="Center" Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap"/>
-                            <TextBlock Text="{Binding Job.State.TotalFilesRemaining, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"/>
+                            <TextBlock Text="{Binding Pl2TotalFilesRemaining, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"/>
                             <!-- Size remaining -->
                             <TextBlock Text="{x:Static language:Strings.totalSizeRemaining}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Grid.Column="2" TextWrapping="Wrap"/>
                             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0} {1}">
-                                        <Binding Path="Job.State.SizeRemainingFormatted" UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding Path="Pl2SizeRemaining" UpdateSourceTrigger="PropertyChanged" />
                                         <Binding Source="{x:Static language:Strings.megabyteUnit}" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
                             <!-- State -->
                             <TextBlock Text="{x:Static language:Strings.state}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="0" VerticalAlignment="Center"/>
-                            <TextBlock Text="{Binding Job.State.StateFormatted}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="1" VerticalAlignment="Top"/>
+                            <TextBlock Text="{Binding Pl2State}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="1" VerticalAlignment="Top"/>
                             <!-- Progress bar -->
                             <Grid Grid.Row="2" Grid.ColumnSpan="4" Margin="10,10,10,10">
-                                <ProgressBar  Height="20" Value="{Binding Job.State.Progression, UpdateSourceTrigger=PropertyChanged}" Maximum="100" Minimum="0" Name="progressStatus2"/>
-                                <TextBlock Text="{Binding ElementName=progressStatus, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <ProgressBar  Height="20" Value="{Binding Pl2Progression, UpdateSourceTrigger=PropertyChanged}" Maximum="100" Minimum="0" Name="progressStatus2"/>
+                                <TextBlock Text="{Binding ElementName=progressStatus2, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Grid>
 
                         </Grid>
@@ -213,7 +213,7 @@
 
                     <!-- Box title -->
                     <Border BorderThickness="1" BorderBrush="#423b36" Padding="6" Background="#423b36" CornerRadius="5, 5, 0, 0">
-                        <TextBlock Foreground="White" Text="{x:Static language:Strings.boxExecutionTitle}"/>
+                        <TextBlock Foreground="White" Text="{Binding Pl3Name, UpdateSourceTrigger=PropertyChanged}"/>
                     </Border>
 
                     <!-- Box content -->
@@ -233,27 +233,27 @@
 
                             <!-- Total files to copy -->
                             <TextBlock Text="{x:Static language:Strings.totalFilesToCopy}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0"  VerticalAlignment="Center" TextWrapping="Wrap"/>
-                            <TextBlock Text="{Binding Job.State.TotalFilesToCopy, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"/>
+                            <TextBlock Text="{Binding Pl3TotalFilesToCopy, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"/>
                             <!-- Number of files remaining to copy -->
                             <TextBlock Text="{x:Static language:Strings.filesLeftToCopy}" HorizontalAlignment="Center" Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap"/>
-                            <TextBlock Text="{Binding Job.State.TotalFilesRemaining, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"/>
+                            <TextBlock Text="{Binding Pl3TotalFilesRemaining, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"/>
                             <!-- Size remaining -->
                             <TextBlock Text="{x:Static language:Strings.totalSizeRemaining}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Grid.Column="2" TextWrapping="Wrap"/>
                             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0} {1}">
-                                        <Binding Path="Job.State.SizeRemainingFormatted" UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding Path="Pl3SizeRemaining" UpdateSourceTrigger="PropertyChanged" />
                                         <Binding Source="{x:Static language:Strings.megabyteUnit}" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
                             <!-- State -->
                             <TextBlock Text="{x:Static language:Strings.state}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="0" VerticalAlignment="Center"/>
-                            <TextBlock Text="{Binding Job.State.StateFormatted}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="1" VerticalAlignment="Top"/>
+                            <TextBlock Text="{Binding Pl3State}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="1" VerticalAlignment="Top"/>
                             <!-- Progress bar -->
                             <Grid Grid.Row="2" Grid.ColumnSpan="4" Margin="10,10,10,10">
-                                <ProgressBar  Height="20" Value="{Binding Job.State.Progression, UpdateSourceTrigger=PropertyChanged}" Maximum="100" Minimum="0" Name="progressStatus3"/>
-                                <TextBlock Text="{Binding ElementName=progressStatus, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <ProgressBar  Height="20" Value="{Binding Pl3Progression, UpdateSourceTrigger=PropertyChanged}" Maximum="100" Minimum="0" Name="progressStatus3"/>
+                                <TextBlock Text="{Binding ElementName=progressStatus3, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Grid>
 
                         </Grid>
@@ -269,7 +269,7 @@
 
                     <!-- Box title -->
                     <Border BorderThickness="1" BorderBrush="#423b36" Padding="6" Background="#423b36" CornerRadius="5, 5, 0, 0">
-                        <TextBlock Foreground="White" Text="{x:Static language:Strings.boxExecutionTitle}"/>
+                        <TextBlock Foreground="White" Text="{Binding Pl4Name, UpdateSourceTrigger=PropertyChanged}"/>
                     </Border>
 
                     <!-- Box content -->
@@ -289,27 +289,27 @@
 
                             <!-- Total files to copy -->
                             <TextBlock Text="{x:Static language:Strings.totalFilesToCopy}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0"  VerticalAlignment="Center" TextWrapping="Wrap"/>
-                            <TextBlock Text="{Binding Job.State.TotalFilesToCopy, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"/>
+                            <TextBlock Text="{Binding Pl4TotalFilesToCopy, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"/>
                             <!-- Number of files remaining to copy -->
                             <TextBlock Text="{x:Static language:Strings.filesLeftToCopy}" HorizontalAlignment="Center" Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap"/>
-                            <TextBlock Text="{Binding Job.State.TotalFilesRemaining, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"/>
+                            <TextBlock Text="{Binding Pl4TotalFilesRemaining, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"/>
                             <!-- Size remaining -->
                             <TextBlock Text="{x:Static language:Strings.totalSizeRemaining}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Grid.Column="2" TextWrapping="Wrap"/>
                             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0} {1}">
-                                        <Binding Path="Job.State.SizeRemainingFormatted" UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding Path="Pl4SizeRemaining" UpdateSourceTrigger="PropertyChanged" />
                                         <Binding Source="{x:Static language:Strings.megabyteUnit}" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
                             <!-- State -->
                             <TextBlock Text="{x:Static language:Strings.state}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="0" VerticalAlignment="Center"/>
-                            <TextBlock Text="{Binding Job.State.StateFormatted}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="1" VerticalAlignment="Top"/>
+                            <TextBlock Text="{Binding Pl4State}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="1" VerticalAlignment="Top"/>
                             <!-- Progress bar -->
                             <Grid Grid.Row="2" Grid.ColumnSpan="4" Margin="10,10,10,10">
-                                <ProgressBar  Height="20" Value="{Binding Job.State.Progression, UpdateSourceTrigger=PropertyChanged}" Maximum="100" Minimum="0" Name="progressStatus4"/>
-                                <TextBlock Text="{Binding ElementName=progressStatus, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <ProgressBar  Height="20" Value="{Binding Pl4Progression, UpdateSourceTrigger=PropertyChanged}" Maximum="100" Minimum="0" Name="progressStatus4"/>
+                                <TextBlock Text="{Binding ElementName=progressStatus4, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Grid>
 
                         </Grid>
@@ -325,7 +325,7 @@
 
                     <!-- Box title -->
                     <Border BorderThickness="1" BorderBrush="#423b36" Padding="6" Background="#423b36" CornerRadius="5, 5, 0, 0">
-                        <TextBlock Foreground="White" Text="{x:Static language:Strings.boxExecutionTitle}"/>
+                        <TextBlock Foreground="White" Text="{Binding Pl5Name, UpdateSourceTrigger=PropertyChanged}"/>
                     </Border>
 
                     <!-- Box content -->
@@ -345,27 +345,27 @@
 
                             <!-- Total files to copy -->
                             <TextBlock Text="{x:Static language:Strings.totalFilesToCopy}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0"  VerticalAlignment="Center" TextWrapping="Wrap"/>
-                            <TextBlock Text="{Binding Job.State.TotalFilesToCopy, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"/>
+                            <TextBlock Text="{Binding Pl5TotalFilesToCopy, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"/>
                             <!-- Number of files remaining to copy -->
                             <TextBlock Text="{x:Static language:Strings.filesLeftToCopy}" HorizontalAlignment="Center" Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap"/>
-                            <TextBlock Text="{Binding Job.State.TotalFilesRemaining, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"/>
+                            <TextBlock Text="{Binding Pl5TotalFilesRemaining, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"/>
                             <!-- Size remaining -->
                             <TextBlock Text="{x:Static language:Strings.totalSizeRemaining}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Grid.Column="2" TextWrapping="Wrap"/>
                             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0} {1}">
-                                        <Binding Path="Job.State.SizeRemainingFormatted" UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding Path="Pl5SizeRemaining" UpdateSourceTrigger="PropertyChanged" />
                                         <Binding Source="{x:Static language:Strings.megabyteUnit}" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
                             <!-- State -->
                             <TextBlock Text="{x:Static language:Strings.state}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="0" VerticalAlignment="Center"/>
-                            <TextBlock Text="{Binding Job.State.StateFormatted}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="1" VerticalAlignment="Top"/>
+                            <TextBlock Text="{Binding Pl5State}" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="1" VerticalAlignment="Top"/>
                             <!-- Progress bar -->
                             <Grid Grid.Row="2" Grid.ColumnSpan="4" Margin="10,10,10,10">
-                                <ProgressBar  Height="20" Value="{Binding Job.State.Progression, UpdateSourceTrigger=PropertyChanged}" Maximum="100" Minimum="0" Name="progressStatus5"/>
-                                <TextBlock Text="{Binding ElementName=progressStatus, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <ProgressBar  Height="20" Value="{Binding Pl5Progression, UpdateSourceTrigger=PropertyChanged}" Maximum="100" Minimum="0" Name="progressStatus5"/>
+                                <TextBlock Text="{Binding ElementName=progressStatus5, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Grid>
 
                         </Grid>

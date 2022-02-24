@@ -1,10 +1,10 @@
-﻿using EasySave.Object;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,7 +25,6 @@ namespace EasySave.ViewModel
         private Task _thread4 = null;
         private Task _thread5 = null;
         private Task _mainThread = null;
-        private Task _mainThreadReceive = null;
         private int _selectedIndex;
         private JobBackup _job;
         private double _totalFilesSizeFormatted;
@@ -113,9 +112,12 @@ namespace EasySave.ViewModel
             _token = _tokenSource.Token;
 
             Communication.LaunchConnection();
-            //CommunicationWithRemoteInterface();
         }
 
+        public MainViewModel(int i)
+        {
+
+        }
         /// <summary>
         /// Delete the selected save in the list of JobBackup
         /// </summary>
@@ -276,9 +278,13 @@ namespace EasySave.ViewModel
                     while (true)
                     {
                         ProgressLog[] progressArray = new ProgressLog[5];
+                        progressArray[0] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                        progressArray[1] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                        progressArray[2] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                        progressArray[3] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                        progressArray[4] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
                         try
                         {
-                            remoteToken.ThrowIfCancellationRequested();
 
                             progressArray[0] = !(jbList[i] is null) ? jbList[i].State : progressArray[0];
                             progressArray[1] = !(jbList[i++] is null) ? jbList[i++].State : progressArray[1];
@@ -287,7 +293,9 @@ namespace EasySave.ViewModel
                             progressArray[4] = !(jbList[i + 4] is null) ? jbList[i + 4].State : progressArray[4];
 
                             //Send progressArray
-                            Thread.Sleep(5000);
+                            Communication.SendInformation(progressArray);
+                            Thread.Sleep(500);
+                            remoteToken.ThrowIfCancellationRequested();
                         }
                         catch (OperationCanceledException)
                         {
@@ -322,9 +330,13 @@ namespace EasySave.ViewModel
                 while (true)
                 {
                     ProgressLog[] progressArray = new ProgressLog[5];
+                    progressArray[0] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                    progressArray[1] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                    progressArray[2] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                    progressArray[3] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
+                    progressArray[4] = new ProgressLog(String.Empty, String.Empty, String.Empty, String.Empty, 0, 0, 0, 0);
                     try
                     {
-                        remoteToken2.ThrowIfCancellationRequested();
 
                         for (int a = (int)numberOfIteration; a < jbList.Count; a++)
                         {
@@ -333,7 +345,9 @@ namespace EasySave.ViewModel
                         }
 
                         //Send progressArray
-                        Thread.Sleep(5000);
+                        Communication.SendInformation(progressArray);
+                        Thread.Sleep(500);
+                        remoteToken2.ThrowIfCancellationRequested();
                     }
                     catch (OperationCanceledException)
                     {
@@ -354,29 +368,7 @@ namespace EasySave.ViewModel
             remoteTokenSource2.Dispose();
             GC.Collect();
         }
-        /*public void receiveContinuously()
-        {
-            /*String msg = "";
-            _mainThreadReceive = Task.Run(() =>
-            {
-                Communication comm = new Communication();
-                
-                msg = comm.receiveInformation();
-                if (msg == "play")
-                {
-                    //UnPause();
-                }
-                if (msg == "stop")
-                {
-                    Pause();
-                }
-                if (msg == "reset")
-                {
-                    Stop();
-                }
-                
-            });
-        }*/
+      
         /// <summary>
         /// Unpause all JobBackups threads.
         /// </summary>
@@ -391,15 +383,6 @@ namespace EasySave.ViewModel
         public void Pause()
         {
             App.ThreadPause = App.ThreadPause ? false : true;
-        }
-
-        /// <summary>
-        /// socket listening on the network
-        /// </summary>
-        public void CommunicationWithRemoteInterface()
-        {
-            /*Communication comm = new Communication();
-            comm.LaunchConnection();*/
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EasySave.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -40,16 +41,15 @@ namespace EasySave
         /// </summary>
         private static void ListenNetwork()
         {
+            MainViewModel vm = new MainViewModel(0);
             _newsock.Listen(1);
             _client = _newsock.Accept();
             IPEndPoint socketEndPoint = (IPEndPoint)_client.RemoteEndPoint;
             Trace.WriteLine(String.Format("Client connected: {0}:{1}", socketEndPoint.Address, socketEndPoint.Port));
+
             while (true)
             {
                 byte[] data = new byte[128];
-
-                //appel de la méthode receive qui reçoit les données envoyées par le serveur et les stocker 
-                //dans le tableau data, elle renvoie le nombre d'octet reçus
                 try
                 {
                     int recv = _client.Receive(data);
@@ -59,19 +59,23 @@ namespace EasySave
                     Trace.WriteLine(exception.Message);
                 }
 
-
-                //transcodage de data en string
-                String mg = (Encoding.UTF8.GetString(data));
-                //affichage des données recues dans le label label1
-                Trace.WriteLine(mg);
+                string msg = Encoding.UTF8.GetString(data);
+                if (msg == "stop")
+                {
+                    vm.Stop();
+                }
+                if (msg == "pause")
+                {
+                    vm.Pause();
+                }
+                //Trace.WriteLine(mg);
             }
         }
-
-        public static void SendInformation(List<ProgressLog> progressList)
+        public static void SendInformation(ProgressLog[] progressList)
         {
             JsonReadWriteModel json = new JsonReadWriteModel();
             string jsonString = json.PrepareLogForRemote(progressList);
-            if (_client.Connected)
+            if (_client != null && _client.Connected)
             {
                 try
                 {
@@ -83,64 +87,6 @@ namespace EasySave
 
                 }
             }
-        }
-        /*public static void SendInformation(ProgressLog progress)
-        {
-            JsonReadWriteModel json = new JsonReadWriteModel();
-            string jsonString = json.PrepareLogForRemote(progress);
-            Thread.Sleep(100);
-            if (_client.Connected)
-            {
-                try
-                {
-                    _client.Send(Encoding.UTF8.GetBytes(jsonString));
-                }
-                catch (SocketException exp)
-                {
-                    Trace.WriteLine(exp.Message);
-
-                }
-            }
-            
-        }*/
-        /// <summary>
-        /// Send the state of the progress 
-        /// </summary>
-        public static void SendUsedJob(ProgressLog log)
-        {
-            JsonReadWriteModel json = new JsonReadWriteModel();
-
-            _client.Send(Encoding.UTF8.GetBytes("test"));
-            /*string jsonString = json.PrepareLogForRemote(log);
-            //Send the list to the client
-            try
-            {
-                _client.Send(Encoding.UTF8.GetBytes(jsonString));
-            }
-            catch (SocketException exp)
-            {
-
-            }*/
-            
-        }
-        public static string receiveInformation()
-        {
-            //Déclaration d'un buffer de type byte pour enregistrer les données reçues
-            byte[] data = new byte[128];
-
-            //Call receive that get the data and stock it in server
-            //return the number of data received
-            try
-            {
-                int recv = _client.Receive(data);
-            }
-            catch (SocketException exception)
-            {
-            }
-
-            //Change the data received from byte -> string -> ProgressLog
-            return Encoding.UTF8.GetString(data);
-
         }
     }
 }

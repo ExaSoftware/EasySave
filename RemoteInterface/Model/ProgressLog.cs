@@ -185,14 +185,6 @@ namespace RemoteInterface
             this.SaveLog(id);
         }
 
-        /// <summary>
-        /// Method which call SaveProgressLog() from LogModel for created a progress log file in C:\EasySave\Logs repository
-        /// </summary>
-        public override void SaveLog(int id)
-        {
-            _jsonReadWriteModel.SaveProgressLog(this, id);
-        }
-
         protected override void Dispose(bool disposing)
         {
             if (!disposedValue)

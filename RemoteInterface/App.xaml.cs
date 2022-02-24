@@ -33,6 +33,8 @@ namespace RemoteInterface
             }
         }
 
+        protected override void OnExit(ExitEventArgs e) => Environment.Exit(0);
+
         public static Configuration Configuration { get => _configuration; }
     }
 }

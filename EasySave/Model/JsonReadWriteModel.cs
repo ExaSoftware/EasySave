@@ -535,5 +535,14 @@ namespace EasySave
 
             File.WriteAllText(String.Format(@"{0}\SavedJobBackup.json", _DEFAULT_JOB_BACKUP_FILE_PATH), jsonStringJobBackup);
         }
+
+        /// <summary>
+        /// Method which save a progress log to a json format and return it for the remote
+        /// </summary>
+        /// <param name="jobBackup"></param>
+        public string PrepareLogForRemote(ProgressLog[] log)
+        {
+            return JsonConvert.SerializeObject(log, Newtonsoft.Json.Formatting.Indented);
+        }
     }
 }
