@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
@@ -525,10 +526,9 @@ namespace EasySave
         /// Method which save a progress log to a json format and return it for the remote
         /// </summary>
         /// <param name="jobBackup"></param>
-        public string PrepareLogForRemote(ProgressLog log)
+        public string PrepareLogForRemote(List<ProgressLog> log)
         {
-            string jsonStringLog = JsonConvert.SerializeObject(log, Newtonsoft.Json.Formatting.Indented);
-            return jsonStringLog;
+            return JsonConvert.SerializeObject(log, Newtonsoft.Json.Formatting.Indented);
         }
 
     }
